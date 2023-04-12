@@ -2,7 +2,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:one_click_time_sheet/routes/routes_names.dart';
 
-
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
 
@@ -18,11 +17,13 @@ class _SplashScreenState extends State<SplashScreen> {
       Navigator.of(context).pushReplacementNamed(homeScreenRoute);
     });
   }
+
   @override
   Widget build(BuildContext context) {
-    return  const Scaffold(
-        body: Center(
-            child: CircularProgressIndicator.adaptive())
+    return const Scaffold(
+      body: Center(
+        child: CircularProgressIndicator.adaptive(),
+      ),
     );
   }
 }
