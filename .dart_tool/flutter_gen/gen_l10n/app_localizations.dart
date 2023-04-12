@@ -94,8 +94,14 @@ abstract class AppLocalizations {
   /// The conventional newborn programmer greeting
   ///
   /// In en, this message translates to:
-  /// **'Hello World!'**
-  String get helloWorld;
+  /// **'Title'**
+  String get homeScreenTitle;
+
+  /// No description provided for @homeScreenPlan.
+  ///
+  /// In en, this message translates to:
+  /// **'Plan:'**
+  String get homeScreenPlan;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

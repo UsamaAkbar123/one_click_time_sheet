@@ -1,6 +1,7 @@
 {
-  "helloWorld": "Hello World!",
-  "@helloWorld": {
+  "homeScreenTitle": "Title",
+  "@homeScreenTitle": {
     "description": "The conventional newborn programmer greeting"
-  }
+  },
+  "homeScreenPlan": "Plan:"
 }
