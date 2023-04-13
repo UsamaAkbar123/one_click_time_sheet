@@ -19,7 +19,7 @@ class HomeScreen extends StatelessWidget {
       ),
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 10.w),
-        child: Column(
+        child: ListView(
           children: [
             SizedBox(height: 10.h),
             Container(
@@ -73,7 +73,8 @@ class HomeScreen extends StatelessWidget {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: [// const Spacer(),
+                children: [
+                  // const Spacer(),
                   Icon(
                     Icons.refresh,
                     color: blackColor,
@@ -93,7 +94,274 @@ class HomeScreen extends StatelessWidget {
                 ],
               ),
             ),
+            SizedBox(height: 12.h),
+            StartEndJobBox(
+              iconData: Icons.login_outlined,
+              jobStatus: 'Start job',
+              color: lightGreenColor,
+              onTab: () {},
+            ),
+            SizedBox(height: 8.h),
+            StartEndJobBox(
+              iconData: Icons.logout_outlined,
+              jobStatus: 'End job',
+              color: redColor,
+              onTab: () {},
+            ),
+            SizedBox(height: 8.h),
+            Row(
+              children: [
+                Expanded(
+                  child: PaidUnPaidBreakBox(
+                    onTab: () {},
+                    breakStatus: 'Paid Break',
+                    color: greenColor,
+                  ),
+                ),
+                SizedBox(width: 5.w),
+                Expanded(
+                  child: PaidUnPaidBreakBox(
+                    onTab: () {},
+                    breakStatus: 'Unpaid Break',
+                    color: orangeColor,
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 10.h),
+            Text(
+              'Last history:',
+              style: CustomTextStyle.kHeading2,
+            ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class PaidUnPaidBreakBox extends StatelessWidget {
+  final VoidCallback onTab;
+  final String breakStatus;
+  final Color color;
+
+  const PaidUnPaidBreakBox({
+    super.key,
+    required this.onTab,
+    required this.breakStatus,
+    required this.color,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTab,
+      child: Container(
+        height: 130.h,
+        width: 200.w,
+        decoration: BoxDecoration(
+          color: color,
+          border: Border.all(
+            color: blackColor,
+            width: 3.w,
+          ),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Icon(
+                  Icons.coffee_outlined,
+                  size: 50.h,
+                ),
+                // SizedBox(width: 5.w),
+                Column(
+                  children: [
+                    Text(
+                      breakStatus,
+                      style:
+                          CustomTextStyle.kHeading1.copyWith(fontSize: 16.sp),
+                    ),
+                    SizedBox(height: 5.h),
+                    Text(
+                      '8:00',
+                      style:
+                          CustomTextStyle.kHeading1.copyWith(fontSize: 16.sp),
+                    ),
+                    Text(
+                      'Tuesday, 22,9,2022',
+                      style:
+                          CustomTextStyle.kBodyText1.copyWith(fontSize: 11.sp),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 3.0.w),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: PlusMinusManualTimeAdjustmentForPaidUnPaid(
+                      onTab: () {},
+                      text: '-1 min',
+                    ),
+                  ),
+                  SizedBox(width: 2.w),
+                  Expanded(
+                    child: PlusMinusManualTimeAdjustmentForPaidUnPaid(
+                      onTab: () {},
+                      text: '+1 min',
+                    ),
+                  ),
+                  SizedBox(width: 2.w),
+                  Expanded(
+                    child: PlusMinusManualTimeAdjustmentForPaidUnPaid(
+                      onTab: () {},
+                      text: 'Manual',
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class StartEndJobBox extends StatelessWidget {
+  final VoidCallback onTab;
+  final Color color;
+  final IconData iconData;
+  final String jobStatus;
+
+  const StartEndJobBox({
+    super.key,
+    required this.iconData,
+    required this.jobStatus,
+    required this.color,
+    required this.onTab,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 150.h,
+      width: double.infinity,
+      padding: EdgeInsets.symmetric(horizontal: 12.w),
+      decoration: BoxDecoration(
+        color: color,
+        border: Border.all(
+          color: blackColor,
+          width: 3.w,
+        ),
+      ),
+      child: Column(
+        children: [
+          Row(
+            children: [
+              Icon(
+                iconData,
+                size: 100.h,
+              ),
+              SizedBox(width: 5.w),
+              Column(
+                children: [
+                  Text(
+                    jobStatus,
+                    style: CustomTextStyle.kHeading1,
+                  ),
+                  SizedBox(height: 5.h),
+                  Text(
+                    '8:00',
+                    style: CustomTextStyle.kHeading1,
+                  ),
+                  Text(
+                    'Tuesday, 22,9,2022',
+                    style: CustomTextStyle.kBodyText1,
+                  ),
+                ],
+              ),
+            ],
+          ),
+          SizedBox(height: 8.h),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              PlusMinusManualTimeAdjustmentForStartEndJob(
+                onTab: () {},
+                text: '-1 min',
+              ),
+              PlusMinusManualTimeAdjustmentForStartEndJob(
+                onTab: () {},
+                text: '+1 min',
+              ),
+              PlusMinusManualTimeAdjustmentForStartEndJob(
+                onTab: () {},
+                text: 'Manual',
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class PlusMinusManualTimeAdjustmentForStartEndJob extends StatelessWidget {
+  final VoidCallback onTab;
+  final String text;
+
+  const PlusMinusManualTimeAdjustmentForStartEndJob({
+    super.key,
+    required this.onTab,
+    required this.text,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTab,
+      child: Container(
+        height: 30.h,
+        width: 90.w,
+        color: greyColor,
+        alignment: Alignment.center,
+        child: Text(
+          text,
+          style: CustomTextStyle.kBodyText1,
+        ),
+      ),
+    );
+  }
+}
+
+class PlusMinusManualTimeAdjustmentForPaidUnPaid extends StatelessWidget {
+  final VoidCallback onTab;
+  final String text;
+
+  const PlusMinusManualTimeAdjustmentForPaidUnPaid({
+    super.key,
+    required this.onTab,
+    required this.text,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTab,
+      child: Container(
+        height: 20.h,
+        width: 60.w,
+        color: greyColor,
+        alignment: Alignment.center,
+        child: Text(
+          text,
+          style: CustomTextStyle.kBodyText2,
         ),
       ),
     );
