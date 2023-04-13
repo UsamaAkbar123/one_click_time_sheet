@@ -12,4 +12,19 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get homeScreenRefreshTime => 'Refresh time';
+
+  @override
+  String get homeScreenStartJob => 'Start job';
+
+  @override
+  String get homeScreenEndJob => 'End job';
+
+  @override
+  String get homeScreenPaidBreak => 'Paid Break';
+
+  @override
+  String get homeScreenUnPaidBreak => 'Unpaid Break';
+
+  @override
+  String get homeScreenLastHistory => 'Last history:';
 }

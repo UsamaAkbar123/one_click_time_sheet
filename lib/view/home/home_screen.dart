@@ -102,14 +102,14 @@ class HomeScreen extends StatelessWidget {
             SizedBox(height: 12.h),
             StartEndJobBox(
               iconData: Icons.login_outlined,
-              jobStatus: 'Start job',
+              jobStatus: AppLocalizations.of(context)?.homeScreenStartJob ?? '',
               color: lightGreenColor,
               onTab: () {},
             ),
             SizedBox(height: 8.h),
             StartEndJobBox(
               iconData: Icons.logout_outlined,
-              jobStatus: 'End job',
+              jobStatus: AppLocalizations.of(context)?.homeScreenEndJob ?? '',
               color: redColor,
               onTab: () {},
             ),
@@ -119,7 +119,7 @@ class HomeScreen extends StatelessWidget {
                 Expanded(
                   child: PaidUnPaidBreakBox(
                     onTab: () {},
-                    breakStatus: 'Paid Break',
+                    breakStatus: AppLocalizations.of(context)?.homeScreenPaidBreak ?? '',
                     color: greenColor,
                   ),
                 ),
@@ -127,7 +127,7 @@ class HomeScreen extends StatelessWidget {
                 Expanded(
                   child: PaidUnPaidBreakBox(
                     onTab: () {},
-                    breakStatus: 'Unpaid Break',
+                    breakStatus: AppLocalizations.of(context)?.homeScreenUnPaidBreak ?? '',
                     color: orangeColor,
                   ),
                 ),
@@ -135,7 +135,7 @@ class HomeScreen extends StatelessWidget {
             ),
             SizedBox(height: 10.h),
             Text(
-              'Last history:',
+              AppLocalizations.of(context)?.homeScreenLastHistory ?? '',
               style: CustomTextStyle.kHeading2,
             ),
           ],

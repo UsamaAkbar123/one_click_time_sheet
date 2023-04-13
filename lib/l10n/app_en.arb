@@ -4,5 +4,10 @@
     "description": "The conventional newborn programmer greeting"
   },
   "homeScreenPlan": "Plan:",
-  "homeScreenRefreshTime": "Refresh time"
+  "homeScreenRefreshTime": "Refresh time",
+  "homeScreenStartJob": "Start job",
+  "homeScreenEndJob": "End job",
+  "homeScreenPaidBreak": "Paid Break",
+  "homeScreenUnPaidBreak": "Unpaid Break",
+  "homeScreenLastHistory": "Last history:"
 }
