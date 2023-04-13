@@ -94,8 +94,50 @@ abstract class AppLocalizations {
   /// The conventional newborn programmer greeting
   ///
   /// In en, this message translates to:
-  /// **'Hello World!'**
-  String get helloWorld;
+  /// **'Title'**
+  String get homeScreenTitle;
+
+  /// No description provided for @homeScreenPlan.
+  ///
+  /// In en, this message translates to:
+  /// **'Plan:'**
+  String get homeScreenPlan;
+
+  /// No description provided for @homeScreenRefreshTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Refresh time'**
+  String get homeScreenRefreshTime;
+
+  /// No description provided for @homeScreenStartJob.
+  ///
+  /// In en, this message translates to:
+  /// **'Start job'**
+  String get homeScreenStartJob;
+
+  /// No description provided for @homeScreenEndJob.
+  ///
+  /// In en, this message translates to:
+  /// **'End job'**
+  String get homeScreenEndJob;
+
+  /// No description provided for @homeScreenPaidBreak.
+  ///
+  /// In en, this message translates to:
+  /// **'Paid Break'**
+  String get homeScreenPaidBreak;
+
+  /// No description provided for @homeScreenUnPaidBreak.
+  ///
+  /// In en, this message translates to:
+  /// **'Unpaid Break'**
+  String get homeScreenUnPaidBreak;
+
+  /// No description provided for @homeScreenLastHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'Last history:'**
+  String get homeScreenLastHistory;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
