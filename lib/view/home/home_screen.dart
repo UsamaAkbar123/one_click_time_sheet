@@ -3,6 +3,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:one_click_time_sheet/utills/constants/colors.dart';
 import 'package:one_click_time_sheet/utills/constants/text_styles.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:one_click_time_sheet/view/home/home_screen_components/custom_work_plan_time.dart';
+import 'package:one_click_time_sheet/view/home/home_screen_components/paid_unpaid_break_box.dart';
+import 'package:one_click_time_sheet/view/home/home_screen_components/start_end_job_box.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -22,6 +25,7 @@ class HomeScreen extends StatelessWidget {
         child: ListView(
           children: [
             SizedBox(height: 10.h),
+            /// future work plan widget
             Container(
               height: 50.h,
               width: double.infinity,
@@ -61,6 +65,7 @@ class HomeScreen extends StatelessWidget {
               ),
             ),
             SizedBox(height: 5.h),
+            /// refresh time widget
             Container(
               height: 50.h,
               width: double.infinity,
@@ -135,271 +140,6 @@ class HomeScreen extends StatelessWidget {
             ),
           ],
         ),
-      ),
-    );
-  }
-}
-
-class PaidUnPaidBreakBox extends StatelessWidget {
-  final VoidCallback onTab;
-  final String breakStatus;
-  final Color color;
-
-  const PaidUnPaidBreakBox({
-    super.key,
-    required this.onTab,
-    required this.breakStatus,
-    required this.color,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTab,
-      child: Container(
-        height: 130.h,
-        width: 200.w,
-        decoration: BoxDecoration(
-          color: color,
-          border: Border.all(
-            color: blackColor,
-            width: 3.w,
-          ),
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Icon(
-                  Icons.coffee_outlined,
-                  size: 50.h,
-                ),
-                // SizedBox(width: 5.w),
-                Column(
-                  children: [
-                    Text(
-                      breakStatus,
-                      style:
-                          CustomTextStyle.kHeading1.copyWith(fontSize: 16.sp),
-                    ),
-                    SizedBox(height: 5.h),
-                    Text(
-                      '8:00',
-                      style:
-                          CustomTextStyle.kHeading1.copyWith(fontSize: 16.sp),
-                    ),
-                    Text(
-                      'Tuesday, 22,9,2022',
-                      style:
-                          CustomTextStyle.kBodyText1.copyWith(fontSize: 11.sp),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 3.0.w),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: PlusMinusManualTimeAdjustmentForPaidUnPaid(
-                      onTab: () {},
-                      text: '-1 min',
-                    ),
-                  ),
-                  SizedBox(width: 2.w),
-                  Expanded(
-                    child: PlusMinusManualTimeAdjustmentForPaidUnPaid(
-                      onTab: () {},
-                      text: '+1 min',
-                    ),
-                  ),
-                  SizedBox(width: 2.w),
-                  Expanded(
-                    child: PlusMinusManualTimeAdjustmentForPaidUnPaid(
-                      onTab: () {},
-                      text: 'Manual',
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class StartEndJobBox extends StatelessWidget {
-  final VoidCallback onTab;
-  final Color color;
-  final IconData iconData;
-  final String jobStatus;
-
-  const StartEndJobBox({
-    super.key,
-    required this.iconData,
-    required this.jobStatus,
-    required this.color,
-    required this.onTab,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 150.h,
-      width: double.infinity,
-      padding: EdgeInsets.symmetric(horizontal: 12.w),
-      decoration: BoxDecoration(
-        color: color,
-        border: Border.all(
-          color: blackColor,
-          width: 3.w,
-        ),
-      ),
-      child: Column(
-        children: [
-          Row(
-            children: [
-              Icon(
-                iconData,
-                size: 100.h,
-              ),
-              SizedBox(width: 5.w),
-              Column(
-                children: [
-                  Text(
-                    jobStatus,
-                    style: CustomTextStyle.kHeading1,
-                  ),
-                  SizedBox(height: 5.h),
-                  Text(
-                    '8:00',
-                    style: CustomTextStyle.kHeading1,
-                  ),
-                  Text(
-                    'Tuesday, 22,9,2022',
-                    style: CustomTextStyle.kBodyText1,
-                  ),
-                ],
-              ),
-            ],
-          ),
-          SizedBox(height: 8.h),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              PlusMinusManualTimeAdjustmentForStartEndJob(
-                onTab: () {},
-                text: '-1 min',
-              ),
-              PlusMinusManualTimeAdjustmentForStartEndJob(
-                onTab: () {},
-                text: '+1 min',
-              ),
-              PlusMinusManualTimeAdjustmentForStartEndJob(
-                onTab: () {},
-                text: 'Manual',
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class PlusMinusManualTimeAdjustmentForStartEndJob extends StatelessWidget {
-  final VoidCallback onTab;
-  final String text;
-
-  const PlusMinusManualTimeAdjustmentForStartEndJob({
-    super.key,
-    required this.onTab,
-    required this.text,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTab,
-      child: Container(
-        height: 30.h,
-        width: 90.w,
-        color: greyColor,
-        alignment: Alignment.center,
-        child: Text(
-          text,
-          style: CustomTextStyle.kBodyText1,
-        ),
-      ),
-    );
-  }
-}
-
-class PlusMinusManualTimeAdjustmentForPaidUnPaid extends StatelessWidget {
-  final VoidCallback onTab;
-  final String text;
-
-  const PlusMinusManualTimeAdjustmentForPaidUnPaid({
-    super.key,
-    required this.onTab,
-    required this.text,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTab,
-      child: Container(
-        height: 20.h,
-        width: 60.w,
-        color: greyColor,
-        alignment: Alignment.center,
-        child: Text(
-          text,
-          style: CustomTextStyle.kBodyText2,
-        ),
-      ),
-    );
-  }
-}
-
-class CustomWorkPlanTime extends StatelessWidget {
-  final String startTime;
-  final String endTime;
-
-  const CustomWorkPlanTime({
-    super.key,
-    required this.startTime,
-    required this.endTime,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return RichText(
-      text: TextSpan(
-        children: [
-          TextSpan(
-            text: startTime,
-            style: CustomTextStyle.kHeading2.copyWith(
-              color: lightGreenColor,
-            ),
-          ),
-          TextSpan(
-            text: '-',
-            style: CustomTextStyle.kHeading2,
-          ),
-          TextSpan(
-            text: endTime,
-            style: CustomTextStyle.kHeading2.copyWith(
-              color: redColor,
-            ),
-          ),
-        ],
       ),
     );
   }
