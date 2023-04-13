@@ -9,4 +9,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get homeScreenPlan => 'Plan:';
+
+  @override
+  String get homeScreenRefreshTime => 'Refresh time';
 }

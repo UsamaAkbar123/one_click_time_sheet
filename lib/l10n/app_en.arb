@@ -3,5 +3,6 @@
   "@homeScreenTitle": {
     "description": "The conventional newborn programmer greeting"
   },
-  "homeScreenPlan": "Plan:"
+  "homeScreenPlan": "Plan:",
+  "homeScreenRefreshTime": "Refresh time"
 }

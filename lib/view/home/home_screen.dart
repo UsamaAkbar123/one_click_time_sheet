@@ -49,7 +49,47 @@ class HomeScreen extends StatelessWidget {
                     endTime: '15:00',
                   ),
                   const Spacer(),
-                  IconButton(onPressed: (){}, icon: Icon(Icons.edit,color: greyColor,size: 30.h,))
+                  IconButton(
+                    onPressed: () {},
+                    icon: Icon(
+                      Icons.edit,
+                      color: greyColor,
+                      size: 30.h,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(height: 5.h),
+            Container(
+              height: 50.h,
+              width: double.infinity,
+              decoration: BoxDecoration(
+                color: blueColor,
+                border: Border.all(
+                  color: blackColor,
+                ),
+              ),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [// const Spacer(),
+                  Icon(
+                    Icons.refresh,
+                    color: blackColor,
+                    size: 40.h,
+                  ),
+                  SizedBox(width: 2.w),
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 8.0),
+                    child: Text(
+                      AppLocalizations.of(context)?.homeScreenRefreshTime ?? '',
+                      style: CustomTextStyle.kBodyText1.copyWith(
+                        fontSize: 22.sp,
+                        color: whiteColor,
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),

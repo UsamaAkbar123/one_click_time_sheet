@@ -102,6 +102,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Plan:'**
   String get homeScreenPlan;
+
+  /// No description provided for @homeScreenRefreshTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Refresh time'**
+  String get homeScreenRefreshTime;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
