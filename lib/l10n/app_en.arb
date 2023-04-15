@@ -9,5 +9,19 @@
   "homeScreenEndJob": "End job",
   "homeScreenPaidBreak": "Paid Break",
   "homeScreenUnPaidBreak": "Unpaid Break",
-  "homeScreenLastHistory": "Last history:"
+  "homeScreenLastHistory": "Last history:",
+
+
+  "settingScreenTitle": "Settings",
+  "settingScreenSelectLanguage": "Language",
+  "settingScreenFirstDayOfWeek": "First Day Of Week",
+  "settingScreenDateFormat": "Data Format",
+  "settingScreenTimeFormat": "Time Format",
+  "settingScreenStartJobNotification": "Start Job Notification",
+  "settingScreenEndJobNotification": "End Job Notification",
+  "settingScreenSaveChangesButtonText": "save changes",
+  "settingScreenRestoreDatabaseButtonText": "Restore Database",
+  "settingScreenBackupDatabaseButtonText": "Backup Database"
+
+
 }

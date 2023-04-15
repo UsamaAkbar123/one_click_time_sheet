@@ -138,6 +138,66 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Last history:'**
   String get homeScreenLastHistory;
+
+  /// No description provided for @settingScreenTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get settingScreenTitle;
+
+  /// No description provided for @settingScreenSelectLanguage.
+  ///
+  /// In en, this message translates to:
+  /// **'Language'**
+  String get settingScreenSelectLanguage;
+
+  /// No description provided for @settingScreenFirstDayOfWeek.
+  ///
+  /// In en, this message translates to:
+  /// **'First Day Of Week'**
+  String get settingScreenFirstDayOfWeek;
+
+  /// No description provided for @settingScreenDateFormat.
+  ///
+  /// In en, this message translates to:
+  /// **'Data Format'**
+  String get settingScreenDateFormat;
+
+  /// No description provided for @settingScreenTimeFormat.
+  ///
+  /// In en, this message translates to:
+  /// **'Time Format'**
+  String get settingScreenTimeFormat;
+
+  /// No description provided for @settingScreenStartJobNotification.
+  ///
+  /// In en, this message translates to:
+  /// **'Start Job Notification'**
+  String get settingScreenStartJobNotification;
+
+  /// No description provided for @settingScreenEndJobNotification.
+  ///
+  /// In en, this message translates to:
+  /// **'End Job Notification'**
+  String get settingScreenEndJobNotification;
+
+  /// No description provided for @settingScreenSaveChangesButtonText.
+  ///
+  /// In en, this message translates to:
+  /// **'save changes'**
+  String get settingScreenSaveChangesButtonText;
+
+  /// No description provided for @settingScreenRestoreDatabaseButtonText.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore Database'**
+  String get settingScreenRestoreDatabaseButtonText;
+
+  /// No description provided for @settingScreenBackupDatabaseButtonText.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup Database'**
+  String get settingScreenBackupDatabaseButtonText;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
