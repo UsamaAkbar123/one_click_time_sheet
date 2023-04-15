@@ -29,6 +29,10 @@ class _SettingScreenState extends State<SettingScreen> {
             const ChooseLanguageWidget(),
             SizedBox(height: 20.h),
             const ChooseFirstDayOfWeekWidget(),
+            SizedBox(height: 20.h),
+            const ChooseDateFormatWidget(),
+            SizedBox(height: 20.h),
+            const TimeFormatWidget(),
           ],
         ),
       ),
@@ -63,7 +67,7 @@ class _ChooseLanguageWidgetState extends State<ChooseLanguageWidget> {
           style: CustomTextStyle.kBodyText1.copyWith(fontSize: 16.sp),
         ),
         Container(
-          width: 90.w,
+          width: 120.w,
           height: 30.h,
           padding: EdgeInsets.only(
             left: 4.w,
@@ -123,7 +127,15 @@ class ChooseFirstDayOfWeekWidget extends StatefulWidget {
 
 class _ChooseFirstDayOfWeekWidgetState
     extends State<ChooseFirstDayOfWeekWidget> {
-  List weekDaysList = ['Monday', 'Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
+  List weekDaysList = [
+    'Monday',
+    'Tuesday',
+    'Wednesday',
+    'Thursday',
+    'Friday',
+    'Saturday',
+    'Sunday'
+  ];
   String selectedFirstWeekDay = '';
 
   @override
@@ -142,7 +154,7 @@ class _ChooseFirstDayOfWeekWidgetState
           style: CustomTextStyle.kBodyText1.copyWith(fontSize: 16.sp),
         ),
         Container(
-          width: 90.w,
+          width: 120.w,
           height: 30.h,
           padding: EdgeInsets.only(
             left: 4.w,
@@ -185,6 +197,195 @@ class _ChooseFirstDayOfWeekWidgetState
                 });
               },
             ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class ChooseDateFormatWidget extends StatefulWidget {
+  const ChooseDateFormatWidget({Key? key}) : super(key: key);
+
+  @override
+  State<ChooseDateFormatWidget> createState() => _ChooseDateFormatWidgetState();
+}
+
+class _ChooseDateFormatWidgetState extends State<ChooseDateFormatWidget> {
+  List dateFormatList = [
+    'yyyy-MM-dd',
+    'dd-MM-yyyy',
+    'yyyy-dd-MM',
+    'dd/MM/yyyy',
+    'yyyy/dd/MM',
+  ];
+  String selectedDateFormat = '';
+
+  @override
+  void initState() {
+    selectedDateFormat = dateFormatList[0];
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          'Date Format',
+          style: CustomTextStyle.kBodyText1.copyWith(fontSize: 16.sp),
+        ),
+        Container(
+          width: 120.w,
+          height: 30.h,
+          padding: EdgeInsets.only(
+            left: 4.w,
+            right: 4.w,
+          ),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(5.r),
+            border: Border.all(
+              color: blackColor,
+              width: .5.w,
+            ),
+          ),
+          child: DropdownButtonHideUnderline(
+            child: DropdownButton<String>(
+              dropdownColor: whiteColor,
+              icon: Icon(
+                Icons.keyboard_arrow_down,
+                size: 20.h,
+                color: blackColor,
+              ),
+              isExpanded: true,
+              hint: Text(
+                'Monday',
+                style: CustomTextStyle.kBodyText2,
+              ),
+              value: selectedDateFormat,
+              items: [
+                for (int i = 0; i < dateFormatList.length; i++)
+                  DropdownMenuItem(
+                    value: dateFormatList[i],
+                    child: Text(
+                      dateFormatList[i],
+                      style: CustomTextStyle.kBodyText2,
+                    ),
+                  ),
+              ],
+              onChanged: (val) {
+                setState(() {
+                  selectedDateFormat = val.toString();
+                });
+              },
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class TimeFormatWidget extends StatefulWidget {
+  const TimeFormatWidget({Key? key}) : super(key: key);
+
+  @override
+  State<TimeFormatWidget> createState() => _TimeFormatWidgetState();
+}
+
+class _TimeFormatWidgetState extends State<TimeFormatWidget> {
+  bool isTwelveHourFormatSelected = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          'Time Format',
+          style: CustomTextStyle.kBodyText1.copyWith(fontSize: 16.sp),
+        ),
+        const Spacer(),
+        Expanded(
+          child: Row(
+            children: [
+              GestureDetector(
+                onTap: () {
+                  setState(() {
+                    isTwelveHourFormatSelected = true;
+                  });
+                },
+                child: Row(
+                  children: [
+                    Container(
+                      width: 18.w,
+                      height: 18.h,
+                      padding: EdgeInsets.all(2.w),
+                      margin: EdgeInsets.only(right: 10.w),
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                          color: blackColor,
+                          width: .5.w,
+                        ),
+                      ),
+                      child: Container(
+                        // padding: EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: isTwelveHourFormatSelected
+                              ? greenColor
+                              : Colors.transparent,
+                        ),
+                      ),
+                    ),
+                    Text(
+                      '12h',
+                      style: CustomTextStyle.kBodyText2,
+                    ),
+                  ],
+                ),
+              ),
+              const Spacer(),
+              GestureDetector(
+                onTap: () {
+                  setState(() {
+                    isTwelveHourFormatSelected = false;
+                  });
+                },
+                child: Row(
+                  children: [
+                    Container(
+                      width: 18.w,
+                      height: 18.h,
+                      padding: EdgeInsets.all(2.w),
+                      margin: EdgeInsets.only(right: 10.w),
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                          color: blackColor,
+                          width: .5.w,
+                        ),
+                      ),
+                      child: Container(
+                        // padding: EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: !isTwelveHourFormatSelected
+                              ? greenColor
+                              : Colors.transparent,
+                        ),
+                      ),
+                    ),
+                    Text(
+                      '24h',
+                      style: CustomTextStyle.kBodyText2,
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
         ),
       ],
