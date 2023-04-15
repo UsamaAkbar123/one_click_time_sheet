@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:one_click_time_sheet/utills/constants/colors.dart';
 import 'package:one_click_time_sheet/utills/constants/text_styles.dart';
+import 'package:one_click_time_sheet/view/component/custom_button.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class SettingScreen extends StatefulWidget {
   const SettingScreen({Key? key}) : super(key: key);
@@ -23,7 +25,7 @@ class _SettingScreenState extends State<SettingScreen> {
       ),
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 10.w),
-        child: Column(
+        child: ListView(
           children: [
             SizedBox(height: 10.h),
             const ChooseLanguageWidget(),
@@ -33,9 +35,214 @@ class _SettingScreenState extends State<SettingScreen> {
             const ChooseDateFormatWidget(),
             SizedBox(height: 20.h),
             const TimeFormatWidget(),
+            SizedBox(height: 20.h),
+            const StartJobNotificationWidget(),
+            SizedBox(height: 20.h),
+            const EndJobNotificationWidget(),
+            SizedBox(height: 30.h),
+            CustomButton(
+              buttonHeight: 45.h,
+              buttonWidth: double.infinity,
+              buttonColor: greenColor,
+              onButtonTab: () {},
+              buttonText: AppLocalizations.of(context)?.settingScreenSaveChangesButtonText ?? '',
+            ),
+            SizedBox(height: 30.h),
+            Row(
+              children: [
+                Expanded(
+                  child: CustomButton(
+                    buttonHeight: 45.h,
+                    buttonWidth: double.infinity,
+                    buttonColor: blueColor,
+                    onButtonTab: () {},
+                    buttonText: AppLocalizations.of(context)?.settingScreenRestoreDatabaseButtonText ?? '',
+                  ),
+                ),
+                SizedBox(width: 10.w),
+                Expanded(
+                  child: CustomButton(
+                    buttonHeight: 45.h,
+                    buttonWidth: double.infinity,
+                    buttonColor: greenColor,
+                    onButtonTab: () {},
+                    buttonText: AppLocalizations.of(context)?.settingScreenBackupDatabaseButtonText ?? '',
+                  ),
+                ),
+              ],
+            ),
           ],
         ),
       ),
+    );
+  }
+}
+
+
+
+class EndJobNotificationWidget extends StatefulWidget {
+  const EndJobNotificationWidget({Key? key}) : super(key: key);
+
+  @override
+  State<EndJobNotificationWidget> createState() =>
+      _EndJobNotificationWidgetState();
+}
+
+class _EndJobNotificationWidgetState extends State<EndJobNotificationWidget> {
+  List endJobNotificationList = [
+    '30 min',
+    '1 hr',
+    '10 min',
+    '2 hr',
+  ];
+  String selectedEndJobNotification = '';
+
+  @override
+  void initState() {
+    selectedEndJobNotification = endJobNotificationList[0];
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+        AppLocalizations.of(context)?.settingScreenEndJobNotification ?? '',
+          style: CustomTextStyle.kBodyText1.copyWith(fontSize: 16.sp),
+        ),
+        Container(
+          width: 120.w,
+          height: 30.h,
+          padding: EdgeInsets.only(
+            left: 4.w,
+            right: 4.w,
+          ),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(5.r),
+            border: Border.all(
+              color: blackColor,
+              width: .5.w,
+            ),
+          ),
+          child: DropdownButtonHideUnderline(
+            child: DropdownButton<String>(
+              dropdownColor: whiteColor,
+              icon: Icon(
+                Icons.keyboard_arrow_down,
+                size: 20.h,
+                color: blackColor,
+              ),
+              isExpanded: true,
+              hint: Text(
+                'Monday',
+                style: CustomTextStyle.kBodyText2,
+              ),
+              value: selectedEndJobNotification,
+              items: [
+                for (int i = 0; i < endJobNotificationList.length; i++)
+                  DropdownMenuItem(
+                    value: endJobNotificationList[i],
+                    child: Text(
+                      endJobNotificationList[i],
+                      style: CustomTextStyle.kBodyText2,
+                    ),
+                  ),
+              ],
+              onChanged: (val) {
+                setState(() {
+                  selectedEndJobNotification = val.toString();
+                });
+              },
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class StartJobNotificationWidget extends StatefulWidget {
+  const StartJobNotificationWidget({Key? key}) : super(key: key);
+
+  @override
+  State<StartJobNotificationWidget> createState() =>
+      _StartJobNotificationWidgetState();
+}
+
+class _StartJobNotificationWidgetState
+    extends State<StartJobNotificationWidget> {
+  List startJobNotificationList = [
+    '30 min',
+    '1 hr',
+    '10 min',
+    '2 hr',
+  ];
+  String selectedStartJobNotification = '';
+
+  @override
+  void initState() {
+    selectedStartJobNotification = startJobNotificationList[0];
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+        AppLocalizations.of(context)?.settingScreenStartJobNotification ?? '',
+          style: CustomTextStyle.kBodyText1.copyWith(fontSize: 16.sp),
+        ),
+        Container(
+          width: 120.w,
+          height: 30.h,
+          padding: EdgeInsets.only(
+            left: 4.w,
+            right: 4.w,
+          ),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(5.r),
+            border: Border.all(
+              color: blackColor,
+              width: .5.w,
+            ),
+          ),
+          child: DropdownButtonHideUnderline(
+            child: DropdownButton<String>(
+              dropdownColor: whiteColor,
+              icon: Icon(
+                Icons.keyboard_arrow_down,
+                size: 20.h,
+                color: blackColor,
+              ),
+              isExpanded: true,
+              hint: Text(
+                'Monday',
+                style: CustomTextStyle.kBodyText2,
+              ),
+              value: selectedStartJobNotification,
+              items: [
+                for (int i = 0; i < startJobNotificationList.length; i++)
+                  DropdownMenuItem(
+                    value: startJobNotificationList[i],
+                    child: Text(
+                      startJobNotificationList[i],
+                      style: CustomTextStyle.kBodyText2,
+                    ),
+                  ),
+              ],
+              onChanged: (val) {
+                setState(() {
+                  selectedStartJobNotification = val.toString();
+                });
+              },
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
@@ -63,7 +270,7 @@ class _ChooseLanguageWidgetState extends State<ChooseLanguageWidget> {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(
-          'Language',
+        AppLocalizations.of(context)?.settingScreenSelectLanguage ?? '',
           style: CustomTextStyle.kBodyText1.copyWith(fontSize: 16.sp),
         ),
         Container(
@@ -150,7 +357,7 @@ class _ChooseFirstDayOfWeekWidgetState
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(
-          'First Day of Week',
+          AppLocalizations.of(context)?.settingScreenFirstDayOfWeek ?? '',
           style: CustomTextStyle.kBodyText1.copyWith(fontSize: 16.sp),
         ),
         Container(
@@ -233,7 +440,7 @@ class _ChooseDateFormatWidgetState extends State<ChooseDateFormatWidget> {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(
-          'Date Format',
+          AppLocalizations.of(context)?.settingScreenDateFormat ?? '',
           style: CustomTextStyle.kBodyText1.copyWith(fontSize: 16.sp),
         ),
         Container(
@@ -303,7 +510,7 @@ class _TimeFormatWidgetState extends State<TimeFormatWidget> {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(
-          'Time Format',
+          AppLocalizations.of(context)?.settingScreenTimeFormat ?? '',
           style: CustomTextStyle.kBodyText1.copyWith(fontSize: 16.sp),
         ),
         const Spacer(),
@@ -322,7 +529,7 @@ class _TimeFormatWidgetState extends State<TimeFormatWidget> {
                       width: 18.w,
                       height: 18.h,
                       padding: EdgeInsets.all(2.w),
-                      margin: EdgeInsets.only(right: 10.w),
+                      margin: EdgeInsets.only(left: 10.w),
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         border: Border.all(
@@ -340,6 +547,7 @@ class _TimeFormatWidgetState extends State<TimeFormatWidget> {
                         ),
                       ),
                     ),
+                    SizedBox(width: 10.w),
                     Text(
                       '12h',
                       style: CustomTextStyle.kBodyText2,
