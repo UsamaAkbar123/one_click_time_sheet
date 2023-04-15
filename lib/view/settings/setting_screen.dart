@@ -11,8 +11,6 @@ class SettingScreen extends StatefulWidget {
 }
 
 class _SettingScreenState extends State<SettingScreen> {
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -29,6 +27,8 @@ class _SettingScreenState extends State<SettingScreen> {
           children: [
             SizedBox(height: 10.h),
             const ChooseLanguageWidget(),
+            SizedBox(height: 20.h),
+            const ChooseFirstDayOfWeekWidget(),
           ],
         ),
       ),
@@ -45,7 +45,14 @@ class ChooseLanguageWidget extends StatefulWidget {
 
 class _ChooseLanguageWidgetState extends State<ChooseLanguageWidget> {
   List languagesList = ['English', 'Egyption'];
-  String selectedLanguage = 'English';
+  String selectedLanguage = '';
+
+  @override
+  void initState() {
+    selectedLanguage = languagesList[0];
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -53,7 +60,7 @@ class _ChooseLanguageWidgetState extends State<ChooseLanguageWidget> {
       children: [
         Text(
           'Language',
-          style: CustomTextStyle.kHeading2,
+          style: CustomTextStyle.kBodyText1.copyWith(fontSize: 16.sp),
         ),
         Container(
           width: 90.w,
@@ -70,7 +77,7 @@ class _ChooseLanguageWidgetState extends State<ChooseLanguageWidget> {
             ),
           ),
           child: DropdownButtonHideUnderline(
-            child: DropdownButton(
+            child: DropdownButton<String>(
               dropdownColor: whiteColor,
               icon: Icon(
                 Icons.keyboard_arrow_down,
@@ -106,3 +113,81 @@ class _ChooseLanguageWidgetState extends State<ChooseLanguageWidget> {
   }
 }
 
+class ChooseFirstDayOfWeekWidget extends StatefulWidget {
+  const ChooseFirstDayOfWeekWidget({Key? key}) : super(key: key);
+
+  @override
+  State<ChooseFirstDayOfWeekWidget> createState() =>
+      _ChooseFirstDayOfWeekWidgetState();
+}
+
+class _ChooseFirstDayOfWeekWidgetState
+    extends State<ChooseFirstDayOfWeekWidget> {
+  List weekDaysList = ['Monday', 'Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
+  String selectedFirstWeekDay = '';
+
+  @override
+  void initState() {
+    selectedFirstWeekDay = weekDaysList[0];
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          'First Day of Week',
+          style: CustomTextStyle.kBodyText1.copyWith(fontSize: 16.sp),
+        ),
+        Container(
+          width: 90.w,
+          height: 30.h,
+          padding: EdgeInsets.only(
+            left: 4.w,
+            right: 4.w,
+          ),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(5.r),
+            border: Border.all(
+              color: blackColor,
+              width: .5.w,
+            ),
+          ),
+          child: DropdownButtonHideUnderline(
+            child: DropdownButton<String>(
+              dropdownColor: whiteColor,
+              icon: Icon(
+                Icons.keyboard_arrow_down,
+                size: 20.h,
+                color: blackColor,
+              ),
+              isExpanded: true,
+              hint: Text(
+                'Monday',
+                style: CustomTextStyle.kBodyText2,
+              ),
+              value: selectedFirstWeekDay,
+              items: [
+                for (int i = 0; i < weekDaysList.length; i++)
+                  DropdownMenuItem(
+                    value: weekDaysList[i],
+                    child: Text(
+                      weekDaysList[i],
+                      style: CustomTextStyle.kBodyText2,
+                    ),
+                  ),
+              ],
+              onChanged: (val) {
+                setState(() {
+                  selectedFirstWeekDay = val.toString();
+                });
+              },
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
