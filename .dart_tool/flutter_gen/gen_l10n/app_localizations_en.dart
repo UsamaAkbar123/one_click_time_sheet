@@ -60,4 +60,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get workPlanScreenTitle => 'WorkPlan';
+
+  @override
+  String get reportsScreenTitle => 'Reports';
+
+  @override
+  String get reportsScreenSaveToPdf => 'save to pdf';
+
+  @override
+  String get reportsScreenSendEmail => 'send email';
 }

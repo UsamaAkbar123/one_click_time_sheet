@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:one_click_time_sheet/routes/routes_names.dart';
 import 'package:one_click_time_sheet/view/home/home_screen.dart';
 import 'package:one_click_time_sheet/view/not_found_page.dart';
+import 'package:one_click_time_sheet/view/reports/report_screen.dart';
 import 'package:one_click_time_sheet/view/settings/setting_screen.dart';
 import 'package:one_click_time_sheet/view/splash/splash_screen.dart';
 import 'package:one_click_time_sheet/view/work_plan/work_plan_screen.dart';
@@ -16,6 +17,8 @@ class CustomRouter {
         return MaterialPageRoute(builder: (_) => const SettingScreen());
       case workPlanScreenRoute:
         return MaterialPageRoute(builder: (_) => const WorkPlanScreen());
+      case reportScreenRoute:
+        return MaterialPageRoute(builder: (_) => const ReportScreen());
       default:
         return MaterialPageRoute(builder: (_) => const NotFoundPage());
     }
