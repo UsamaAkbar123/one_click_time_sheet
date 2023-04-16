@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:one_click_time_sheet/utills/constants/colors.dart';
 import 'package:one_click_time_sheet/utills/constants/text_styles.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class WorkPlanScreen extends StatefulWidget {
   const WorkPlanScreen({Key? key}) : super(key: key);
@@ -24,7 +25,7 @@ class _WorkPlanScreenState extends State<WorkPlanScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'WorkPlan',
+          AppLocalizations.of(context)?.workPlanScreenTitle ?? '',
           style: CustomTextStyle.kHeading2,
         ),
         centerTitle: true,

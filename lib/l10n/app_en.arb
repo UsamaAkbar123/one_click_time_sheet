@@ -21,7 +21,10 @@
   "settingScreenEndJobNotification": "End Job Notification",
   "settingScreenSaveChangesButtonText": "save changes",
   "settingScreenRestoreDatabaseButtonText": "Restore Database",
-  "settingScreenBackupDatabaseButtonText": "Backup Database"
+  "settingScreenBackupDatabaseButtonText": "Backup Database",
+
+
+  "workPlanScreenTitle": "WorkPlan"
 
 
 }
