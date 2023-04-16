@@ -204,6 +204,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'WorkPlan'**
   String get workPlanScreenTitle;
+
+  /// No description provided for @reportsScreenTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Reports'**
+  String get reportsScreenTitle;
+
+  /// No description provided for @reportsScreenSaveToPdf.
+  ///
+  /// In en, this message translates to:
+  /// **'save to pdf'**
+  String get reportsScreenSaveToPdf;
+
+  /// No description provided for @reportsScreenSendEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'send email'**
+  String get reportsScreenSendEmail;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

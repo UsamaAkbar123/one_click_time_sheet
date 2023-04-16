@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:one_click_time_sheet/utills/constants/colors.dart';
 import 'package:one_click_time_sheet/utills/constants/text_styles.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ReportScreen extends StatefulWidget {
   const ReportScreen({Key? key}) : super(key: key);
@@ -83,7 +84,7 @@ class _ReportScreenState extends State<ReportScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Reports',
+          AppLocalizations.of(context)?.reportsScreenTitle ?? '',
           style: CustomTextStyle.kHeading2,
         ),
         centerTitle: true,
@@ -421,13 +422,13 @@ class _ReportScreenState extends State<ReportScreen> {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 CustomSavePdfSendEmailButton(
-                  buttonText: 'save to pdf',
+                  buttonText: AppLocalizations.of(context)?.reportsScreenSaveToPdf ?? '',
                   onTab: () {},
                   buttonColor: blueColor,
                 ),
                 SizedBox(width: 12.w),
                 CustomSavePdfSendEmailButton(
-                  buttonText: 'send email',
+                  buttonText: AppLocalizations.of(context)?.reportsScreenSendEmail ?? '',
                   onTab: () {},
                   buttonColor: greenColor,
                 ),
