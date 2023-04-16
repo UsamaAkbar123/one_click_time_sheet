@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:one_click_time_sheet/utills/constants/colors.dart';
 import 'package:one_click_time_sheet/utills/constants/text_styles.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:one_click_time_sheet/view/reports/reports_screen_components/custom_save_pdf_send_email_button.dart';
 
 class ReportScreen extends StatefulWidget {
   const ReportScreen({Key? key}) : super(key: key);
@@ -157,7 +158,7 @@ class _ReportScreenState extends State<ReportScreen> {
             SizedBox(height: 12.h),
             for (int i = 0; i < listItems.length; i++)
               Padding(
-                padding: EdgeInsets.only(bottom: 10),
+                padding: EdgeInsets.only(bottom: 10.h),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -546,39 +547,3 @@ class _ReportScreenState extends State<ReportScreen> {
   }
 }
 
-class CustomSavePdfSendEmailButton extends StatelessWidget {
-  final String buttonText;
-  final VoidCallback onTab;
-  final Color buttonColor;
-
-  const CustomSavePdfSendEmailButton({
-    super.key,
-    required this.buttonText,
-    required this.onTab,
-    required this.buttonColor,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTab,
-      child: Container(
-        width: 100.w,
-        height: 30.h,
-        alignment: Alignment.center,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(5.r),
-          color: buttonColor,
-        ),
-        child: Text(
-          buttonText,
-          style: CustomTextStyle.kBodyText1.copyWith(
-            fontSize: 14.sp,
-            fontWeight: FontWeight.bold,
-            color: whiteColor,
-          ),
-        ),
-      ),
-    );
-  }
-}
