@@ -15,7 +15,7 @@ class HomeScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          AppLocalizations.of(context)!.homeScreenTitle,
+          AppLocalizations.of(context)?.homeScreenTitle ?? '',
           style: CustomTextStyle.kHeading2,
         ),
         centerTitle: true,

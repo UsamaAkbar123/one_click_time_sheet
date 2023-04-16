@@ -198,6 +198,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Backup Database'**
   String get settingScreenBackupDatabaseButtonText;
+
+  /// No description provided for @workPlanScreenTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'WorkPlan'**
+  String get workPlanScreenTitle;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

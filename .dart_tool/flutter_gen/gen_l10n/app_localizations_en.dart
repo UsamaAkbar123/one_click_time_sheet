@@ -57,4 +57,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settingScreenBackupDatabaseButtonText => 'Backup Database';
+
+  @override
+  String get workPlanScreenTitle => 'WorkPlan';
 }

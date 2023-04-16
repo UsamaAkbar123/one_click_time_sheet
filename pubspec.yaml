@@ -38,6 +38,7 @@ dependencies:
   shared_preferences: ^2.1.0
   google_fonts: ^4.0.3
   flutter_screenutil: ^5.7.0
+  syncfusion_flutter_calendar: ^21.1.39
   flutter_localizations:
     sdk: flutter
   intl: any
