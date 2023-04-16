@@ -153,19 +153,282 @@ class _ReportScreenState extends State<ReportScreen> {
                 ),
               ),
             ),
+            SizedBox(height: 12.h),
+            for (int i = 0; i < listItems.length; i++)
+              Padding(
+                padding: EdgeInsets.only(bottom: 10),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      listItems[i]['date'],
+                      style: CustomTextStyle.kBodyText1.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    SizedBox(height: 2.h),
+                    SizedBox(
+                      height: 30.h,
+                      width: double.infinity,
+                      child: Row(
+                        children: [
+                          Container(
+                            width: 50.w,
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                              color: whiteColor,
+                              border: Border.all(
+                                color: Colors.grey,
+                              ),
+                            ),
+                            padding: EdgeInsets.symmetric(horizontal: 5.w),
+                            child: Text(
+                              'sr_no',
+                              style: CustomTextStyle.kBodyText2.copyWith(
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                          Container(
+                            width: 50.w,
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                              color: whiteColor,
+                              border: Border.all(
+                                color: Colors.grey,
+                              ),
+                            ),
+                            padding: EdgeInsets.symmetric(horizontal: 5.h),
+                            child: Text(
+                              'Start',
+                              style: CustomTextStyle.kBodyText2.copyWith(
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                          Container(
+                            width: 50.w,
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                              color: whiteColor,
+                              border: Border.all(
+                                color: Colors.grey,
+                              ),
+                            ),
+                            padding: EdgeInsets.symmetric(horizontal: 5.h),
+                            child: Text(
+                              'End',
+                              style: CustomTextStyle.kBodyText2.copyWith(
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            child: Container(
+                              width: 50.w,
+                              alignment: Alignment.center,
+                              decoration: BoxDecoration(
+                                color: whiteColor,
+                                border: Border.all(
+                                  color: Colors.grey,
+                                ),
+                              ),
+                              padding: EdgeInsets.symmetric(horizontal: 5.h),
+                              child: Text(
+                                'Difference',
+                                style: CustomTextStyle.kBodyText2.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            child: Container(
+                              width: 50.w,
+                              alignment: Alignment.center,
+                              decoration: BoxDecoration(
+                                color: whiteColor,
+                                border: Border.all(
+                                  color: Colors.grey,
+                                ),
+                              ),
+                              padding: EdgeInsets.symmetric(horizontal: 5.h),
+                              child: Text(
+                                'Considered',
+                                style: CustomTextStyle.kBodyText2.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ),
+                          Container(
+                            width: 50.w,
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                              color: whiteColor,
+                              border: Border.all(
+                                color: Colors.grey,
+                              ),
+                            ),
+                            padding: EdgeInsets.symmetric(horizontal: 5.h),
+                            child: Text(
+                              'Action',
+                              style: CustomTextStyle.kBodyText2.copyWith(
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    /// second
+                    for (int j = 0; j < listItems[i]['titles'].length; j++)
+                      SizedBox(
+                        height: 30.h,
+                        width: double.infinity,
+                        child: Row(
+                          children: [
+                            Container(
+                              width: 50.w,
+                              alignment: Alignment.center,
+                              decoration: BoxDecoration(
+                                color: whiteColor,
+                                border: Border.all(
+                                  color: Colors.grey,
+                                ),
+                              ),
+                              padding: EdgeInsets.only(left: 3.w),
+                              child: Text(listItems[i]['titles'][j],
+                                  style: CustomTextStyle.kBodyText2),
+                            ),
+                            Container(
+                              width: 50.w,
+                              alignment: Alignment.center,
+                              decoration: BoxDecoration(
+                                color: whiteColor,
+                                border: Border.all(
+                                  color: Colors.grey,
+                                ),
+                              ),
+                              padding: EdgeInsets.symmetric(horizontal: 5.h),
+                              child: Text(listItems[i]['Start'][j],
+                                  style: CustomTextStyle.kBodyText2),
+                            ),
+                            Container(
+                              width: 50.w,
+                              alignment: Alignment.center,
+                              decoration: BoxDecoration(
+                                color: whiteColor,
+                                border: Border.all(
+                                  color: Colors.grey,
+                                ),
+                              ),
+                              padding: EdgeInsets.symmetric(horizontal: 5.h),
+                              child: Text(
+                                listItems[i]['End'][j],
+                                style: CustomTextStyle.kBodyText2,
+                              ),
+                            ),
+                            Expanded(
+                              child: Container(
+                                width: 50.w,
+                                alignment: Alignment.center,
+                                decoration: BoxDecoration(
+                                  color: whiteColor,
+                                  border: Border.all(
+                                    color: Colors.grey,
+                                  ),
+                                ),
+                                padding: EdgeInsets.symmetric(horizontal: 5.h),
+                                child: Text(
+                                  listItems[i]['Difference'][j],
+                                  style: CustomTextStyle.kBodyText2,
+                                ),
+                              ),
+                            ),
+                            Expanded(
+                              child: Container(
+                                width: 50.w,
+                                alignment: Alignment.center,
+                                decoration: BoxDecoration(
+                                  color: whiteColor,
+                                  border: Border.all(
+                                    color: Colors.grey,
+                                  ),
+                                ),
+                                padding: EdgeInsets.symmetric(horizontal: 5.h),
+                                child: Text(
+                                  listItems[i]['Considered'][j],
+                                  style: CustomTextStyle.kBodyText2,
+                                ),
+                              ),
+                            ),
+                            Container(
+                              width: 50.w,
+                              alignment: Alignment.center,
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                  color: Colors.grey,
+                                ),
+                              ),
+                              padding: EdgeInsets.symmetric(horizontal: 5.h),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceAround,
+                                children: [
+                                  GestureDetector(
+                                    onTap: () {
+                                      setState(() {
+                                        // index = i;
+                                        // subIndex = j;
+                                        // showDeleteBlock = true;
+                                      });
+                                    },
+                                    child: Icon(
+                                      Icons.cancel_outlined,
+                                      color: redColor,
+                                      size: 14.h,
+                                    ),
+                                  ),
+                                  Container(color: Colors.grey, width: 1),
+                                  GestureDetector(
+                                    onTap: () {
+                                      setState(() {
+                                        // index = i;
+                                        // subIndex = j;
+                                        // showEditingBox = true;
+                                      });
+                                    },
+                                    child: Icon(
+                                      Icons.edit,
+                                      color: lightGreenColor,
+                                      size: 14.h,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    sumBlock(),
+                  ],
+                ),
+              ),
             SizedBox(height: 15.h),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 CustomSavePdfSendEmailButton(
                   buttonText: 'save to pdf',
-                  onTab: (){},
+                  onTab: () {},
                   buttonColor: blueColor,
                 ),
                 SizedBox(width: 12.w),
                 CustomSavePdfSendEmailButton(
                   buttonText: 'send email',
-                  onTab: (){},
+                  onTab: () {},
                   buttonColor: greenColor,
                 ),
               ],
@@ -175,12 +438,118 @@ class _ReportScreenState extends State<ReportScreen> {
       ),
     );
   }
+
+  Widget sumBlock() {
+    return SizedBox(
+      height: 30.h,
+      width: double.infinity,
+      child: Row(
+        children: [
+          Container(
+            width: 50.w,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              color: whiteColor,
+              border: Border.all(
+                color: Colors.grey,
+              ),
+            ),
+            padding: EdgeInsets.only(left: 3.w),
+            child: Text('Sum', style: CustomTextStyle.kBodyText2),
+          ),
+          Container(
+            width: 50.w,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              color: whiteColor,
+              border: Border.all(
+                color: Colors.grey,
+              ),
+            ),
+            padding: EdgeInsets.symmetric(horizontal: 5.h),
+            child: Text(
+              '',
+              style: CustomTextStyle.kBodyText2,
+            ),
+          ),
+          Container(
+            width: 50.w,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              color: whiteColor,
+              border: Border.all(
+                color: Colors.grey,
+              ),
+            ),
+            padding: EdgeInsets.symmetric(horizontal: 5.h),
+            child: Text(
+              '',
+              style: CustomTextStyle.kBodyText2,
+            ),
+          ),
+          Expanded(
+            child: Container(
+              width: 50.w,
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                color: whiteColor,
+                border: Border.all(
+                  color: Colors.grey,
+                ),
+              ),
+              padding: EdgeInsets.symmetric(horizontal: 5.h),
+              child: Text(
+                '',
+                style: CustomTextStyle.kBodyText2,
+              ),
+            ),
+          ),
+          Expanded(
+            child: Container(
+              width: 50.w,
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                color: whiteColor,
+                border: Border.all(
+                  color: Colors.grey,
+                ),
+              ),
+              padding: EdgeInsets.symmetric(horizontal: 5.h),
+              child: Text(
+                '',
+                style: CustomTextStyle.kBodyText2,
+              ),
+            ),
+          ),
+          Container(
+            width: 50.w,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              border: Border.all(
+                color: Colors.grey,
+              ),
+            ),
+            padding: EdgeInsets.symmetric(horizontal: 5.h),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                const SizedBox(),
+                Container(color: Colors.grey, width: 1),
+                const SizedBox(),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }
 
 class CustomSavePdfSendEmailButton extends StatelessWidget {
   final String buttonText;
   final VoidCallback onTab;
   final Color buttonColor;
+
   const CustomSavePdfSendEmailButton({
     super.key,
     required this.buttonText,
