@@ -4,6 +4,7 @@ import 'package:one_click_time_sheet/view/home/home_screen.dart';
 import 'package:one_click_time_sheet/view/not_found_page.dart';
 import 'package:one_click_time_sheet/view/settings/setting_screen.dart';
 import 'package:one_click_time_sheet/view/splash/splash_screen.dart';
+import 'package:one_click_time_sheet/view/work_plan/work_plan_screen.dart';
 class CustomRouter {
   static Route<dynamic> allRoutes(RouteSettings settings) {
     switch (settings.name) {
@@ -13,6 +14,8 @@ class CustomRouter {
         return MaterialPageRoute(builder: (_) => const HomeScreen());
       case settingScreenRoute:
         return MaterialPageRoute(builder: (_) => const SettingScreen());
+      case workPlanScreenRoute:
+        return MaterialPageRoute(builder: (_) => const WorkPlanScreen());
       default:
         return MaterialPageRoute(builder: (_) => const NotFoundPage());
     }
