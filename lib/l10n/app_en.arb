@@ -28,7 +28,12 @@
 
   "reportsScreenTitle": "Reports",
   "reportsScreenSaveToPdf": "save to pdf",
-  "reportsScreenSendEmail": "send email"
+  "reportsScreenSendEmail": "send email",
 
+
+  "bottomNavBarHomeTabText": "Home",
+   "bottomNavBarReportTabText": "Reports",
+   "bottomNavBarWorkPlanTabText": "WorkPlan",
+   "bottomNavBarSettingTabText": "Settings"
 
 }

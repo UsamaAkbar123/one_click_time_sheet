@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:one_click_time_sheet/provider/bottom_nav_provider.dart';
 import 'package:one_click_time_sheet/utills/constants/colors.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class BottomNavBar extends StatefulWidget {
   const BottomNavBar({Key? key}) : super(key: key);
@@ -22,22 +23,22 @@ class _BottomNavBarState extends State<BottomNavBar> {
             body: provider.currentScreen,
             bottomNavigationBar: BottomNavigationBar(
               type: BottomNavigationBarType.fixed,
-              items: const [
+              items: [
                 BottomNavigationBarItem(
-                  label: 'Home',
-                  icon: Icon(Icons.home),
+                  label: AppLocalizations.of(context)?.bottomNavBarHomeTabText ?? '',
+                  icon: const Icon(Icons.home),
                 ),
                 BottomNavigationBarItem(
-                  label: 'Reports',
-                  icon: Icon(Icons.content_paste_go_sharp),
+                  label: AppLocalizations.of(context)?.bottomNavBarReportTabText ?? '',
+                  icon:const Icon(Icons.content_paste_go_sharp),
                 ),
                 BottomNavigationBarItem(
-                  label: 'WorkPlan',
-                  icon: Icon(Icons.calendar_month),
+                  label: AppLocalizations.of(context)?.bottomNavBarWorkPlanTabText ?? '',
+                  icon:const Icon(Icons.calendar_month),
                 ),
                 BottomNavigationBarItem(
-                  label: 'Settings',
-                  icon: Icon(Icons.settings),
+                  label: AppLocalizations.of(context)?.bottomNavBarSettingTabText ?? '',
+                  icon:const Icon(Icons.settings),
                 ),
               ],
               currentIndex: provider.currentTab,
