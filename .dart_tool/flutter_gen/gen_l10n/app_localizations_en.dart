@@ -69,4 +69,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get reportsScreenSendEmail => 'send email';
+
+  @override
+  String get bottomNavBarHomeTabText => 'Home';
+
+  @override
+  String get bottomNavBarReportTabText => 'Reports';
+
+  @override
+  String get bottomNavBarWorkPlanTabText => 'WorkPlan';
+
+  @override
+  String get bottomNavBarSettingTabText => 'Settings';
 }

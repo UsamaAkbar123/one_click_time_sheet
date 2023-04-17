@@ -222,6 +222,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'send email'**
   String get reportsScreenSendEmail;
+
+  /// No description provided for @bottomNavBarHomeTabText.
+  ///
+  /// In en, this message translates to:
+  /// **'Home'**
+  String get bottomNavBarHomeTabText;
+
+  /// No description provided for @bottomNavBarReportTabText.
+  ///
+  /// In en, this message translates to:
+  /// **'Reports'**
+  String get bottomNavBarReportTabText;
+
+  /// No description provided for @bottomNavBarWorkPlanTabText.
+  ///
+  /// In en, this message translates to:
+  /// **'WorkPlan'**
+  String get bottomNavBarWorkPlanTabText;
+
+  /// No description provided for @bottomNavBarSettingTabText.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get bottomNavBarSettingTabText;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
