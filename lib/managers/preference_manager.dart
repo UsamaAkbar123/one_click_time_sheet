@@ -43,8 +43,8 @@ class PreferenceManager{
     prefs = await SharedPreferences.getInstance();
   }
 
-  bool get getIsNotificationsEnabled =>
-      _prefs?.getBool(_Keys.firstTimeLaunch) ?? false;
-  set setNotificationsEnabled(bool value) =>
+  bool get getIsFirstLaunch =>
+      _prefs?.getBool(_Keys.firstTimeLaunch) ?? true;
+  set setIsFirstLaunch(bool value) =>
       _prefs?.setBool(_Keys.firstTimeLaunch, value);
 }
