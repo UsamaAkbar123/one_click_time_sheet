@@ -21,7 +21,7 @@ class StartEndJobBox extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 150.h,
+      height: 170.h,
       width: double.infinity,
       padding: EdgeInsets.symmetric(horizontal: 12.w),
       decoration: BoxDecoration(
@@ -59,7 +59,7 @@ class StartEndJobBox extends StatelessWidget {
               ),
             ],
           ),
-          SizedBox(height: 8.h),
+          const Spacer(),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -77,6 +77,7 @@ class StartEndJobBox extends StatelessWidget {
               ),
             ],
           ),
+          SizedBox(height: 8.h),
         ],
       ),
     );
