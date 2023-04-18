@@ -8,11 +8,13 @@ class StartEndJobBox extends StatelessWidget {
   final VoidCallback onTab;
   final Color color;
   final IconData iconData;
+  final String iconPath;
   final String jobStatus;
 
   const StartEndJobBox({
     super.key,
     required this.iconData,
+    required this.iconPath,
     required this.jobStatus,
     required this.color,
     required this.onTab,
@@ -35,11 +37,17 @@ class StartEndJobBox extends StatelessWidget {
         children: [
           Row(
             children: [
-              Icon(
-                iconData,
-                size: 100.h,
+              // Icon(
+              //   iconData,
+              //   size: 100.h,
+              // ),
+              SizedBox(
+                height: 80.h,
+                // width: 60.,
+                child: Image.asset(iconPath),
               ),
-              SizedBox(width: 5.w),
+              SizedBox(width: 25.w),
+              // const Spacer(),
               Column(
                 children: [
                   Text(
@@ -57,6 +65,7 @@ class StartEndJobBox extends StatelessWidget {
                   ),
                 ],
               ),
+              const Spacer(),
             ],
           ),
           const Spacer(),
