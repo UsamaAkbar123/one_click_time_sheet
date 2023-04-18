@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:one_click_time_sheet/generated/assets/icons.dart';
 import 'package:one_click_time_sheet/utills/constants/colors.dart';
 import 'package:one_click_time_sheet/utills/constants/text_styles.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -101,14 +102,12 @@ class HomeScreen extends StatelessWidget {
             ),
             SizedBox(height: 12.h),
             StartEndJobBox(
-              iconData: Icons.login_outlined,
               jobStatus: AppLocalizations.of(context)?.homeScreenStartJob ?? '',
               color: lightGreenColor,
               onTab: () {},
             ),
             SizedBox(height: 8.h),
             StartEndJobBox(
-              iconData: Icons.logout_outlined,
               jobStatus: AppLocalizations.of(context)?.homeScreenEndJob ?? '',
               color: redColor,
               onTab: () {},
@@ -121,6 +120,7 @@ class HomeScreen extends StatelessWidget {
                     onTab: () {},
                     breakStatus: AppLocalizations.of(context)?.homeScreenPaidBreak ?? '',
                     color: greenColor,
+                    iconPath: AssetsIcon.paidBreakIcon,
                   ),
                 ),
                 SizedBox(width: 5.w),
@@ -129,6 +129,7 @@ class HomeScreen extends StatelessWidget {
                     onTab: () {},
                     breakStatus: AppLocalizations.of(context)?.homeScreenUnPaidBreak ?? '',
                     color: orangeColor,
+                    iconPath: AssetsIcon.coffeeIcon,
                   ),
                 ),
               ],

@@ -34,23 +34,23 @@ class _WorkPlanScreenState extends State<WorkPlanScreen> {
         padding: EdgeInsets.symmetric(horizontal: 10.w),
         child: Column(
           children: [
-            Row(
-              children: [
-                Icon(
-                  Icons.lock_clock,
-                  color: greenColor,
-                  size: 27.w,
-                ),
-                SizedBox(width: 10.w),
-                Text(
-                  '20 hrs 22 mins',
-                  style: CustomTextStyle.kBodyText1.copyWith(
-                    fontSize: 18.sp,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ],
-            ),
+            // Row(
+            //   children: [
+            //     Icon(
+            //       Icons.lock_clock,
+            //       color: greenColor,
+            //       size: 27.w,
+            //     ),
+            //     SizedBox(width: 10.w),
+            //     Text(
+            //       '20 hrs 22 mins',
+            //       style: CustomTextStyle.kBodyText1.copyWith(
+            //         fontSize: 18.sp,
+            //         fontWeight: FontWeight.bold,
+            //       ),
+            //     ),
+            //   ],
+            // ),
             SizedBox(height: 20.h),
             Expanded(
               child: SfCalendar(
