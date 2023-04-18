@@ -7,14 +7,10 @@ import 'package:one_click_time_sheet/view/home/home_screen_components/plus_minus
 class StartEndJobBox extends StatelessWidget {
   final VoidCallback onTab;
   final Color color;
-  final IconData iconData;
-  final String iconPath;
   final String jobStatus;
 
   const StartEndJobBox({
     super.key,
-    required this.iconData,
-    required this.iconPath,
     required this.jobStatus,
     required this.color,
     required this.onTab,
@@ -35,38 +31,18 @@ class StartEndJobBox extends StatelessWidget {
       ),
       child: Column(
         children: [
-          Row(
-            children: [
-              // Icon(
-              //   iconData,
-              //   size: 100.h,
-              // ),
-              SizedBox(
-                height: 80.h,
-                // width: 60.,
-                child: Image.asset(iconPath),
-              ),
-              SizedBox(width: 25.w),
-              // const Spacer(),
-              Column(
-                children: [
-                  Text(
-                    jobStatus,
-                    style: CustomTextStyle.kHeading1,
-                  ),
-                  SizedBox(height: 5.h),
-                  Text(
-                    '8:00',
-                    style: CustomTextStyle.kHeading1,
-                  ),
-                  Text(
-                    'Tuesday, 22,9,2022',
-                    style: CustomTextStyle.kBodyText1,
-                  ),
-                ],
-              ),
-              const Spacer(),
-            ],
+          Text(
+            jobStatus,
+            style: CustomTextStyle.kHeading1,
+          ),
+          SizedBox(height: 5.h),
+          Text(
+            '8:00',
+            style: CustomTextStyle.kHeading1,
+          ),
+          Text(
+            'Tuesday, 22,9,2022',
+            style: CustomTextStyle.kBodyText1,
           ),
           const Spacer(),
           Row(
@@ -86,7 +62,7 @@ class StartEndJobBox extends StatelessWidget {
               ),
             ],
           ),
-          SizedBox(height: 8.h),
+          SizedBox(height: 12.h),
         ],
       ),
     );
