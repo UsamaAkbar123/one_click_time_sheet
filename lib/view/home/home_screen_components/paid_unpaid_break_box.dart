@@ -5,14 +5,14 @@ import 'package:one_click_time_sheet/utills/constants/text_styles.dart';
 import 'package:one_click_time_sheet/view/home/home_screen_components/plus_minus_manual_time_adjust_for_paid_unpaid.dart';
 
 class PaidUnPaidBreakBox extends StatelessWidget {
-  final VoidCallback onTab;
+  final VoidCallback? onTab;
   final String breakStatus;
   final Color color;
   final String iconPath;
 
   const PaidUnPaidBreakBox({
     super.key,
-    required this.onTab,
+     this.onTab,
     required this.breakStatus,
     required this.color,
     required this.iconPath,
