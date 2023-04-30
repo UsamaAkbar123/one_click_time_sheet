@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:intl/intl.dart';
 import 'package:one_click_time_sheet/utills/constants/colors.dart';
 import 'package:one_click_time_sheet/utills/constants/text_styles.dart';
 import 'package:one_click_time_sheet/view/home/home_screen_components/plus_minus_manual_time_adjust_for_paid_unpaid.dart';
@@ -9,13 +10,17 @@ class PaidUnPaidBreakBox extends StatelessWidget {
   final String breakStatus;
   final Color color;
   final String iconPath;
+  final DateTime startingDate;
+  final VoidCallback plusMinuteTap;
+  final VoidCallback minusMinuteTap;
+  final VoidCallback manualTimeTap;
 
   const PaidUnPaidBreakBox({
     super.key,
      this.onTab,
     required this.breakStatus,
     required this.color,
-    required this.iconPath,
+    required this.iconPath, required this.plusMinuteTap, required this.minusMinuteTap, required this.manualTimeTap, required this.startingDate,
   });
 
   @override
@@ -58,12 +63,12 @@ class PaidUnPaidBreakBox extends StatelessWidget {
                       ),
                       SizedBox(height: 5.h),
                       Text(
-                        '8:00',
+                        DateFormat('h:mm a').format(startingDate),
                         style:
                             CustomTextStyle.kHeading1.copyWith(fontSize: 16.sp),
                       ),
                       Text(
-                        'Tuesday, 22,9,2022',
+                        DateFormat('EEEE, d, M, y').format(startingDate),
                         style:
                             CustomTextStyle.kBodyText1.copyWith(fontSize: 11.sp),
                       ),
@@ -78,21 +83,21 @@ class PaidUnPaidBreakBox extends StatelessWidget {
                 children: [
                   Expanded(
                     child: PlusMinusManualTimeAdjustmentForPaidUnPaid(
-                      onTab: () {},
+                      onTab: minusMinuteTap,
                       text: '-1 min',
                     ),
                   ),
                   SizedBox(width: 2.w),
                   Expanded(
                     child: PlusMinusManualTimeAdjustmentForPaidUnPaid(
-                      onTab: () {},
+                      onTab: plusMinuteTap,
                       text: '+1 min',
                     ),
                   ),
                   SizedBox(width: 2.w),
                   Expanded(
                     child: PlusMinusManualTimeAdjustmentForPaidUnPaid(
-                      onTab: () {},
+                      onTab: manualTimeTap,
                       text: 'Manual',
                     ),
                   ),

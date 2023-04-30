@@ -1,15 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:hive/hive.dart';
+import 'package:hive_flutter/adapters.dart';
 import 'package:one_click_time_sheet/routes/custom_routes.dart';
 import 'package:one_click_time_sheet/utills/constants/text_styles.dart';
 import 'package:one_click_time_sheet/utills/theme/theme.dart';
 import 'managers/preference_manager.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import 'model/hive_job_history_model.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await PreferenceManager().init();
+  await Hive.initFlutter();
+  Hive.registerAdapter(JobHistoryModelAdapter());
+  Hive.registerAdapter(HistoryElementAdapter());
+  await Hive.openBox('jobHistoryBox');
   CustomTextStyle();
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
       .then((_) {

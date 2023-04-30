@@ -2,8 +2,11 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:hive/hive.dart';
+import 'package:hive_flutter/adapters.dart';
 import 'package:intl/intl.dart';
 import 'package:one_click_time_sheet/generated/assets/icons.dart';
+import 'package:one_click_time_sheet/model/hive_job_history_model.dart';
 import 'package:one_click_time_sheet/model/job_history_model.dart';
 import 'package:one_click_time_sheet/utills/constants/colors.dart';
 import 'package:one_click_time_sheet/utills/constants/text_styles.dart';
@@ -22,14 +25,25 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   //late JobHistoryModel jobHistoryModel;
   DateTime nowDateTime = DateTime.now();
+  final Box box = Hive.box('jobHistoryBox');
+
+  List<JobHistoryModel> jobHistoryData = [];
+
 
   Timer? _timer;
   int _seconds = 0;
-  DateTime? startJobTime;
-  DateTime? endJob;
+  DateTime startJobTime = DateTime.now();
+  DateTime endJob = DateTime.now();
+  DateTime paidBreak = DateTime.now();
+  DateTime unPaidBreak = DateTime.now();
   bool _isRunning = false;
 
-  List<HistoryElement> jobHistory =[];
+  bool isStartJobSelectCustomTime = false;
+  bool isEndJobSelectCustomTime = false;
+  bool isPaidBreakSelectCustomTime = false;
+  bool isUnpaidBreakSelectCustomTime = false;
+
+  List<HistoryElement> jobHistory = [];
 
 
   _startJobTime(){
@@ -70,12 +84,15 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     // jobHistoryModel.id =  DateFormat('EEEE, d, M, y').format(DateTime.now());
     // jobHistoryModel.historyElement = [];
+    if(box.isNotEmpty){
+      List dynamicList = box.get(DateFormat('EEEE, d, M, y').format(DateTime.now()));
+     jobHistoryData = dynamicList.cast<JobHistoryModel>();
+    }
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    print(jobHistory.length);
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -167,36 +184,144 @@ class _HomeScreenState extends State<HomeScreen> {
             StartEndJobBox(
               jobStatus: AppLocalizations.of(context)?.homeScreenStartJob ?? '',
               color: currentIndex == 0 ? greyColor:lightGreenColor,
-              onTab: currentIndex == 0 ? null :  () {
+              plusMinuteTap: (){
+                setState(() {
+                startJobTime = startJobTime.add(const Duration(minutes: 1));
+                isStartJobSelectCustomTime = true;
+                });
+              },
+              minusMinuteTap: (){
+                setState(() {
+                  startJobTime = startJobTime.subtract(const Duration(minutes: 1));
+                  isStartJobSelectCustomTime = true;
+                });
+              },
+              manualTimeTap: () async{
+                TimeOfDay? pickedTime =  await showTimePicker(
+                  initialTime: TimeOfDay.now(),
+                  context: context, //context of current state
+                );
+
+                if(pickedTime != null ){
+                  setState(() {
+                    isStartJobSelectCustomTime = true;
+                    startJobTime = DateTime(
+                      startJobTime.year,
+                      startJobTime.month,
+                      startJobTime.day,
+                      pickedTime.hour,
+                      pickedTime.minute,
+                    );
+                  });
+                }else{
+                  print("Time is not selected");
+                }
+              },
+              onTab: currentIndex == 0 ? null :  () async{
                 currentIndex = 0;
                 setState(() {
-                  startJobTime = DateTime.now();
+                  if(isStartJobSelectCustomTime){
+                    startJobTime = startJobTime;
+                  }
+                  else{
+                    startJobTime = DateTime.now();
+                  }
                 });
                 HistoryElement historyElement = HistoryElement(
-                  time: DateTime.now(),
+                  time: startJobTime,
                   type: "Start job"
                 );
                 jobHistory.add(historyElement);
               },
               time: _seconds,
-              startingDate: startJobTime ?? DateTime.now(),
+              startingDate: startJobTime,
             ),
             SizedBox(height: 8.h),
             StartEndJobBox(
               jobStatus: AppLocalizations.of(context)?.homeScreenEndJob ?? '',
-              startingDate: endJob ?? DateTime.now(),
+              plusMinuteTap: (){
+                setState(() {
+                  endJob = endJob.add(const Duration(minutes: 1));
+                  isEndJobSelectCustomTime = true;
+                });
+              },
+              minusMinuteTap: (){
+                setState(() {
+                  endJob = endJob.subtract(const Duration(minutes: 1));
+                  isEndJobSelectCustomTime = true;
+                });
+              },
+              manualTimeTap: () async{
+                TimeOfDay? pickedTime =  await showTimePicker(
+                  initialTime: TimeOfDay.now(),
+                  context: context, //context of current state
+                );
+
+                if(pickedTime != null ){
+                  setState(() {
+                    isEndJobSelectCustomTime = true;
+                    endJob = DateTime(
+                      endJob.year ,
+                      endJob.month,
+                      endJob.day ,
+                      pickedTime.hour,
+                      pickedTime.minute,
+                    );
+                  });
+                }else{
+                  print("Time is not selected");
+                }
+              },
+              startingDate: endJob,
               color: redColor,
               time: 0,
-              onTab: currentIndex == -1 ? null : () {
+              onTab: currentIndex == -1 ? null : () async{
                 currentIndex = -1;
+
                 setState(() {
-                  endJob = DateTime.now();
+                  if(isEndJobSelectCustomTime){
+                    endJob = endJob;
+                  }
+                  else{
+                    endJob = DateTime.now();
+                  }
                 });
                 HistoryElement historyElement = HistoryElement(
-                    time: DateTime.now(),
+                    time: endJob,
                     type: "End job"
                 );
                 jobHistory.add(historyElement);
+
+                String dateKey = DateFormat('EEEE, d, M, y').format(DateTime.now());
+
+                await Hive.initFlutter();
+                if (!Hive.isAdapterRegistered(1)) {
+                  Hive.registerAdapter(JobHistoryModelAdapter());
+                  Hive.registerAdapter(HistoryElementAdapter());
+                }
+                await Hive.openBox('jobHistoryBox');
+                final Box box = Hive.box('jobHistoryBox');
+
+                JobHistoryModel jobHistoryModel = JobHistoryModel(
+                    id: DateFormat('EEEE, d, M, y').format(DateTime.now()),
+                    historyElement: jobHistory
+                );
+
+                List<JobHistoryModel> jobHistoryList= [];
+                if(box.isNotEmpty){
+                  List dynamicList = box.get(dateKey);
+                  List<JobHistoryModel> boxDataList = dynamicList.cast<JobHistoryModel>();
+                  boxDataList.add(jobHistoryModel);
+                  jobHistoryList = boxDataList;
+                }
+                else{
+                  jobHistoryList.add(jobHistoryModel);
+                }
+
+                box.put(dateKey,jobHistoryList).then((value) {
+                  jobHistory = [];
+                });
+
               },
             ),
             SizedBox(height: 8.h),
@@ -204,12 +329,52 @@ class _HomeScreenState extends State<HomeScreen> {
               children: [
                 Expanded(
                   child: PaidUnPaidBreakBox(
+                    plusMinuteTap: (){
+                      setState(() {
+                        paidBreak = paidBreak.add(const Duration(minutes: 1));
+                        isPaidBreakSelectCustomTime = true;
+                      });
+                    },
+                    minusMinuteTap: (){
+                      setState(() {
+                        paidBreak = paidBreak.subtract(const Duration(minutes: 1));
+                        isPaidBreakSelectCustomTime = true;
+                      });
+                    },
+                    manualTimeTap: () async{
+                      TimeOfDay? pickedTime =  await showTimePicker(
+                        initialTime: TimeOfDay.now(),
+                        context: context, //context of current state
+                      );
+
+                      if(pickedTime != null ){
+                        setState(() {
+                          isPaidBreakSelectCustomTime = true;
+                          paidBreak = DateTime(
+                            paidBreak.year,
+                            paidBreak.month,
+                            paidBreak.day,
+                            pickedTime.hour,
+                            pickedTime.minute,
+                          );
+                        });
+                      }else{
+                        print("Time is not selected");
+                      }
+                    },
+                    startingDate: paidBreak,
                     onTab: currentIndex == 2 ? null : () {
                       currentIndex = 2;
                       setState(() {
+                        if(isPaidBreakSelectCustomTime){
+                          paidBreak = paidBreak;
+                        }
+                        else{
+                          paidBreak = DateTime.now();
+                        }
                       });
                       HistoryElement historyElement = HistoryElement(
-                          time: DateTime.now(),
+                          time: paidBreak,
                           type: "Paid break"
                       );
                       jobHistory.add(historyElement);
@@ -222,12 +387,52 @@ class _HomeScreenState extends State<HomeScreen> {
                 SizedBox(width: 5.w),
                 Expanded(
                   child: PaidUnPaidBreakBox(
+                    startingDate: unPaidBreak,
+                    plusMinuteTap: (){
+                      setState(() {
+                        unPaidBreak = unPaidBreak.add(const Duration(minutes: 1));
+                        isUnpaidBreakSelectCustomTime = true;
+                      });
+                    },
+                    minusMinuteTap: (){
+                      setState(() {
+                        unPaidBreak = unPaidBreak.subtract(const Duration(minutes: 1));
+                        isUnpaidBreakSelectCustomTime = true;
+                      });
+                    },
+                    manualTimeTap: () async{
+                      TimeOfDay? pickedTime =  await showTimePicker(
+                        initialTime: TimeOfDay.now(),
+                        context: context, //context of current state
+                      );
+
+                      if(pickedTime != null ){
+                        setState(() {
+                          isUnpaidBreakSelectCustomTime = true;
+                          unPaidBreak = DateTime(
+                            unPaidBreak.year,
+                            unPaidBreak.month,
+                            unPaidBreak.day,
+                            pickedTime.hour,
+                            pickedTime.minute,
+                          );
+                        });
+                      }else{
+                        print("Time is not selected");
+                      }
+                    },
                     onTab: currentIndex == 3 ? null : () {
                       currentIndex = 3;
                       setState(() {
+                        if(isUnpaidBreakSelectCustomTime){
+                          unPaidBreak = unPaidBreak;
+                        }
+                        else{
+                          unPaidBreak = DateTime.now();
+                        }
                       });
                       HistoryElement historyElement = HistoryElement(
-                          time: DateTime.now(),
+                          time: unPaidBreak,
                           type: "Unpaid break"
                       );
                       jobHistory.add(historyElement);
@@ -251,16 +456,16 @@ class _HomeScreenState extends State<HomeScreen> {
                 fontWeight: FontWeight.w600
               ),),
             SizedBox(height: 10.h),
-            jobHistory.isNotEmpty ? ListView.builder(
-              itemCount: jobHistory.length,
+            jobHistoryData.isNotEmpty ? ListView.builder(
+              itemCount: jobHistoryData.last.historyElement?.length,
                 physics: const NeverScrollableScrollPhysics(),
                 padding: EdgeInsets.zero,
                 shrinkWrap: true,
                 itemBuilder: (context,index){
-                  return Text("${DateFormat('d.M.y').format(jobHistory[index].time ?? DateTime.now())}-"
-                      "${DateFormat('h:mm a').format(jobHistory[index].time ?? DateTime.now())}-${jobHistory[index].type}",
+                  return Text("${DateFormat('d.M.y').format(jobHistoryData.last.historyElement?[index].time ?? DateTime.now())}-"
+                      "${DateFormat('h:mm a').format(jobHistoryData.last.historyElement?[index].time ?? DateTime.now())}-${jobHistoryData.last.historyElement?[index].type}",
                     style: CustomTextStyle.kBodyText1.copyWith(
-                        color: getTextColor(jobHistory[index].type ?? ''),
+                        color: getTextColor(jobHistoryData.last.historyElement?[index].type ?? ''),
                         fontWeight: FontWeight.w400
                     ),
                   );

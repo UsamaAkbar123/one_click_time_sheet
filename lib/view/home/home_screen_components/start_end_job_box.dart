@@ -7,6 +7,9 @@ import 'package:one_click_time_sheet/view/home/home_screen_components/plus_minus
 
 class StartEndJobBox extends StatelessWidget {
   final VoidCallback? onTab;
+  final VoidCallback plusMinuteTap;
+  final VoidCallback minusMinuteTap;
+  final VoidCallback manualTimeTap;
   final Color color;
   final String jobStatus;
   final int time;
@@ -17,7 +20,7 @@ class StartEndJobBox extends StatelessWidget {
     required this.jobStatus,
     required this.color,
      this.onTab,
-    required this.time, required this.startingDate,
+    required this.time, required this.startingDate, required this.plusMinuteTap, required this.minusMinuteTap, required this.manualTimeTap,
   });
 
   @override
@@ -56,15 +59,15 @@ class StartEndJobBox extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 PlusMinusManualTimeAdjustmentForStartEndJob(
-                  onTab: () {},
+                  onTab: minusMinuteTap,
                   text: '-1 min',
                 ),
                 PlusMinusManualTimeAdjustmentForStartEndJob(
-                  onTab: () {},
+                  onTab: plusMinuteTap,
                   text: '+1 min',
                 ),
                 PlusMinusManualTimeAdjustmentForStartEndJob(
-                  onTab: () {},
+                  onTab: manualTimeTap,
                   text: 'Manual',
                 ),
               ],
