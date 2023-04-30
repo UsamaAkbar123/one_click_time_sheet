@@ -2,8 +2,11 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:hive/hive.dart';
+import 'package:hive_flutter/adapters.dart';
 import 'package:intl/intl.dart';
 import 'package:one_click_time_sheet/generated/assets/icons.dart';
+import 'package:one_click_time_sheet/model/hive_job_history_model.dart';
 import 'package:one_click_time_sheet/model/job_history_model.dart';
 import 'package:one_click_time_sheet/utills/constants/colors.dart';
 import 'package:one_click_time_sheet/utills/constants/text_styles.dart';
@@ -22,6 +25,10 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   //late JobHistoryModel jobHistoryModel;
   DateTime nowDateTime = DateTime.now();
+  final Box box = Hive.box('jobHistoryBox');
+
+  List<JobHistoryModel> jobHistoryData = [];
+
 
   Timer? _timer;
   int _seconds = 0;
@@ -36,7 +43,7 @@ class _HomeScreenState extends State<HomeScreen> {
   bool isPaidBreakSelectCustomTime = false;
   bool isUnpaidBreakSelectCustomTime = false;
 
-  List<HistoryElement> jobHistory =[];
+  List<HistoryElement> jobHistory = [];
 
 
   _startJobTime(){
@@ -77,6 +84,10 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     // jobHistoryModel.id =  DateFormat('EEEE, d, M, y').format(DateTime.now());
     // jobHistoryModel.historyElement = [];
+    if(box.isNotEmpty){
+      List dynamicList = box.get(DateFormat('EEEE, d, M, y').format(DateTime.now()));
+     jobHistoryData = dynamicList.cast<JobHistoryModel>();
+    }
     super.initState();
   }
 
@@ -206,7 +217,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   print("Time is not selected");
                 }
               },
-              onTab: currentIndex == 0 ? null :  () {
+              onTab: currentIndex == 0 ? null :  () async{
                 currentIndex = 0;
                 setState(() {
                   if(isStartJobSelectCustomTime){
@@ -264,8 +275,9 @@ class _HomeScreenState extends State<HomeScreen> {
               startingDate: endJob,
               color: redColor,
               time: 0,
-              onTab: currentIndex == -1 ? null : () {
+              onTab: currentIndex == -1 ? null : () async{
                 currentIndex = -1;
+
                 setState(() {
                   if(isEndJobSelectCustomTime){
                     endJob = endJob;
@@ -279,6 +291,37 @@ class _HomeScreenState extends State<HomeScreen> {
                     type: "End job"
                 );
                 jobHistory.add(historyElement);
+
+                String dateKey = DateFormat('EEEE, d, M, y').format(DateTime.now());
+
+                await Hive.initFlutter();
+                if (!Hive.isAdapterRegistered(1)) {
+                  Hive.registerAdapter(JobHistoryModelAdapter());
+                  Hive.registerAdapter(HistoryElementAdapter());
+                }
+                await Hive.openBox('jobHistoryBox');
+                final Box box = Hive.box('jobHistoryBox');
+
+                JobHistoryModel jobHistoryModel = JobHistoryModel(
+                    id: DateFormat('EEEE, d, M, y').format(DateTime.now()),
+                    historyElement: jobHistory
+                );
+
+                List<JobHistoryModel> jobHistoryList= [];
+                if(box.isNotEmpty){
+                  List dynamicList = box.get(dateKey);
+                  List<JobHistoryModel> boxDataList = dynamicList.cast<JobHistoryModel>();
+                  boxDataList.add(jobHistoryModel);
+                  jobHistoryList = boxDataList;
+                }
+                else{
+                  jobHistoryList.add(jobHistoryModel);
+                }
+
+                box.put(dateKey,jobHistoryList).then((value) {
+                  jobHistory = [];
+                });
+
               },
             ),
             SizedBox(height: 8.h),
@@ -413,16 +456,16 @@ class _HomeScreenState extends State<HomeScreen> {
                 fontWeight: FontWeight.w600
               ),),
             SizedBox(height: 10.h),
-            jobHistory.isNotEmpty ? ListView.builder(
-              itemCount: jobHistory.length,
+            jobHistoryData.isNotEmpty ? ListView.builder(
+              itemCount: jobHistoryData.last.historyElement?.length,
                 physics: const NeverScrollableScrollPhysics(),
                 padding: EdgeInsets.zero,
                 shrinkWrap: true,
                 itemBuilder: (context,index){
-                  return Text("${DateFormat('d.M.y').format(jobHistory[index].time ?? DateTime.now())}-"
-                      "${DateFormat('h:mm a').format(jobHistory[index].time ?? DateTime.now())}-${jobHistory[index].type}",
+                  return Text("${DateFormat('d.M.y').format(jobHistoryData.last.historyElement?[index].time ?? DateTime.now())}-"
+                      "${DateFormat('h:mm a').format(jobHistoryData.last.historyElement?[index].time ?? DateTime.now())}-${jobHistoryData.last.historyElement?[index].type}",
                     style: CustomTextStyle.kBodyText1.copyWith(
-                        color: getTextColor(jobHistory[index].type ?? ''),
+                        color: getTextColor(jobHistoryData.last.historyElement?[index].type ?? ''),
                         fontWeight: FontWeight.w400
                     ),
                   );
