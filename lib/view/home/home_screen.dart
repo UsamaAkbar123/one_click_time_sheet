@@ -311,6 +311,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 if(box.isNotEmpty){
                   List dynamicList = box.get(dateKey);
                   List<JobHistoryModel> boxDataList = dynamicList.cast<JobHistoryModel>();
+                  jobHistoryData = boxDataList;
                   boxDataList.add(jobHistoryModel);
                   jobHistoryList = boxDataList;
                 }
