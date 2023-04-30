@@ -25,9 +25,16 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Timer? _timer;
   int _seconds = 0;
-  DateTime? startJobTime;
-  DateTime? endJob;
+  DateTime startJobTime = DateTime.now();
+  DateTime endJob = DateTime.now();
+  DateTime paidBreak = DateTime.now();
+  DateTime unPaidBreak = DateTime.now();
   bool _isRunning = false;
+
+  bool isStartJobSelectCustomTime = false;
+  bool isEndJobSelectCustomTime = false;
+  bool isPaidBreakSelectCustomTime = false;
+  bool isUnpaidBreakSelectCustomTime = false;
 
   List<HistoryElement> jobHistory =[];
 
@@ -75,7 +82,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    print(jobHistory.length);
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -167,33 +173,109 @@ class _HomeScreenState extends State<HomeScreen> {
             StartEndJobBox(
               jobStatus: AppLocalizations.of(context)?.homeScreenStartJob ?? '',
               color: currentIndex == 0 ? greyColor:lightGreenColor,
+              plusMinuteTap: (){
+                setState(() {
+                startJobTime = startJobTime.add(const Duration(minutes: 1));
+                isStartJobSelectCustomTime = true;
+                });
+              },
+              minusMinuteTap: (){
+                setState(() {
+                  startJobTime = startJobTime.subtract(const Duration(minutes: 1));
+                  isStartJobSelectCustomTime = true;
+                });
+              },
+              manualTimeTap: () async{
+                TimeOfDay? pickedTime =  await showTimePicker(
+                  initialTime: TimeOfDay.now(),
+                  context: context, //context of current state
+                );
+
+                if(pickedTime != null ){
+                  setState(() {
+                    isStartJobSelectCustomTime = true;
+                    startJobTime = DateTime(
+                      startJobTime.year,
+                      startJobTime.month,
+                      startJobTime.day,
+                      pickedTime.hour,
+                      pickedTime.minute,
+                    );
+                  });
+                }else{
+                  print("Time is not selected");
+                }
+              },
               onTab: currentIndex == 0 ? null :  () {
                 currentIndex = 0;
                 setState(() {
-                  startJobTime = DateTime.now();
+                  if(isStartJobSelectCustomTime){
+                    startJobTime = startJobTime;
+                  }
+                  else{
+                    startJobTime = DateTime.now();
+                  }
                 });
                 HistoryElement historyElement = HistoryElement(
-                  time: DateTime.now(),
+                  time: startJobTime,
                   type: "Start job"
                 );
                 jobHistory.add(historyElement);
               },
               time: _seconds,
-              startingDate: startJobTime ?? DateTime.now(),
+              startingDate: startJobTime,
             ),
             SizedBox(height: 8.h),
             StartEndJobBox(
               jobStatus: AppLocalizations.of(context)?.homeScreenEndJob ?? '',
-              startingDate: endJob ?? DateTime.now(),
+              plusMinuteTap: (){
+                setState(() {
+                  endJob = endJob.add(const Duration(minutes: 1));
+                  isEndJobSelectCustomTime = true;
+                });
+              },
+              minusMinuteTap: (){
+                setState(() {
+                  endJob = endJob.subtract(const Duration(minutes: 1));
+                  isEndJobSelectCustomTime = true;
+                });
+              },
+              manualTimeTap: () async{
+                TimeOfDay? pickedTime =  await showTimePicker(
+                  initialTime: TimeOfDay.now(),
+                  context: context, //context of current state
+                );
+
+                if(pickedTime != null ){
+                  setState(() {
+                    isEndJobSelectCustomTime = true;
+                    endJob = DateTime(
+                      endJob.year ,
+                      endJob.month,
+                      endJob.day ,
+                      pickedTime.hour,
+                      pickedTime.minute,
+                    );
+                  });
+                }else{
+                  print("Time is not selected");
+                }
+              },
+              startingDate: endJob,
               color: redColor,
               time: 0,
               onTab: currentIndex == -1 ? null : () {
                 currentIndex = -1;
                 setState(() {
-                  endJob = DateTime.now();
+                  if(isEndJobSelectCustomTime){
+                    endJob = endJob;
+                  }
+                  else{
+                    endJob = DateTime.now();
+                  }
                 });
                 HistoryElement historyElement = HistoryElement(
-                    time: DateTime.now(),
+                    time: endJob,
                     type: "End job"
                 );
                 jobHistory.add(historyElement);
@@ -204,12 +286,52 @@ class _HomeScreenState extends State<HomeScreen> {
               children: [
                 Expanded(
                   child: PaidUnPaidBreakBox(
+                    plusMinuteTap: (){
+                      setState(() {
+                        paidBreak = paidBreak.add(const Duration(minutes: 1));
+                        isPaidBreakSelectCustomTime = true;
+                      });
+                    },
+                    minusMinuteTap: (){
+                      setState(() {
+                        paidBreak = paidBreak.subtract(const Duration(minutes: 1));
+                        isPaidBreakSelectCustomTime = true;
+                      });
+                    },
+                    manualTimeTap: () async{
+                      TimeOfDay? pickedTime =  await showTimePicker(
+                        initialTime: TimeOfDay.now(),
+                        context: context, //context of current state
+                      );
+
+                      if(pickedTime != null ){
+                        setState(() {
+                          isPaidBreakSelectCustomTime = true;
+                          paidBreak = DateTime(
+                            paidBreak.year,
+                            paidBreak.month,
+                            paidBreak.day,
+                            pickedTime.hour,
+                            pickedTime.minute,
+                          );
+                        });
+                      }else{
+                        print("Time is not selected");
+                      }
+                    },
+                    startingDate: paidBreak,
                     onTab: currentIndex == 2 ? null : () {
                       currentIndex = 2;
                       setState(() {
+                        if(isPaidBreakSelectCustomTime){
+                          paidBreak = paidBreak;
+                        }
+                        else{
+                          paidBreak = DateTime.now();
+                        }
                       });
                       HistoryElement historyElement = HistoryElement(
-                          time: DateTime.now(),
+                          time: paidBreak,
                           type: "Paid break"
                       );
                       jobHistory.add(historyElement);
@@ -222,12 +344,52 @@ class _HomeScreenState extends State<HomeScreen> {
                 SizedBox(width: 5.w),
                 Expanded(
                   child: PaidUnPaidBreakBox(
+                    startingDate: unPaidBreak,
+                    plusMinuteTap: (){
+                      setState(() {
+                        unPaidBreak = unPaidBreak.add(const Duration(minutes: 1));
+                        isUnpaidBreakSelectCustomTime = true;
+                      });
+                    },
+                    minusMinuteTap: (){
+                      setState(() {
+                        unPaidBreak = unPaidBreak.subtract(const Duration(minutes: 1));
+                        isUnpaidBreakSelectCustomTime = true;
+                      });
+                    },
+                    manualTimeTap: () async{
+                      TimeOfDay? pickedTime =  await showTimePicker(
+                        initialTime: TimeOfDay.now(),
+                        context: context, //context of current state
+                      );
+
+                      if(pickedTime != null ){
+                        setState(() {
+                          isUnpaidBreakSelectCustomTime = true;
+                          unPaidBreak = DateTime(
+                            unPaidBreak.year,
+                            unPaidBreak.month,
+                            unPaidBreak.day,
+                            pickedTime.hour,
+                            pickedTime.minute,
+                          );
+                        });
+                      }else{
+                        print("Time is not selected");
+                      }
+                    },
                     onTab: currentIndex == 3 ? null : () {
                       currentIndex = 3;
                       setState(() {
+                        if(isUnpaidBreakSelectCustomTime){
+                          unPaidBreak = unPaidBreak;
+                        }
+                        else{
+                          unPaidBreak = DateTime.now();
+                        }
                       });
                       HistoryElement historyElement = HistoryElement(
-                          time: DateTime.now(),
+                          time: unPaidBreak,
                           type: "Unpaid break"
                       );
                       jobHistory.add(historyElement);
