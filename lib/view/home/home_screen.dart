@@ -85,8 +85,10 @@ class _HomeScreenState extends State<HomeScreen> {
     // jobHistoryModel.id =  DateFormat('EEEE, d, M, y').format(DateTime.now());
     // jobHistoryModel.historyElement = [];
     if(box.isNotEmpty){
-      List dynamicList = box.get(DateFormat('EEEE, d, M, y').format(DateTime.now()));
-     jobHistoryData = dynamicList.cast<JobHistoryModel>();
+      List? dynamicList = box.get(DateFormat('EEEE, d, M, y').format(DateTime.now()));
+      if(dynamicList != null){
+        jobHistoryData = dynamicList.cast<JobHistoryModel>();
+      }
     }
     super.initState();
   }
@@ -309,14 +311,16 @@ class _HomeScreenState extends State<HomeScreen> {
 
                 List<JobHistoryModel> jobHistoryList= [];
                 if(box.isNotEmpty){
-                  List dynamicList = box.get(dateKey);
-                  List<JobHistoryModel> boxDataList = dynamicList.cast<JobHistoryModel>();
-                  jobHistoryData = boxDataList;
-                  boxDataList.add(jobHistoryModel);
-                  jobHistoryList = boxDataList;
-                }
-                else{
-                  jobHistoryList.add(jobHistoryModel);
+                  List? dynamicList = box.get(dateKey);
+                  if(dynamicList != null){
+                    List<JobHistoryModel> boxDataList = dynamicList.cast<JobHistoryModel>();
+                    jobHistoryData = boxDataList;
+                    boxDataList.add(jobHistoryModel);
+                    jobHistoryList = boxDataList;
+                  }
+                  else{
+                    jobHistoryList.add(jobHistoryModel);
+                  }
                 }
 
                 box.put(dateKey,jobHistoryList).then((value) {
