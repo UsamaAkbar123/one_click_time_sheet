@@ -1,18 +1,16 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:hive/hive.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:intl/intl.dart';
 import 'package:one_click_time_sheet/generated/assets/icons.dart';
 import 'package:one_click_time_sheet/model/hive_job_history_model.dart';
-import 'package:one_click_time_sheet/model/job_history_model.dart';
 import 'package:one_click_time_sheet/utills/constants/colors.dart';
 import 'package:one_click_time_sheet/utills/constants/text_styles.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:one_click_time_sheet/view/home/home_screen_components/custom_work_plan_time.dart';
 import 'package:one_click_time_sheet/view/home/home_screen_components/paid_unpaid_break_box.dart';
+import 'package:one_click_time_sheet/view/home/home_screen_components/refresh_time_button_widget.dart';
 import 'package:one_click_time_sheet/view/home/home_screen_components/start_end_job_box.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -23,7 +21,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  //late JobHistoryModel jobHistoryModel;
   DateTime nowDateTime = DateTime.now();
   final Box box = Hive.box('jobHistoryBox');
 
@@ -469,51 +466,3 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
-class RefreshTimeWidget extends StatelessWidget {
-  final VoidCallback onTab;
-
-  const RefreshTimeWidget({
-    super.key,
-    required this.onTab,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTab,
-      child: Container(
-        height: 50.h,
-        width: double.infinity,
-        decoration: BoxDecoration(
-          color: blueColor,
-          border: Border.all(
-            color: blackColor,
-          ),
-        ),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            // const Spacer(),
-            Icon(
-              Icons.refresh,
-              color: blackColor,
-              size: 40.h,
-            ),
-            SizedBox(width: 2.w),
-            Padding(
-              padding: const EdgeInsets.only(bottom: 8.0),
-              child: Text(
-                AppLocalizations.of(context)?.homeScreenRefreshTime ?? '',
-                style: CustomTextStyle.kBodyText1.copyWith(
-                  fontSize: 22.sp,
-                  color: whiteColor,
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
