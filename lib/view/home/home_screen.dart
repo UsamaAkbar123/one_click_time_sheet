@@ -12,6 +12,7 @@ import 'package:one_click_time_sheet/view/home/home_screen_components/custom_wor
 import 'package:one_click_time_sheet/view/home/home_screen_components/paid_unpaid_break_box.dart';
 import 'package:one_click_time_sheet/view/home/home_screen_components/refresh_time_button_widget.dart';
 import 'package:one_click_time_sheet/view/home/home_screen_components/start_end_job_box.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -73,19 +74,7 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  @override
-  void initState() {
-    // jobHistoryModel.id =  DateFormat('EEEE, d, M, y').format(DateTime.now());
-    // jobHistoryModel.historyElement = [];
-    if (box.isNotEmpty) {
-      List? dynamicList =
-          box.get(DateFormat('EEEE, d, M, y').format(DateTime.now()));
-      if (dynamicList != null) {
-        jobHistoryData = dynamicList.cast<JobHistoryModel>();
-      }
-    }
-    super.initState();
-  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -103,7 +92,6 @@ class _HomeScreenState extends State<HomeScreen> {
         child: ListView(
           children: [
             SizedBox(height: 10.h),
-
             /// future work plan widget
             Container(
               height: 50.h,
@@ -432,29 +420,59 @@ class _HomeScreenState extends State<HomeScreen> {
               style: CustomTextStyle.kHeading2,
             ),
             SizedBox(height: 20.h),
-            Text(
-              "TODAY - ${DateFormat('EEEE, d, M, y').format(DateTime.now())}",
-              style: CustomTextStyle.kBodyText1
-                  .copyWith(color: blueColor, fontWeight: FontWeight.w600),
-            ),
             SizedBox(height: 10.h),
-            jobHistoryData.isNotEmpty
-                ? ListView.builder(
-                    itemCount: jobHistoryData.last.historyElement?.length,
-                    physics: const NeverScrollableScrollPhysics(),
-                    padding: EdgeInsets.zero,
-                    shrinkWrap: true,
-                    itemBuilder: (context, index) {
-                      return Text(
-                        "${DateFormat('d.M.y').format(jobHistoryData.last.historyElement?[index].time ?? DateTime.now())}-"
-                        "${DateFormat('h:mm a').format(jobHistoryData.last.historyElement?[index].time ?? DateTime.now())}-${jobHistoryData.last.historyElement?[index].type}",
-                        style: CustomTextStyle.kBodyText1.copyWith(
-                            color: getTextColor(jobHistoryData
-                                    .last.historyElement?[index].type ??
-                                ''),
-                            fontWeight: FontWeight.w400),
-                      );
-                    })
+            box.isNotEmpty
+                ? ValueListenableBuilder(
+                valueListenable: box.listenable(),
+                  builder: (context, Box box, widget) {
+                    return ListView.builder(
+                        itemCount: box.length,
+                        physics: const NeverScrollableScrollPhysics(),
+                        padding: EdgeInsets.zero,
+                        shrinkWrap: true,
+                        itemBuilder: (context, i) {
+                          List<JobHistoryModel> jobList = box.getAt(i).cast<JobHistoryModel>();
+                          String dataKey = box.keyAt(i);
+                          return Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                dataKey,
+                                style: CustomTextStyle.kBodyText1
+                                    .copyWith(color: blueColor, fontWeight: FontWeight.w600),
+                              ),
+                              ListView.builder(
+                                  itemBuilder: (context,j){
+                                    return Padding(
+                                      padding:  EdgeInsets.symmetric(vertical: 15.h),
+                                      child: ListView.builder(
+                                          itemBuilder: (context,k){
+                                            return Text(
+                                              "${DateFormat('d.M.y').format(jobList[j].historyElement?[k].time ?? DateTime.now())}-"
+                                                  "${DateFormat('h:mm a').format(jobList[j].historyElement?[k].time ?? DateTime.now())}-${jobList[j].historyElement?[k].type}",
+                                              style: CustomTextStyle.kBodyText1.copyWith(
+                                                  color: getTextColor(jobList[j].historyElement?[k].type ??
+                                                      ''),
+                                                  fontWeight: FontWeight.w400),
+                                            );
+                                          },
+                                        itemCount: jobList[j].historyElement?.length,
+                                        physics: const NeverScrollableScrollPhysics(),
+                                        padding: EdgeInsets.zero,
+                                        shrinkWrap: true,
+                                      ),
+                                    );
+                                  },
+                                itemCount: jobList.length,
+                                physics: const NeverScrollableScrollPhysics(),
+                                padding: EdgeInsets.zero,
+                                shrinkWrap: true,
+                              )
+                            ],
+                          );
+                        });
+                  }
+                )
                 : const Center(
                     child: Text("No history found"),
                   ),
