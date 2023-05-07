@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/adapters.dart';
+import 'package:intl/intl.dart';
 import 'package:one_click_time_sheet/model/hive_job_history_model.dart';
 import 'package:one_click_time_sheet/utills/constants/colors.dart';
 import 'package:one_click_time_sheet/utills/constants/text_styles.dart';
@@ -176,7 +177,6 @@ class _ReportScreenState extends State<ReportScreen> {
                           return Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-
                               SizedBox(height: 13.h),
                               Text(
                                 id,
@@ -192,150 +192,25 @@ class _ReportScreenState extends State<ReportScreen> {
                                       const HeaderDataOfTable(),
                                       ListView.builder(
                                         itemBuilder: (context, k) {
-                                          return SizedBox(
-                                            height: 30.h,
-                                            width: double.infinity,
-                                            child: Row(
-                                              children: [
-                                                /// Job type
-                                                Container(
-                                                  width: 50.w,
-                                                  alignment: Alignment.center,
-                                                  decoration: BoxDecoration(
-                                                    color: whiteColor,
-                                                    border: Border.all(
-                                                      color: Colors.grey,
-                                                    ),
-                                                  ),
-                                                  padding: EdgeInsets.only(
-                                                      left: 3.w),
-                                                  child: Text(
-                                                   k == 0 ? 'Work' : 'Paid Break',
-                                                    style: CustomTextStyle
-                                                        .kBodyText2,
-                                                  ),
-                                                ),
-                                                /// Start
-                                                Container(
-                                                  width: 50.w,
-                                                  alignment: Alignment.center,
-                                                  decoration: BoxDecoration(
-                                                    color: whiteColor,
-                                                    border: Border.all(
-                                                      color: Colors.grey,
-                                                    ),
-                                                  ),
-                                                  padding: EdgeInsets.symmetric(
-                                                      horizontal: 5.h),
-                                                  child: Text('8:00',
-                                                      style: CustomTextStyle
-                                                          .kBodyText2),
-                                                ),
-                                                /// End
-                                                Container(
-                                                  width: 50.w,
-                                                  alignment: Alignment.center,
-                                                  decoration: BoxDecoration(
-                                                    color: whiteColor,
-                                                    border: Border.all(
-                                                      color: Colors.grey,
-                                                    ),
-                                                  ),
-                                                  padding: EdgeInsets.symmetric(
-                                                      horizontal: 5.h),
-                                                  child: Text(
-                                                    '10:00',
-                                                    style: CustomTextStyle
-                                                        .kBodyText2,
-                                                  ),
-                                                ),
-                                                /// Difference
-                                                Expanded(
-                                                  child: Container(
-                                                    width: 50.w,
-                                                    alignment: Alignment.center,
-                                                    decoration: BoxDecoration(
-                                                      color: whiteColor,
-                                                      border: Border.all(
-                                                        color: Colors.grey,
-                                                      ),
-                                                    ),
-                                                    padding:
-                                                        EdgeInsets.symmetric(
-                                                            horizontal: 5.h),
-                                                    child: Text(
-                                                      '2:00',
-                                                      style: CustomTextStyle
-                                                          .kBodyText2,
-                                                    ),
-                                                  ),
-                                                ),
-                                                /// Considered
-                                                Expanded(
-                                                  child: Container(
-                                                    width: 50.w,
-                                                    alignment: Alignment.center,
-                                                    decoration: BoxDecoration(
-                                                      color: whiteColor,
-                                                      border: Border.all(
-                                                        color: Colors.grey,
-                                                      ),
-                                                    ),
-                                                    padding:
-                                                        EdgeInsets.symmetric(
-                                                            horizontal: 5.h),
-                                                    child: Text(
-                                                      '2:00',
-                                                      style: CustomTextStyle
-                                                          .kBodyText2,
-                                                    ),
-                                                  ),
-                                                ),
-                                                /// Action
-                                                Container(
-                                                  width: 50.w,
-                                                  alignment: Alignment.center,
-                                                  decoration: BoxDecoration(
-                                                    border: Border.all(
-                                                      color: Colors.grey,
-                                                    ),
-                                                  ),
-                                                  padding: EdgeInsets.symmetric(
-                                                      horizontal: 5.h),
-                                                  child: Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .spaceAround,
-                                                    children: [
-                                                      GestureDetector(
-                                                        onTap: () {
-                                                          setState(() {});
-                                                        },
-                                                        child: Icon(
-                                                          Icons.cancel_outlined,
-                                                          color: redColor,
-                                                          size: 14.h,
-                                                        ),
-                                                      ),
-                                                      Container(
-                                                          color: Colors.grey,
-                                                          width: 1),
-                                                      GestureDetector(
-                                                        onTap: () {
-                                                          setState(() {});
-                                                        },
-                                                        child: Icon(
-                                                          Icons.edit,
-                                                          color:
-                                                              lightGreenColor,
-                                                          size: 14.h,
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
+                                          String ? firstRowStartTime;
+                                          String ?firstRowEndTime;
+                                          String ? firstRowConsidered;
+                                          String ?firstRowDifference;
+                                          String startTime = '';
+                                          String endTime = '';
+                                          String difference = '';
+                                          String consider = '';
+
+                                          print(jobList[j].historyElement!.length);
+
+
+                                          
+                                          return TableMetaDataWidget(
+                                            jobType: jobList[j].historyElement?[k].type ?? '',
+                                            startTime: DateFormat('h:mm a').format(jobList[j].historyElement?[k].time ?? DateTime.now()) ,
+                                            endTime: DateFormat('h:mm a').format(jobList[j].historyElement?[k].time ?? DateTime.now()) ,
+                                            difference: '2:00',
+                                            consider: '2:00',
                                           );
                                         },
                                         itemCount:
@@ -355,7 +230,6 @@ class _ReportScreenState extends State<ReportScreen> {
                                 padding: EdgeInsets.zero,
                                 shrinkWrap: true,
                               ),
-
                             ],
                           );
                         },
@@ -364,269 +238,6 @@ class _ReportScreenState extends State<ReportScreen> {
                 : const Center(
                     child: Text("No history found"),
                   ),
-            // for (int i = 0; i < listItems.length; i++)
-            //   Padding(
-            //     padding: EdgeInsets.only(bottom: 10.h),
-            //     child: Column(
-            //       crossAxisAlignment: CrossAxisAlignment.start,
-            //       children: [
-            //         Text(
-            //           listItems[i]['date'],
-            //           style: CustomTextStyle.kBodyText1.copyWith(
-            //             fontWeight: FontWeight.bold,
-            //           ),
-            //         ),
-            //         SizedBox(height: 2.h),
-            //         SizedBox(
-            //           height: 30.h,
-            //           width: double.infinity,
-            //           child: Row(
-            //             children: [
-            //               Container(
-            //                 width: 50.w,
-            //                 alignment: Alignment.center,
-            //                 decoration: BoxDecoration(
-            //                   color: whiteColor,
-            //                   border: Border.all(
-            //                     color: Colors.grey,
-            //                   ),
-            //                 ),
-            //                 padding: EdgeInsets.symmetric(horizontal: 5.w),
-            //                 child: Text(
-            //                   // 'sr_no',
-            //                   '',
-            //                   style: CustomTextStyle.kBodyText2.copyWith(
-            //                     fontWeight: FontWeight.bold,
-            //                   ),
-            //                 ),
-            //               ),
-            //               Container(
-            //                 width: 50.w,
-            //                 alignment: Alignment.center,
-            //                 decoration: BoxDecoration(
-            //                   color: whiteColor,
-            //                   border: Border.all(
-            //                     color: Colors.grey,
-            //                   ),
-            //                 ),
-            //                 padding: EdgeInsets.symmetric(horizontal: 5.h),
-            //                 child: Text(
-            //                   'Start',
-            //                   style: CustomTextStyle.kBodyText2.copyWith(
-            //                     fontWeight: FontWeight.bold,
-            //                   ),
-            //                 ),
-            //               ),
-            //               Container(
-            //                 width: 50.w,
-            //                 alignment: Alignment.center,
-            //                 decoration: BoxDecoration(
-            //                   color: whiteColor,
-            //                   border: Border.all(
-            //                     color: Colors.grey,
-            //                   ),
-            //                 ),
-            //                 padding: EdgeInsets.symmetric(horizontal: 5.h),
-            //                 child: Text(
-            //                   'End',
-            //                   style: CustomTextStyle.kBodyText2.copyWith(
-            //                     fontWeight: FontWeight.bold,
-            //                   ),
-            //                 ),
-            //               ),
-            //               Expanded(
-            //                 child: Container(
-            //                   width: 50.w,
-            //                   alignment: Alignment.center,
-            //                   decoration: BoxDecoration(
-            //                     color: whiteColor,
-            //                     border: Border.all(
-            //                       color: Colors.grey,
-            //                     ),
-            //                   ),
-            //                   padding: EdgeInsets.symmetric(horizontal: 5.h),
-            //                   child: Text(
-            //                     'Difference',
-            //                     style: CustomTextStyle.kBodyText2.copyWith(
-            //                       fontWeight: FontWeight.bold,
-            //                     ),
-            //                   ),
-            //                 ),
-            //               ),
-            //               Expanded(
-            //                 child: Container(
-            //                   width: 50.w,
-            //                   alignment: Alignment.center,
-            //                   decoration: BoxDecoration(
-            //                     color: whiteColor,
-            //                     border: Border.all(
-            //                       color: Colors.grey,
-            //                     ),
-            //                   ),
-            //                   padding: EdgeInsets.symmetric(horizontal: 5.h),
-            //                   child: Text(
-            //                     'Considered',
-            //                     style: CustomTextStyle.kBodyText2.copyWith(
-            //                       fontWeight: FontWeight.bold,
-            //                     ),
-            //                   ),
-            //                 ),
-            //               ),
-            //               Container(
-            //                 width: 50.w,
-            //                 alignment: Alignment.center,
-            //                 decoration: BoxDecoration(
-            //                   color: whiteColor,
-            //                   border: Border.all(
-            //                     color: Colors.grey,
-            //                   ),
-            //                 ),
-            //                 padding: EdgeInsets.symmetric(horizontal: 5.h),
-            //                 child: Text(
-            //                   'Action',
-            //                   style: CustomTextStyle.kBodyText2.copyWith(
-            //                     fontWeight: FontWeight.bold,
-            //                   ),
-            //                 ),
-            //               ),
-            //             ],
-            //           ),
-            //         ),
-            //
-            //         /// second
-            //         for (int j = 0; j < listItems[i]['titles'].length; j++)
-            //           SizedBox(
-            //             height: 30.h,
-            //             width: double.infinity,
-            //             child: Row(
-            //               children: [
-            //                 Container(
-            //                   width: 50.w,
-            //                   alignment: Alignment.center,
-            //                   decoration: BoxDecoration(
-            //                     color: whiteColor,
-            //                     border: Border.all(
-            //                       color: Colors.grey,
-            //                     ),
-            //                   ),
-            //                   padding: EdgeInsets.only(left: 3.w),
-            //                   child: Text(listItems[i]['titles'][j],
-            //                       style: CustomTextStyle.kBodyText2),
-            //                 ),
-            //                 Container(
-            //                   width: 50.w,
-            //                   alignment: Alignment.center,
-            //                   decoration: BoxDecoration(
-            //                     color: whiteColor,
-            //                     border: Border.all(
-            //                       color: Colors.grey,
-            //                     ),
-            //                   ),
-            //                   padding: EdgeInsets.symmetric(horizontal: 5.h),
-            //                   child: Text(listItems[i]['Start'][j],
-            //                       style: CustomTextStyle.kBodyText2),
-            //                 ),
-            //                 Container(
-            //                   width: 50.w,
-            //                   alignment: Alignment.center,
-            //                   decoration: BoxDecoration(
-            //                     color: whiteColor,
-            //                     border: Border.all(
-            //                       color: Colors.grey,
-            //                     ),
-            //                   ),
-            //                   padding: EdgeInsets.symmetric(horizontal: 5.h),
-            //                   child: Text(
-            //                     listItems[i]['End'][j],
-            //                     style: CustomTextStyle.kBodyText2,
-            //                   ),
-            //                 ),
-            //                 Expanded(
-            //                   child: Container(
-            //                     width: 50.w,
-            //                     alignment: Alignment.center,
-            //                     decoration: BoxDecoration(
-            //                       color: whiteColor,
-            //                       border: Border.all(
-            //                         color: Colors.grey,
-            //                       ),
-            //                     ),
-            //                     padding: EdgeInsets.symmetric(horizontal: 5.h),
-            //                     child: Text(
-            //                       listItems[i]['Difference'][j],
-            //                       style: CustomTextStyle.kBodyText2,
-            //                     ),
-            //                   ),
-            //                 ),
-            //                 Expanded(
-            //                   child: Container(
-            //                     width: 50.w,
-            //                     alignment: Alignment.center,
-            //                     decoration: BoxDecoration(
-            //                       color: whiteColor,
-            //                       border: Border.all(
-            //                         color: Colors.grey,
-            //                       ),
-            //                     ),
-            //                     padding: EdgeInsets.symmetric(horizontal: 5.h),
-            //                     child: Text(
-            //                       listItems[i]['Considered'][j],
-            //                       style: CustomTextStyle.kBodyText2,
-            //                     ),
-            //                   ),
-            //                 ),
-            //                 Container(
-            //                   width: 50.w,
-            //                   alignment: Alignment.center,
-            //                   decoration: BoxDecoration(
-            //                     border: Border.all(
-            //                       color: Colors.grey,
-            //                     ),
-            //                   ),
-            //                   padding: EdgeInsets.symmetric(horizontal: 5.h),
-            //                   child: Row(
-            //                     mainAxisAlignment:
-            //                         MainAxisAlignment.spaceAround,
-            //                     children: [
-            //                       GestureDetector(
-            //                         onTap: () {
-            //                           setState(() {
-            //                             // index = i;
-            //                             // subIndex = j;
-            //                             // showDeleteBlock = true;
-            //                           });
-            //                         },
-            //                         child: Icon(
-            //                           Icons.cancel_outlined,
-            //                           color: redColor,
-            //                           size: 14.h,
-            //                         ),
-            //                       ),
-            //                       Container(color: Colors.grey, width: 1),
-            //                       GestureDetector(
-            //                         onTap: () {
-            //                           setState(() {
-            //                             // index = i;
-            //                             // subIndex = j;
-            //                             // showEditingBox = true;
-            //                           });
-            //                         },
-            //                         child: Icon(
-            //                           Icons.edit,
-            //                           color: lightGreenColor,
-            //                           size: 14.h,
-            //                         ),
-            //                       ),
-            //                     ],
-            //                   ),
-            //                 ),
-            //               ],
-            //             ),
-            //           ),
-            //         sumBlock(),
-            //       ],
-            //     ),
-            //   ),
             SizedBox(height: 15.h),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
@@ -648,6 +259,7 @@ class _ReportScreenState extends State<ReportScreen> {
                 ),
               ],
             ),
+            SizedBox(height: 30.h),
           ],
         ),
       ),
@@ -877,6 +489,154 @@ class HeaderDataOfTable extends StatelessWidget {
               style: CustomTextStyle.kBodyText2.copyWith(
                 fontWeight: FontWeight.bold,
               ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class TableMetaDataWidget extends StatelessWidget {
+  final String jobType;
+  final String startTime;
+  final String endTime;
+  final String difference;
+  final String consider;
+
+  const TableMetaDataWidget({
+    Key? key,
+    required this.jobType,
+    required this.startTime,
+    required this.endTime,
+    required this.difference,
+    required this.consider,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 30.h,
+      width: double.infinity,
+      child: Row(
+        children: [
+          /// Job type
+          Container(
+            width: 50.w,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              color: whiteColor,
+              border: Border.all(
+                color: Colors.grey,
+              ),
+            ),
+            padding: EdgeInsets.only(left: 3.w),
+            child: Text(
+              jobType,
+              style: CustomTextStyle.kBodyText2,
+            ),
+          ),
+
+          /// Start
+          Container(
+            width: 50.w,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              color: whiteColor,
+              border: Border.all(
+                color: Colors.grey,
+              ),
+            ),
+            padding: EdgeInsets.symmetric(horizontal: 5.h),
+            child: Text(startTime, style: CustomTextStyle.kBodyText2),
+          ),
+
+          /// End
+          Container(
+            width: 50.w,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              color: whiteColor,
+              border: Border.all(
+                color: Colors.grey,
+              ),
+            ),
+            padding: EdgeInsets.symmetric(horizontal: 5.h),
+            child: Text(
+              endTime,
+              style: CustomTextStyle.kBodyText2,
+            ),
+          ),
+
+          /// Difference
+          Expanded(
+            child: Container(
+              width: 50.w,
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                color: whiteColor,
+                border: Border.all(
+                  color: Colors.grey,
+                ),
+              ),
+              padding: EdgeInsets.symmetric(horizontal: 5.h),
+              child: Text(
+                difference,
+                style: CustomTextStyle.kBodyText2,
+              ),
+            ),
+          ),
+
+          /// Considered
+          Expanded(
+            child: Container(
+              width: 50.w,
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                color: whiteColor,
+                border: Border.all(
+                  color: Colors.grey,
+                ),
+              ),
+              padding: EdgeInsets.symmetric(horizontal: 5.h),
+              child: Text(
+                consider,
+                style: CustomTextStyle.kBodyText2,
+              ),
+            ),
+          ),
+
+          /// Action
+          Container(
+            width: 50.w,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              border: Border.all(
+                color: Colors.grey,
+              ),
+            ),
+            padding: EdgeInsets.symmetric(horizontal: 5.h),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                GestureDetector(
+                  onTap: () {},
+                  child: Icon(
+                    Icons.cancel_outlined,
+                    color: redColor,
+                    size: 14.h,
+                  ),
+                ),
+                Container(color: Colors.grey, width: 1),
+                GestureDetector(
+                  onTap: () {},
+                  child: Icon(
+                    Icons.edit,
+                    color: lightGreenColor,
+                    size: 14.h,
+                  ),
+                ),
+              ],
             ),
           ),
         ],
