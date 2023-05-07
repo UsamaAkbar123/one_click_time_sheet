@@ -76,6 +76,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
 
 
+
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -257,15 +260,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
                       String dateKey =
                           DateFormat('EEEE, d, M, y').format(DateTime.now());
-
-                      await Hive.initFlutter();
-                      if (!Hive.isAdapterRegistered(1)) {
-                        Hive.registerAdapter(JobHistoryModelAdapter());
-                        Hive.registerAdapter(HistoryElementAdapter());
-                      }
-                      await Hive.openBox('jobHistoryBox');
                       final Box box = Hive.box('jobHistoryBox');
-
                       JobHistoryModel jobHistoryModel = JobHistoryModel(
                           id: DateFormat('EEEE, d, M, y')
                               .format(DateTime.now()),
@@ -280,9 +275,11 @@ class _HomeScreenState extends State<HomeScreen> {
                           jobHistoryData = boxDataList;
                           boxDataList.add(jobHistoryModel);
                           jobHistoryList = boxDataList;
-                        } else {
+                        }else {
                           jobHistoryList.add(jobHistoryModel);
                         }
+                      }else {
+                        jobHistoryList.add(jobHistoryModel);
                       }
 
                       box.put(dateKey, jobHistoryList).then((value) {
