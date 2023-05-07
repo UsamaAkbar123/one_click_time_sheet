@@ -434,6 +434,8 @@ class _ChooseDateFormatWidgetState extends State<ChooseDateFormatWidget> {
   ];
   String selectedDateFormat = '';
 
+  PreferenceManager preferenceManager = PreferenceManager();
+
   @override
   void initState() {
     selectedDateFormat = dateFormatList[0];
@@ -490,6 +492,7 @@ class _ChooseDateFormatWidgetState extends State<ChooseDateFormatWidget> {
               onChanged: (val) {
                 setState(() {
                   selectedDateFormat = val.toString();
+                  preferenceManager.setDateFormat = selectedDateFormat;
                 });
               },
             ),
@@ -508,7 +511,20 @@ class TimeFormatWidget extends StatefulWidget {
 }
 
 class _TimeFormatWidgetState extends State<TimeFormatWidget> {
-  bool isTwelveHourFormatSelected = false;
+  late bool isTwelveHourFormatSelected;
+
+  PreferenceManager preferenceManager = PreferenceManager();
+
+  @override
+  void initState() {
+    if(preferenceManager.getTimeFormat == '' || preferenceManager.getTimeFormat == '12h'){
+      isTwelveHourFormatSelected = true;
+    }else{
+      isTwelveHourFormatSelected = false;
+    }
+
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -527,6 +543,7 @@ class _TimeFormatWidgetState extends State<TimeFormatWidget> {
                 onTap: () {
                   setState(() {
                     isTwelveHourFormatSelected = true;
+                    preferenceManager.setTimeFormat = '12h';
                   });
                 },
                 child: Row(
@@ -566,6 +583,7 @@ class _TimeFormatWidgetState extends State<TimeFormatWidget> {
                 onTap: () {
                   setState(() {
                     isTwelveHourFormatSelected = false;
+                    preferenceManager.setTimeFormat = '24h';
                   });
                 },
                 child: Row(

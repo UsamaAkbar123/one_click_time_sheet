@@ -3,9 +3,11 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class _Keys {
   static const firstTimeLaunch = "first_launch";
+  static const timeFormat = "time_format";
+  static const dateFormat = "date_format";
 }
 
-class PreferenceManager{
+class PreferenceManager {
   /// Shared object which is used. No new instances are created for this class
   static final PreferenceManager _shared = PreferenceManager._internal();
 
@@ -26,14 +28,14 @@ class PreferenceManager{
 
 // Set prefs
   set prefs(SharedPreferences prefs) => {
-    if (_isInitialized)
-      {
-        debugPrint(
-            "🐞 WARNING: SharedPreferences are already initialized. Should only be initialized once.")
-      }
-    else
-      {_prefs = prefs}
-  };
+        if (_isInitialized)
+          {
+            debugPrint(
+                "🐞 WARNING: SharedPreferences are already initialized. Should only be initialized once.")
+          }
+        else
+          {_prefs = prefs}
+      };
 
   /// Initializes `SharedPreferences`. This has to be set after
   /// `WidgetsFlutterBinding.ensureInitialized();`. This ensures
@@ -43,8 +45,16 @@ class PreferenceManager{
     prefs = await SharedPreferences.getInstance();
   }
 
-  bool get getIsFirstLaunch =>
-      _prefs?.getBool(_Keys.firstTimeLaunch) ?? true;
+  bool get getIsFirstLaunch => _prefs?.getBool(_Keys.firstTimeLaunch) ?? true;
+
   set setIsFirstLaunch(bool value) =>
       _prefs?.setBool(_Keys.firstTimeLaunch, value);
+
+  String get getTimeFormat => _prefs?.getString(_Keys.timeFormat) ?? '';
+
+  set setTimeFormat(String value) => _prefs?.setString(_Keys.timeFormat,value) ?? '';
+
+  String get getDateFormat => _prefs?.getString(_Keys.dateFormat) ?? '';
+
+  set setDateFormat(String value) => _prefs?.setString(_Keys.dateFormat,value) ?? '';
 }

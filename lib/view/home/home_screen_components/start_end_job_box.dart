@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
+import 'package:one_click_time_sheet/managers/preference_manager.dart';
 import 'package:one_click_time_sheet/utills/constants/colors.dart';
 import 'package:one_click_time_sheet/utills/constants/text_styles.dart';
 import 'package:one_click_time_sheet/view/home/home_screen_components/plus_minus_manual_time_adjustment_for_start_end_job.dart';
@@ -14,13 +15,18 @@ class StartEndJobBox extends StatelessWidget {
   final String jobStatus;
   final int time;
   final DateTime startingDate;
+  static PreferenceManager preferenceManager = PreferenceManager();
 
   const StartEndJobBox({
     super.key,
     required this.jobStatus,
     required this.color,
-     this.onTab,
-    required this.time, required this.startingDate, required this.plusMinuteTap, required this.minusMinuteTap, required this.manualTimeTap,
+    this.onTab,
+    required this.time,
+    required this.startingDate,
+    required this.plusMinuteTap,
+    required this.minusMinuteTap,
+    required this.manualTimeTap,
   });
 
   @override
@@ -45,15 +51,23 @@ class StartEndJobBox extends StatelessWidget {
               style: CustomTextStyle.kHeading1,
             ),
             SizedBox(height: 5.h),
-            Text(
-              DateFormat('h:mm a').format(startingDate),
-              //"${startingDate.hour}:${startingDate.minute}",
-              style: CustomTextStyle.kHeading1,
-            ),
-            Text(
+            preferenceManager.getTimeFormat == '' ||
+                    preferenceManager.getTimeFormat == '12h'
+                ? Text(
+                    DateFormat.jm().format(startingDate),
+                    style: CustomTextStyle.kHeading1,
+                  )
+                : Text(
+                    DateFormat.Hm().addPattern('a').format(startingDate),
+                    style: CustomTextStyle.kHeading1,
+                  ),
+           preferenceManager.getDateFormat == '' ? Text(
               DateFormat('EEEE, d, M, y').format(startingDate),
               style: CustomTextStyle.kBodyText1,
-            ),
+            ): Text(
+             DateFormat(preferenceManager.getDateFormat).format(startingDate),
+             style: CustomTextStyle.kBodyText1,
+           ),
             const Spacer(),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,

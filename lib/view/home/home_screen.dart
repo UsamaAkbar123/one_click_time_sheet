@@ -40,6 +40,8 @@ class _HomeScreenState extends State<HomeScreen> {
   bool isPaidBreakSelectCustomTime = false;
   bool isUnpaidBreakSelectCustomTime = false;
 
+
+
   List<HistoryElement> jobHistory = [];
 
   _startJobTime() {
