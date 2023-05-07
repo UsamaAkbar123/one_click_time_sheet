@@ -15,6 +15,13 @@ class JobHistoryModel {
      required this.id,
     required this.historyElement,
   });
+
+  factory JobHistoryModel.fromJson(Map<String, dynamic> json) {
+    return JobHistoryModel(
+      id: json['id'] as String,
+      historyElement: json['historyElement'] as List<HistoryElement>,
+    );
+  }
 }
 
 @HiveType(typeId: 2)
