@@ -14,14 +14,22 @@ class SettingScreen extends StatefulWidget {
 }
 
 class _SettingScreenState extends State<SettingScreen> {
+  PreferenceManager preferenceManager = PreferenceManager();
+  String? dateFormat;
+  String? timeFormat;
+
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
   @override
   void initState() {
     PreferenceManager().setIsFirstLaunch = false;
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
         title: Text(
           'Settings',
@@ -38,9 +46,17 @@ class _SettingScreenState extends State<SettingScreen> {
             SizedBox(height: 20.h),
             const ChooseFirstDayOfWeekWidget(),
             SizedBox(height: 20.h),
-            const ChooseDateFormatWidget(),
+            ChooseDateFormatWidget(
+              onDateFormatSelect: (value) {
+                dateFormat = value;
+              },
+            ),
             SizedBox(height: 20.h),
-            const TimeFormatWidget(),
+            TimeFormatWidget(
+              onTimeFormatSelected: (value) {
+                timeFormat = value;
+              },
+            ),
             SizedBox(height: 20.h),
             const StartJobNotificationWidget(),
             SizedBox(height: 20.h),
@@ -50,8 +66,44 @@ class _SettingScreenState extends State<SettingScreen> {
               buttonHeight: 45.h,
               buttonWidth: double.infinity,
               buttonColor: greenColor,
-              onButtonTab: () {},
-              buttonText: AppLocalizations.of(context)?.settingScreenSaveChangesButtonText ?? '',
+              onButtonTab: () {
+                if (dateFormat != null) {
+                  if (preferenceManager.getDateFormat != '') {
+                    preferenceManager.setDateFormat =
+                        dateFormat ?? preferenceManager.getDateFormat;
+                  } else {
+                    preferenceManager.setDateFormat = dateFormat ?? '';
+                  }
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content:const Text('Changes Safe'),
+                      backgroundColor: greenColor,
+                    ),
+                  );
+                } else if (timeFormat != null) {
+                  if(preferenceManager.getTimeFormat != ''){
+                    preferenceManager.setTimeFormat = timeFormat ?? preferenceManager.getTimeFormat;
+                  }else{
+                    preferenceManager.setTimeFormat = timeFormat ?? '';
+                  }
+                  ScaffoldMessenger.of(context).showSnackBar(
+                     SnackBar(
+                      content:const Text('Changes Safe'),
+                      backgroundColor: greenColor,
+                    ),
+                  );
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content:const Text('Nothing is selected'),
+                      backgroundColor: redColor,
+                    ),
+                  );
+                }
+              },
+              buttonText: AppLocalizations.of(context)
+                      ?.settingScreenSaveChangesButtonText ??
+                  '',
             ),
             SizedBox(height: 30.h),
             Row(
@@ -62,7 +114,9 @@ class _SettingScreenState extends State<SettingScreen> {
                     buttonWidth: double.infinity,
                     buttonColor: blueColor,
                     onButtonTab: () {},
-                    buttonText: AppLocalizations.of(context)?.settingScreenRestoreDatabaseButtonText ?? '',
+                    buttonText: AppLocalizations.of(context)
+                            ?.settingScreenRestoreDatabaseButtonText ??
+                        '',
                   ),
                 ),
                 SizedBox(width: 10.w),
@@ -72,7 +126,9 @@ class _SettingScreenState extends State<SettingScreen> {
                     buttonWidth: double.infinity,
                     buttonColor: greenColor,
                     onButtonTab: () {},
-                    buttonText: AppLocalizations.of(context)?.settingScreenBackupDatabaseButtonText ?? '',
+                    buttonText: AppLocalizations.of(context)
+                            ?.settingScreenBackupDatabaseButtonText ??
+                        '',
                   ),
                 ),
               ],
@@ -83,8 +139,6 @@ class _SettingScreenState extends State<SettingScreen> {
     );
   }
 }
-
-
 
 class EndJobNotificationWidget extends StatefulWidget {
   const EndJobNotificationWidget({Key? key}) : super(key: key);
@@ -115,7 +169,7 @@ class _EndJobNotificationWidgetState extends State<EndJobNotificationWidget> {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(
-        AppLocalizations.of(context)?.settingScreenEndJobNotification ?? '',
+          AppLocalizations.of(context)?.settingScreenEndJobNotification ?? '',
           style: CustomTextStyle.kBodyText1.copyWith(fontSize: 16.sp),
         ),
         Container(
@@ -199,7 +253,7 @@ class _StartJobNotificationWidgetState
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(
-        AppLocalizations.of(context)?.settingScreenStartJobNotification ?? '',
+          AppLocalizations.of(context)?.settingScreenStartJobNotification ?? '',
           style: CustomTextStyle.kBodyText1.copyWith(fontSize: 16.sp),
         ),
         Container(
@@ -276,7 +330,7 @@ class _ChooseLanguageWidgetState extends State<ChooseLanguageWidget> {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(
-        AppLocalizations.of(context)?.settingScreenSelectLanguage ?? '',
+          AppLocalizations.of(context)?.settingScreenSelectLanguage ?? '',
           style: CustomTextStyle.kBodyText1.copyWith(fontSize: 16.sp),
         ),
         Container(
@@ -418,7 +472,12 @@ class _ChooseFirstDayOfWeekWidgetState
 }
 
 class ChooseDateFormatWidget extends StatefulWidget {
-  const ChooseDateFormatWidget({Key? key}) : super(key: key);
+  final ValueChanged<String> onDateFormatSelect;
+
+  const ChooseDateFormatWidget({
+    Key? key,
+    required this.onDateFormatSelect,
+  }) : super(key: key);
 
   @override
   State<ChooseDateFormatWidget> createState() => _ChooseDateFormatWidgetState();
@@ -433,8 +492,6 @@ class _ChooseDateFormatWidgetState extends State<ChooseDateFormatWidget> {
     'yyyy/dd/MM',
   ];
   String selectedDateFormat = '';
-
-  PreferenceManager preferenceManager = PreferenceManager();
 
   @override
   void initState() {
@@ -492,7 +549,8 @@ class _ChooseDateFormatWidgetState extends State<ChooseDateFormatWidget> {
               onChanged: (val) {
                 setState(() {
                   selectedDateFormat = val.toString();
-                  preferenceManager.setDateFormat = selectedDateFormat;
+                  widget.onDateFormatSelect(selectedDateFormat);
+                  // preferenceManager.setDateFormat = selectedDateFormat;
                 });
               },
             ),
@@ -504,7 +562,12 @@ class _ChooseDateFormatWidgetState extends State<ChooseDateFormatWidget> {
 }
 
 class TimeFormatWidget extends StatefulWidget {
-  const TimeFormatWidget({Key? key}) : super(key: key);
+  final ValueChanged<String> onTimeFormatSelected;
+
+  const TimeFormatWidget({
+    Key? key,
+    required this.onTimeFormatSelected,
+  }) : super(key: key);
 
   @override
   State<TimeFormatWidget> createState() => _TimeFormatWidgetState();
@@ -517,9 +580,10 @@ class _TimeFormatWidgetState extends State<TimeFormatWidget> {
 
   @override
   void initState() {
-    if(preferenceManager.getTimeFormat == '' || preferenceManager.getTimeFormat == '12h'){
+    if (preferenceManager.getTimeFormat == '' ||
+        preferenceManager.getTimeFormat == '12h') {
       isTwelveHourFormatSelected = true;
-    }else{
+    } else {
       isTwelveHourFormatSelected = false;
     }
 
@@ -543,7 +607,8 @@ class _TimeFormatWidgetState extends State<TimeFormatWidget> {
                 onTap: () {
                   setState(() {
                     isTwelveHourFormatSelected = true;
-                    preferenceManager.setTimeFormat = '12h';
+                    widget.onTimeFormatSelected('12h');
+                    // preferenceManager.setTimeFormat = '12h';
                   });
                 },
                 child: Row(
@@ -583,7 +648,8 @@ class _TimeFormatWidgetState extends State<TimeFormatWidget> {
                 onTap: () {
                   setState(() {
                     isTwelveHourFormatSelected = false;
-                    preferenceManager.setTimeFormat = '24h';
+                    widget.onTimeFormatSelected('24h');
+                    // preferenceManager.setTimeFormat = '24h';
                   });
                 },
                 child: Row(
