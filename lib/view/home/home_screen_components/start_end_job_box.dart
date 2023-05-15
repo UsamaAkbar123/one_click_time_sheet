@@ -52,22 +52,23 @@ class StartEndJobBox extends StatelessWidget {
             ),
             SizedBox(height: 5.h),
             preferenceManager.getTimeFormat == '' ||
-                    preferenceManager.getTimeFormat == '12h'
+                    preferenceManager.getTimeFormat == '24h'
                 ? Text(
-                    DateFormat.jm().format(startingDate),
-                    style: CustomTextStyle.kHeading1,
-                  )
-                : Text(
                     DateFormat.Hm().addPattern('a').format(startingDate),
                     style: CustomTextStyle.kHeading1,
+                  )
+                : Text(DateFormat.jm().format(startingDate),
+                    style: CustomTextStyle.kHeading1),
+            preferenceManager.getDateFormat == ''
+                ? Text(
+                    DateFormat('EEEE, d, M, y').format(startingDate),
+                    style: CustomTextStyle.kBodyText1,
+                  )
+                : Text(
+                    DateFormat(preferenceManager.getDateFormat)
+                        .format(startingDate),
+                    style: CustomTextStyle.kBodyText1,
                   ),
-           preferenceManager.getDateFormat == '' ? Text(
-              DateFormat('EEEE, d, M, y').format(startingDate),
-              style: CustomTextStyle.kBodyText1,
-            ): Text(
-             DateFormat(preferenceManager.getDateFormat).format(startingDate),
-             style: CustomTextStyle.kBodyText1,
-           ),
             const Spacer(),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,

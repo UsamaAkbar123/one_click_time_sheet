@@ -19,11 +19,13 @@ class ChooseDateFormatWidget extends StatefulWidget {
 
 class _ChooseDateFormatWidgetState extends State<ChooseDateFormatWidget> {
   List dateFormatList = [
-    'yyyy-MM-dd',
-    'dd-MM-yyyy',
-    'yyyy-dd-MM',
-    'dd/MM/yyyy',
-    'yyyy/dd/MM',
+    'dd/mm/yyyy',
+    'dd-mm-yyyy',
+    'dd.mm.yyyy',
+    'yyyy/mm/dd',
+    'yyyy-mm-dd',
+    'yyyy.mm.dd',
+    'mm-dd-yyyy',
   ];
   String selectedDateFormat = '';
   PreferenceManager preferenceManager = PreferenceManager();

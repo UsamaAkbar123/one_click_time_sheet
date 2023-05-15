@@ -57,7 +57,7 @@ class PreferenceManager {
   String get getTimeFormat => _prefs?.getString(_Keys.timeFormat) ?? '';
   set setTimeFormat(String value) => _prefs?.setString(_Keys.timeFormat,value) ?? '';
 
-  String get getDateFormat => _prefs?.getString(_Keys.dateFormat) ?? '';
+  String get getDateFormat => _prefs?.getString(_Keys.dateFormat) ?? 'dd/mm/yyyy';
   set setDateFormat(String value) => _prefs?.setString(_Keys.dateFormat,value) ?? '';
 
 

@@ -26,9 +26,9 @@ class _TimeFormatWidgetState extends State<TimeFormatWidget> {
   void initState() {
     if (preferenceManager.getTimeFormat == '' ||
         preferenceManager.getTimeFormat == '12h') {
-      isTwelveHourFormatSelected = true;
-    } else {
       isTwelveHourFormatSelected = false;
+    } else {
+      isTwelveHourFormatSelected = true;
     }
 
     super.initState();
@@ -50,7 +50,7 @@ class _TimeFormatWidgetState extends State<TimeFormatWidget> {
               GestureDetector(
                 onTap: () {
                   setState(() {
-                    isTwelveHourFormatSelected = true;
+                    isTwelveHourFormatSelected = false;
                     widget.onTimeFormatSelected('12h');
                     preferenceManager.setTimeFormat = '12h';
                   });
@@ -73,7 +73,7 @@ class _TimeFormatWidgetState extends State<TimeFormatWidget> {
                         // padding: EdgeInsets.all(10),
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          color: isTwelveHourFormatSelected
+                          color: !isTwelveHourFormatSelected
                               ? greenColor
                               : Colors.transparent,
                         ),
@@ -91,7 +91,7 @@ class _TimeFormatWidgetState extends State<TimeFormatWidget> {
               GestureDetector(
                 onTap: () {
                   setState(() {
-                    isTwelveHourFormatSelected = false;
+                    isTwelveHourFormatSelected = true;
                     widget.onTimeFormatSelected('24h');
                     preferenceManager.setTimeFormat = '24h';
                   });
@@ -114,7 +114,7 @@ class _TimeFormatWidgetState extends State<TimeFormatWidget> {
                         // padding: EdgeInsets.all(10),
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          color: !isTwelveHourFormatSelected
+                          color: isTwelveHourFormatSelected
                               ? greenColor
                               : Colors.transparent,
                         ),
