@@ -151,7 +151,7 @@ class _HomeScreenState extends State<HomeScreen> {
             SizedBox(height: 12.h),
             StartEndJobBox(
               jobStatus: AppLocalizations.of(context)?.homeScreenStartJob ?? '',
-              color: currentIndex == 0 ? greyColor : lightGreenColor,
+              color: currentIndex == 0 ? greyColor.withOpacity(0.3) : lightGreenColor,
               plusMinuteTap: () {
                 setState(() {
                   startJobTime = startJobTime.add(const Duration(minutes: 1));
@@ -345,7 +345,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           },
                     breakStatus:
                         AppLocalizations.of(context)?.homeScreenPaidBreak ?? '',
-                    color: currentIndex == 2 ? greyColor : greenColor,
+                    color: currentIndex == 2 ? greyColor.withOpacity(0.3) : greenColor,
                     iconPath: AssetsIcon.paidBreakIcon,
                   ),
                 ),
@@ -406,7 +406,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     breakStatus:
                         AppLocalizations.of(context)?.homeScreenUnPaidBreak ??
                             '',
-                    color: currentIndex == 3 ? greyColor : orangeColor,
+                    color: currentIndex == 3 ? greyColor.withOpacity(0.3) : orangeColor,
                     iconPath: AssetsIcon.coffeeIcon,
                   ),
                 ),

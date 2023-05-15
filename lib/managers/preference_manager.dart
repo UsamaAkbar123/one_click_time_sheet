@@ -54,11 +54,11 @@ class PreferenceManager {
   set setIsFirstLaunch(bool value) =>
       _prefs?.setBool(_Keys.firstTimeLaunch, value);
 
-  String get getTimeFormat => _prefs?.getString(_Keys.timeFormat) ?? '';
-  set setTimeFormat(String value) => _prefs?.setString(_Keys.timeFormat,value) ?? '';
+  String get getTimeFormat => _prefs?.getString(_Keys.timeFormat) ?? '24h';
+  set setTimeFormat(String value) => _prefs?.setString(_Keys.timeFormat,value) ?? '24h';
 
   String get getDateFormat => _prefs?.getString(_Keys.dateFormat) ?? 'dd/mm/yyyy';
-  set setDateFormat(String value) => _prefs?.setString(_Keys.dateFormat,value) ?? '';
+  set setDateFormat(String value) => _prefs?.setString(_Keys.dateFormat,value) ?? 'dd/mm/yyyy';
 
 
   String get getLanguage => _prefs?.getString(_Keys.language) ?? '';
