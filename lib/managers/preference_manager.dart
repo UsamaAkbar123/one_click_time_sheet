@@ -3,9 +3,15 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class _Keys {
   static const firstTimeLaunch = "first_launch";
+  static const timeFormat = "time_format";
+  static const dateFormat = "date_format";
+  static const language = "language";
+  static const firstDayOfWeek = "first_day_of_week";
+  static const startJobNotification = "start_job_notification";
+  static const endJobNotification = "end_job_notification";
 }
 
-class PreferenceManager{
+class PreferenceManager {
   /// Shared object which is used. No new instances are created for this class
   static final PreferenceManager _shared = PreferenceManager._internal();
 
@@ -26,14 +32,14 @@ class PreferenceManager{
 
 // Set prefs
   set prefs(SharedPreferences prefs) => {
-    if (_isInitialized)
-      {
-        debugPrint(
-            "🐞 WARNING: SharedPreferences are already initialized. Should only be initialized once.")
-      }
-    else
-      {_prefs = prefs}
-  };
+        if (_isInitialized)
+          {
+            debugPrint(
+                "🐞 WARNING: SharedPreferences are already initialized. Should only be initialized once.")
+          }
+        else
+          {_prefs = prefs}
+      };
 
   /// Initializes `SharedPreferences`. This has to be set after
   /// `WidgetsFlutterBinding.ensureInitialized();`. This ensures
@@ -43,8 +49,32 @@ class PreferenceManager{
     prefs = await SharedPreferences.getInstance();
   }
 
-  bool get getIsFirstLaunch =>
-      _prefs?.getBool(_Keys.firstTimeLaunch) ?? true;
+  bool get getIsFirstLaunch => _prefs?.getBool(_Keys.firstTimeLaunch) ?? true;
+
   set setIsFirstLaunch(bool value) =>
       _prefs?.setBool(_Keys.firstTimeLaunch, value);
+
+  String get getTimeFormat => _prefs?.getString(_Keys.timeFormat) ?? '24h';
+  set setTimeFormat(String value) => _prefs?.setString(_Keys.timeFormat,value) ?? '24h';
+
+  String get getDateFormat => _prefs?.getString(_Keys.dateFormat) ?? 'dd/mm/yyyy';
+  set setDateFormat(String value) => _prefs?.setString(_Keys.dateFormat,value) ?? 'dd/mm/yyyy';
+
+
+  String get getLanguage => _prefs?.getString(_Keys.language) ?? '';
+  set setLanguage(String value) => _prefs?.setString(_Keys.language,value) ?? '';
+
+
+  String get getFirstDayOfWeek => _prefs?.getString(_Keys.firstDayOfWeek) ?? '';
+  set setFirstDayOfWeek(String value) => _prefs?.setString(_Keys.firstDayOfWeek,value) ?? '';
+
+
+  String get getStartJobNotification => _prefs?.getString(_Keys.startJobNotification) ?? '';
+  set setStartJobNotification(String value) => _prefs?.setString(_Keys.startJobNotification,value) ?? '';
+
+
+  String get getEndJobNotification => _prefs?.getString(_Keys.endJobNotification) ?? '';
+  set setEndJobNotification(String value) => _prefs?.setString(_Keys.endJobNotification,value) ?? '';
+
+
 }

@@ -160,7 +160,7 @@ abstract class AppLocalizations {
   /// No description provided for @settingScreenDateFormat.
   ///
   /// In en, this message translates to:
-  /// **'Data Format'**
+  /// **'Date Format'**
   String get settingScreenDateFormat;
 
   /// No description provided for @settingScreenTimeFormat.

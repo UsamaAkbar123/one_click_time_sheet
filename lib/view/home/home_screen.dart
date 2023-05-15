@@ -74,11 +74,6 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-
-
-
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -87,7 +82,6 @@ class _HomeScreenState extends State<HomeScreen> {
           AppLocalizations.of(context)?.homeScreenTitle ?? '',
           style: CustomTextStyle.kHeading2,
         ),
-
         centerTitle: true,
       ),
       body: Padding(
@@ -95,6 +89,7 @@ class _HomeScreenState extends State<HomeScreen> {
         child: ListView(
           children: [
             SizedBox(height: 10.h),
+
             /// future work plan widget
             Container(
               height: 50.h,
@@ -150,7 +145,9 @@ class _HomeScreenState extends State<HomeScreen> {
             SizedBox(height: 12.h),
             StartEndJobBox(
               jobStatus: AppLocalizations.of(context)?.homeScreenStartJob ?? '',
-              color: currentIndex == 0 ? greyColor : lightGreenColor,
+              color: currentIndex == 0
+                  ? greyColor.withOpacity(0.3)
+                  : lightGreenColor,
               plusMinuteTap: () {
                 setState(() {
                   startJobTime = startJobTime.add(const Duration(minutes: 1));
@@ -275,10 +272,10 @@ class _HomeScreenState extends State<HomeScreen> {
                           jobHistoryData = boxDataList;
                           boxDataList.add(jobHistoryModel);
                           jobHistoryList = boxDataList;
-                        }else {
+                        } else {
                           jobHistoryList.add(jobHistoryModel);
                         }
-                      }else {
+                      } else {
                         jobHistoryList.add(jobHistoryModel);
                       }
 
@@ -344,7 +341,9 @@ class _HomeScreenState extends State<HomeScreen> {
                           },
                     breakStatus:
                         AppLocalizations.of(context)?.homeScreenPaidBreak ?? '',
-                    color: currentIndex == 2 ? greyColor : greenColor,
+                    color: currentIndex == 2
+                        ? greyColor.withOpacity(0.3)
+                        : greenColor,
                     iconPath: AssetsIcon.paidBreakIcon,
                   ),
                 ),
@@ -405,7 +404,9 @@ class _HomeScreenState extends State<HomeScreen> {
                     breakStatus:
                         AppLocalizations.of(context)?.homeScreenUnPaidBreak ??
                             '',
-                    color: currentIndex == 3 ? greyColor : orangeColor,
+                    color: currentIndex == 3
+                        ? greyColor.withOpacity(0.3)
+                        : orangeColor,
                     iconPath: AssetsIcon.coffeeIcon,
                   ),
                 ),
@@ -420,56 +421,65 @@ class _HomeScreenState extends State<HomeScreen> {
             SizedBox(height: 10.h),
             box.isNotEmpty
                 ? ValueListenableBuilder(
-                valueListenable: box.listenable(),
-                  builder: (context, Box box, widget) {
-                    return ListView.builder(
-                        itemCount: box.length,
-                        physics: const NeverScrollableScrollPhysics(),
-                        padding: EdgeInsets.zero,
-                        shrinkWrap: true,
-                        itemBuilder: (context, i) {
-                          List<JobHistoryModel> jobList = box.getAt(i).cast<JobHistoryModel>();
-                          String dataKey = box.keyAt(i);
-                          return Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                dataKey,
-                                style: CustomTextStyle.kBodyText1
-                                    .copyWith(color: blueColor, fontWeight: FontWeight.w600),
-                              ),
-                              ListView.builder(
-                                  itemBuilder: (context,j){
+                    valueListenable: box.listenable(),
+                    builder: (context, Box box, widget) {
+                      return ListView.builder(
+                          itemCount: box.length,
+                          physics: const NeverScrollableScrollPhysics(),
+                          padding: EdgeInsets.zero,
+                          shrinkWrap: true,
+                          itemBuilder: (context, i) {
+                            List<JobHistoryModel> jobList =
+                                box.getAt(i).cast<JobHistoryModel>();
+                            String dataKey = box.keyAt(i);
+                            return Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  dataKey,
+                                  style: CustomTextStyle.kBodyText1.copyWith(
+                                      color: blueColor,
+                                      fontWeight: FontWeight.w600),
+                                ),
+                                ListView.builder(
+                                  itemBuilder: (context, j) {
                                     return Padding(
-                                      padding:  EdgeInsets.symmetric(vertical: 15.h),
+                                      padding:
+                                          EdgeInsets.symmetric(vertical: 15.h),
                                       child: ListView.builder(
-                                          itemBuilder: (context,k){
-                                            return Text(
-                                              "${DateFormat('d.M.y').format(jobList[j].historyElement?[k].time ?? DateTime.now())}-"
-                                                  "${DateFormat('h:mm a').format(jobList[j].historyElement?[k].time ?? DateTime.now())}-${jobList[j].historyElement?[k].type}",
-                                              style: CustomTextStyle.kBodyText1.copyWith(
-                                                  color: getTextColor(jobList[j].historyElement?[k].type ??
-                                                      ''),
-                                                  fontWeight: FontWeight.w400),
-                                            );
-                                          },
-                                        itemCount: jobList[j].historyElement?.length,
-                                        physics: const NeverScrollableScrollPhysics(),
+                                        itemBuilder: (context, k) {
+                                          return Text(
+                                            "${DateFormat('d.M.y').format(jobList[j].historyElement?[k].time ?? DateTime.now())}-"
+                                            "${DateFormat('h:mm a').format(jobList[j].historyElement?[k].time ?? DateTime.now())}-${jobList[j].historyElement?[k].type}",
+                                            style: CustomTextStyle.kBodyText1
+                                                .copyWith(
+                                                    color: getTextColor(jobList[
+                                                                j]
+                                                            .historyElement?[k]
+                                                            .type ??
+                                                        ''),
+                                                    fontWeight:
+                                                        FontWeight.w400),
+                                          );
+                                        },
+                                        itemCount:
+                                            jobList[j].historyElement?.length,
+                                        physics:
+                                            const NeverScrollableScrollPhysics(),
                                         padding: EdgeInsets.zero,
                                         shrinkWrap: true,
                                       ),
                                     );
                                   },
-                                itemCount: jobList.length,
-                                physics: const NeverScrollableScrollPhysics(),
-                                padding: EdgeInsets.zero,
-                                shrinkWrap: true,
-                              )
-                            ],
-                          );
-                        });
-                  }
-                )
+                                  itemCount: jobList.length,
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  padding: EdgeInsets.zero,
+                                  shrinkWrap: true,
+                                )
+                              ],
+                            );
+                          });
+                    })
                 : const Center(
                     child: Text("No history found"),
                   ),
@@ -481,4 +491,3 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 }
-

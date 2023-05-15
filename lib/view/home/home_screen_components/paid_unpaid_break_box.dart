@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
+import 'package:one_click_time_sheet/managers/preference_manager.dart';
 import 'package:one_click_time_sheet/utills/constants/colors.dart';
 import 'package:one_click_time_sheet/utills/constants/text_styles.dart';
 import 'package:one_click_time_sheet/view/home/home_screen_components/plus_minus_manual_time_adjust_for_paid_unpaid.dart';
@@ -14,6 +15,8 @@ class PaidUnPaidBreakBox extends StatelessWidget {
   final VoidCallback plusMinuteTap;
   final VoidCallback minusMinuteTap;
   final VoidCallback manualTimeTap;
+
+  static PreferenceManager preferenceManager = PreferenceManager();
 
   const PaidUnPaidBreakBox({
     super.key,
@@ -45,10 +48,6 @@ class PaidUnPaidBreakBox extends StatelessWidget {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Icon(
-                  //   Icons.coffee_outlined,
-                  //   size: 50.h,
-                  // ),
                   SizedBox(
                     height: 40.h,
                     child: Image.asset(iconPath,fit: BoxFit.cover,),
@@ -62,15 +61,24 @@ class PaidUnPaidBreakBox extends StatelessWidget {
                             CustomTextStyle.kHeading1.copyWith(fontSize: 16.sp),
                       ),
                       SizedBox(height: 5.h),
-                      Text(
-                        DateFormat('h:mm a').format(startingDate),
+                      preferenceManager.getTimeFormat == '' ||
+                          preferenceManager.getTimeFormat == '12h' ? Text(
+                        DateFormat.jm().format(startingDate),
                         style:
                             CustomTextStyle.kHeading1.copyWith(fontSize: 16.sp),
+                      ):Text(
+                        DateFormat.Hm().addPattern('a').format(startingDate),
+                        style:
+                        CustomTextStyle.kHeading1.copyWith(fontSize: 16.sp),
                       ),
-                      Text(
+                      preferenceManager.getDateFormat == '' ? Text(
                         DateFormat('EEEE, d, M, y').format(startingDate),
                         style:
                             CustomTextStyle.kBodyText1.copyWith(fontSize: 11.sp),
+                      ):Text(
+                        DateFormat(preferenceManager.getDateFormat).format(startingDate),
+                        style:
+                        CustomTextStyle.kBodyText1.copyWith(fontSize: 11.sp),
                       ),
                     ],
                   ),
