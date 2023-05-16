@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:intl/intl.dart';
 import 'package:one_click_time_sheet/managers/preference_manager.dart';
+import 'package:one_click_time_sheet/model/work_plan_model.dart';
 import 'package:one_click_time_sheet/utills/constants/colors.dart';
 import 'package:one_click_time_sheet/utills/constants/text_styles.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
@@ -279,7 +280,7 @@ class _WorkPlanScreenState extends State<WorkPlanScreen> {
                     ),
                     actions: [
                       TextButton(
-                        onPressed: () {
+                        onPressed: () async {
                           if (formKey.currentState!.validate()) {
                             if (workPlanDateForFrontEnd == 'select date' ||
                                 startTimeForFrontEnd == 'select start time' ||
@@ -293,6 +294,17 @@ class _WorkPlanScreenState extends State<WorkPlanScreen> {
                               );
                             } else {
                               final Box box = Hive.box('workPlan');
+                              WorkPlanModel workPlanModel = WorkPlanModel(
+                                workPlanName: nameController.text,
+                                startWorkPlanTime: startTimeForBackEnd,
+                                endWorkPlanTime: endTimeForBackEnd,
+                              );
+
+                             await box.put('plan1', workPlanModel).then((value) {
+
+                               print(box.values.length);
+                             });
+
 
                             }
                           }
