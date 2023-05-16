@@ -20,8 +20,10 @@ class _WorkPlanScreenState extends State<WorkPlanScreen> {
   final nameController = TextEditingController();
   String workPlanDateForFrontEnd = 'select date';
   DateTime workPlanDateForBackend = DateTime.now();
-  String startTime = 'select start time';
-  String endTime = 'select end time';
+  String startTimeForFrontEnd = 'select start time';
+  DateTime startTimeForBackEnd = DateTime.now();
+  String endTimeForFrontEnd = 'select end time';
+  DateTime endTimeForBackEnd = DateTime.now();
   PreferenceManager preferenceManager = PreferenceManager();
   final formKey = GlobalKey<FormState>();
 
@@ -158,12 +160,14 @@ class _WorkPlanScreenState extends State<WorkPlanScreen> {
                               firstDate: DateTime.now(),
                               lastDate: DateTime(2030, 12, 31),
                             );
-                            workPlanDateForFrontEnd =
-                                DateFormat('MM/dd/yyyy').format(
-                              dateTime ?? DateTime.now(),
-                            );
-                            workPlanDateForBackend = dateTime ?? DateTime.now();
-                            setState(() {});
+                            if (dateTime != null) {
+                              workPlanDateForFrontEnd =
+                                  DateFormat('MM/dd/yyyy').format(
+                                dateTime,
+                              );
+                              workPlanDateForBackend = dateTime;
+                              setState(() {});
+                            }
                           },
                           child: Container(
                             height: 40.h,
@@ -197,16 +201,19 @@ class _WorkPlanScreenState extends State<WorkPlanScreen> {
                                   pickedTime.minute,
                                 );
                               });
+
+                              startTimeForBackEnd = workPlanDateForBackend;
+
+                              if (preferenceManager.getTimeFormat == '24h') {
+                                startTimeForFrontEnd = DateFormat.Hm()
+                                    .addPattern('a')
+                                    .format(workPlanDateForBackend);
+                              } else {
+                                startTimeForFrontEnd = DateFormat.jm()
+                                    .format(workPlanDateForBackend);
+                              }
                             } else {
                               debugPrint("Time is not selected");
-                            }
-                            if (preferenceManager.getTimeFormat == '24h') {
-                              startTime = DateFormat.Hm()
-                                  .addPattern('a')
-                                  .format(workPlanDateForBackend);
-                            } else {
-                              startTime = DateFormat.jm()
-                                  .format(workPlanDateForBackend);
                             }
                           },
                           child: Container(
@@ -218,7 +225,7 @@ class _WorkPlanScreenState extends State<WorkPlanScreen> {
                             padding: EdgeInsets.symmetric(horizontal: 12.w),
                             alignment: Alignment.centerLeft,
                             child: Text(
-                              startTime,
+                              startTimeForFrontEnd,
                               style: CustomTextStyle.kBodyText2,
                             ),
                           ),
@@ -240,16 +247,18 @@ class _WorkPlanScreenState extends State<WorkPlanScreen> {
                                   pickedTime.minute,
                                 );
                               });
+
+                              endTimeForBackEnd = workPlanDateForBackend;
+                              if (preferenceManager.getTimeFormat == '24h') {
+                                endTimeForFrontEnd = DateFormat.Hm()
+                                    .addPattern('a')
+                                    .format(workPlanDateForBackend);
+                              } else {
+                                endTimeForFrontEnd = DateFormat.jm()
+                                    .format(workPlanDateForBackend);
+                              }
                             } else {
                               debugPrint("Time is not selected");
-                            }
-                            if (preferenceManager.getTimeFormat == '24h') {
-                              endTime = DateFormat.Hm()
-                                  .addPattern('a')
-                                  .format(workPlanDateForBackend);
-                            } else {
-                              endTime = DateFormat.jm()
-                                  .format(workPlanDateForBackend);
                             }
                           },
                           child: Container(
@@ -261,7 +270,7 @@ class _WorkPlanScreenState extends State<WorkPlanScreen> {
                             padding: EdgeInsets.symmetric(horizontal: 12.w),
                             alignment: Alignment.centerLeft,
                             child: Text(
-                              endTime,
+                              endTimeForFrontEnd,
                               style: CustomTextStyle.kBodyText2,
                             ),
                           ),
@@ -273,8 +282,8 @@ class _WorkPlanScreenState extends State<WorkPlanScreen> {
                         onPressed: () {
                           if (formKey.currentState!.validate()) {
                             if (workPlanDateForFrontEnd == 'select date' ||
-                                startTime == 'select start time' ||
-                                endTime == 'select end time') {
+                                startTimeForFrontEnd == 'select start time' ||
+                                endTimeForFrontEnd == 'select end time') {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
                                   content: const Text(
@@ -282,7 +291,8 @@ class _WorkPlanScreenState extends State<WorkPlanScreen> {
                                   backgroundColor: redColor,
                                 ),
                               );
-                            }else{
+                            } else {
+                              final Box box = Hive.box('workPlan');
 
                             }
                           }
