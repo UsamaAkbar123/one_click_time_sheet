@@ -23,6 +23,7 @@ class _WorkPlanScreenState extends State<WorkPlanScreen> {
   String startTime = 'select start time';
   String endTime = 'select end time';
   PreferenceManager preferenceManager = PreferenceManager();
+  final formKey = GlobalKey<FormState>();
 
   void calendarTapped(CalendarTapDetails calendarTapDetails) {
     setState(() {});
@@ -116,25 +117,36 @@ class _WorkPlanScreenState extends State<WorkPlanScreen> {
                         ),
                         SizedBox(height: 5.h),
                         Form(
-                          child: SizedBox(
-                            height: 40.h,
-                            width: double.infinity,
-                            child: TextFormField(
-                              controller: nameController,
-                              decoration: InputDecoration(
-                                  enabledBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(8.r),
-                                    borderSide: BorderSide(color: greenColor),
-                                  ),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(8.r),
-                                    borderSide: BorderSide(color: greenColor),
-                                  ),
-                                  label: Text(
-                                    'work plan name',
-                                    style: CustomTextStyle.kBodyText2,
-                                  )),
-                            ),
+                          key: formKey,
+                          child: TextFormField(
+                            controller: nameController,
+                            style: CustomTextStyle.kBodyText2,
+                            decoration: InputDecoration(
+                                contentPadding: EdgeInsets.symmetric(
+                                    vertical: 5.0.h, horizontal: 10.0.w),
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(8.r),
+                                  borderSide: BorderSide(color: greenColor),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(8.r),
+                                  borderSide: BorderSide(color: greenColor),
+                                ),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(8.r),
+                                  borderSide: BorderSide(color: greenColor),
+                                ),
+                                label: Text(
+                                  'work plan name',
+                                  style: CustomTextStyle.kBodyText2,
+                                )),
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return 'Please enter the work plan name';
+                              } else {
+                                return null;
+                              }
+                            },
                           ),
                         ),
                         SizedBox(height: 8.h),
@@ -258,7 +270,23 @@ class _WorkPlanScreenState extends State<WorkPlanScreen> {
                     ),
                     actions: [
                       TextButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          if (formKey.currentState!.validate()) {
+                            if (workPlanDateForFrontEnd == 'select date' ||
+                                startTime == 'select start time' ||
+                                endTime == 'select end time') {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: const Text(
+                                      'Select Date or Start Time or End Time'),
+                                  backgroundColor: redColor,
+                                ),
+                              );
+                            }else{
+
+                            }
+                          }
+                        },
                         child: const Text("save"),
                       ),
                       TextButton(
