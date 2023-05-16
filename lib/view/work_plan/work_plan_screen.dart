@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:hive_flutter/adapters.dart';
+import 'package:intl/intl.dart';
+import 'package:one_click_time_sheet/managers/preference_manager.dart';
 import 'package:one_click_time_sheet/utills/constants/colors.dart';
 import 'package:one_click_time_sheet/utills/constants/text_styles.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
@@ -14,6 +17,12 @@ class WorkPlanScreen extends StatefulWidget {
 
 class _WorkPlanScreenState extends State<WorkPlanScreen> {
   CalendarTapDetails? calendarTapDetail;
+  final nameController = TextEditingController();
+  String workPlanDateForFrontEnd = 'select date';
+  DateTime workPlanDateForBackend = DateTime.now();
+  String startTime = 'select start time';
+  String endTime = 'select end time';
+  PreferenceManager preferenceManager = PreferenceManager();
 
   void calendarTapped(CalendarTapDetails calendarTapDetails) {
     setState(() {});
@@ -81,6 +90,192 @@ class _WorkPlanScreenState extends State<WorkPlanScreen> {
             ),
             SizedBox(height: 30.h),
           ],
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          showDialog(
+            context: context,
+            builder: (context) {
+              return StatefulBuilder(
+                builder: (context, setState) {
+                  return AlertDialog(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(10.r),
+                      ),
+                    ),
+                    title: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Work Plan Information',
+                          style: CustomTextStyle.kHeading2.copyWith(
+                            fontSize: 14.sp,
+                          ),
+                        ),
+                        SizedBox(height: 5.h),
+                        Form(
+                          child: SizedBox(
+                            height: 40.h,
+                            width: double.infinity,
+                            child: TextFormField(
+                              controller: nameController,
+                              decoration: InputDecoration(
+                                  enabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(8.r),
+                                    borderSide: BorderSide(color: greenColor),
+                                  ),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(8.r),
+                                    borderSide: BorderSide(color: greenColor),
+                                  ),
+                                  label: Text(
+                                    'work plan name',
+                                    style: CustomTextStyle.kBodyText2,
+                                  )),
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: 8.h),
+                        GestureDetector(
+                          onTap: () async {
+                            DateTime? dateTime = await showDatePicker(
+                              context: context,
+                              initialDate: DateTime.now(),
+                              firstDate: DateTime.now(),
+                              lastDate: DateTime(2030, 12, 31),
+                            );
+                            workPlanDateForFrontEnd =
+                                DateFormat('MM/dd/yyyy').format(
+                              dateTime ?? DateTime.now(),
+                            );
+                            workPlanDateForBackend = dateTime ?? DateTime.now();
+                            setState(() {});
+                          },
+                          child: Container(
+                            height: 40.h,
+                            width: double.infinity,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(8.r),
+                              border: Border.all(color: greenColor),
+                            ),
+                            padding: EdgeInsets.symmetric(horizontal: 12.w),
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              workPlanDateForFrontEnd,
+                              style: CustomTextStyle.kBodyText2,
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: 8.h),
+                        GestureDetector(
+                          onTap: () async {
+                            TimeOfDay? pickedTime = await showTimePicker(
+                              initialTime: TimeOfDay.now(),
+                              context: context, //context of current state
+                            );
+                            if (pickedTime != null) {
+                              setState(() {
+                                workPlanDateForBackend = DateTime(
+                                  workPlanDateForBackend.year,
+                                  workPlanDateForBackend.month,
+                                  workPlanDateForBackend.day,
+                                  pickedTime.hour,
+                                  pickedTime.minute,
+                                );
+                              });
+                            } else {
+                              debugPrint("Time is not selected");
+                            }
+                            if (preferenceManager.getTimeFormat == '24h') {
+                              startTime = DateFormat.Hm()
+                                  .addPattern('a')
+                                  .format(workPlanDateForBackend);
+                            } else {
+                              startTime = DateFormat.jm()
+                                  .format(workPlanDateForBackend);
+                            }
+                          },
+                          child: Container(
+                            height: 40.h,
+                            width: double.infinity,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(8.r),
+                                border: Border.all(color: greenColor)),
+                            padding: EdgeInsets.symmetric(horizontal: 12.w),
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              startTime,
+                              style: CustomTextStyle.kBodyText2,
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: 8.h),
+                        GestureDetector(
+                          onTap: () async {
+                            TimeOfDay? pickedTime = await showTimePicker(
+                              initialTime: TimeOfDay.now(),
+                              context: context, //context of current state
+                            );
+                            if (pickedTime != null) {
+                              setState(() {
+                                workPlanDateForBackend = DateTime(
+                                  workPlanDateForBackend.year,
+                                  workPlanDateForBackend.month,
+                                  workPlanDateForBackend.day,
+                                  pickedTime.hour,
+                                  pickedTime.minute,
+                                );
+                              });
+                            } else {
+                              debugPrint("Time is not selected");
+                            }
+                            if (preferenceManager.getTimeFormat == '24h') {
+                              endTime = DateFormat.Hm()
+                                  .addPattern('a')
+                                  .format(workPlanDateForBackend);
+                            } else {
+                              endTime = DateFormat.jm()
+                                  .format(workPlanDateForBackend);
+                            }
+                          },
+                          child: Container(
+                            height: 40.h,
+                            width: double.infinity,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(8.r),
+                                border: Border.all(color: greenColor)),
+                            padding: EdgeInsets.symmetric(horizontal: 12.w),
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              endTime,
+                              style: CustomTextStyle.kBodyText2,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    actions: [
+                      TextButton(
+                        onPressed: () {},
+                        child: const Text("save"),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        child: const Text("cancel"),
+                      ),
+                    ],
+                  );
+                },
+              );
+            },
+          );
+        },
+        child: const Icon(
+          Icons.add,
         ),
       ),
     );
