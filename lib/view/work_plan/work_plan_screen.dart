@@ -119,70 +119,89 @@ class _WorkPlanScreenState extends State<WorkPlanScreen> {
         ),
         centerTitle: true,
       ),
-      body: box.isNotEmpty
-          ? ValueListenableBuilder(
-              valueListenable: box.listenable(),
-              builder: (context, Box box, widget) {
-                List<dynamic> dynamicWorkPlanList = box.values.toList();
+      body: ValueListenableBuilder(
+        valueListenable: box.listenable(),
+        builder: (context, Box box, widget) {
+          List<WorkPlanModel> workPlanList = [];
+          if (box.isNotEmpty) {
+            List<dynamic> dynamicWorkPlanList = box.values.toList();
 
-                List<WorkPlanModel> workPlanList = [];
-                if (dynamicWorkPlanList.isNotEmpty) {
-                  workPlanList = dynamicWorkPlanList.cast<WorkPlanModel>();
-                }
+            if (dynamicWorkPlanList.isNotEmpty) {
+              workPlanList = dynamicWorkPlanList.cast<WorkPlanModel>();
+              print(workPlanList.first.startWorkPlanTime);
+            }
+          }else{
+            print('empty');
+          }
 
-                // List<WorkPlanModel> workPlanList = dynamicWorkPlanList.map((data) {
-                //   // Convert dynamic data to Person instance
-                //   return WorkPlanModel.fromJson(data as Map<String,dynamic>);
-                // }).toList();
+          // List<WorkPlanModel> workPlanList = dynamicWorkPlanList.map((data) {
+          //   // Convert dynamic data to Person instance
+          //   return WorkPlanModel.fromJson(data as Map<String,dynamic>);
+          // }).toList();
 
-                print(workPlanList.first.startWorkPlanTime);
+          //
 
-                // List<WorkPlanModel> workPlanList =
-                // box.values.cast<WorkPlanModel>();
+          // List<WorkPlanModel> workPlanList =
+          // box.values.cast<WorkPlanModel>();
 
-                return Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 10.w),
-                  child: Column(
-                    children: [
-                      SizedBox(height: 20.h),
-                      Expanded(
-                        child: SfCalendar(
-                          cellBorderColor: Colors.transparent,
-                          // view: CalendarView.day,
-                          view: CalendarView.day,
-                          // monthViewSettings: const MonthViewSettings(showAgenda: true),
-                          firstDayOfWeek: 1,
-                          dataSource: MeetingDateSource(
-                            getAppointments(
-                              workPlanList: workPlanList,
-                            ),
-                          ),
-                          // initialDisplayDate: DateTime(2023, 4, 15, 08, 30),
-                          // initialSelectedDate: DateTime(2023, 4, 15, 08, 30),
-                          //backgroundColor: Colors.white,
-                          // appointmentTextStyle: const TextStyle(color: Colors.black
-                          // //   // darkThemeProvider.darkTheme? Colors.black: Colors.white
-                          //  ),
-                          // timeSlotViewSettings: TimeSlotViewSettings(
-                          //     startHour: 9,
-                          //     endHour: 16,
-                          //     nonWorkingDays: <int>[DateTime.friday, DateTime.saturday]),
-                          // monthViewSettings: const MonthViewSettings(
-                          //   appointmentDisplayMode:
-                          //   MonthAppointmentDisplayMode.appointment,
-                          // ),
-                          // firstDayOfWeek: 1,
-                          // // dataSource: _dataSource,
-                          onTap: calendarTapped,
-                        ),
+          return Padding(
+            padding: EdgeInsets.symmetric(horizontal: 10.w),
+            child: Column(
+              children: [
+                SizedBox(height: 20.h),
+                Expanded(
+                  child: SfCalendar(
+                    cellBorderColor: Colors.transparent,
+                    // view: CalendarView.day,
+                    view: CalendarView.day,
+                    // monthViewSettings: const MonthViewSettings(showAgenda: true),
+                    firstDayOfWeek: 1,
+                    dataSource: MeetingDateSource(
+                      getAppointments(
+                        workPlanList: workPlanList,
                       ),
-                      SizedBox(height: 30.h),
-                    ],
+                    ),
+                    // appointmentBuilder: (context, calendarAppointmentDetails) {
+                    //   return Container(
+                    //     decoration: BoxDecoration(
+                    //       color: Colors.blue, // Set the desired background color
+                    //       borderRadius: BorderRadius.circular(8.0), // Set the desired border radius
+                    //     ),
+                    //     child: Column(
+                    //       children: [
+                    //         Text(calendarAppointmentDetails.appointments.first.subject), // Display the name of the work plan
+                    //         Text(
+                    //           '${calendarAppointmentDetails.appointments.first.startTime} - ${calendarAppointmentDetails.appointments.first.endTime}', // Display the start and end time
+                    //         ),
+                    //       ],
+                    //     ),
+                    //   );
+                    // },
+                    // initialDisplayDate: DateTime(2023, 4, 15, 08, 30),
+                    // initialSelectedDate: DateTime(2023, 4, 15, 08, 30),
+                    //backgroundColor: Colors.white,
+                    // appointmentTextStyle: const TextStyle(color: Colors.black
+                    // //   // darkThemeProvider.darkTheme? Colors.black: Colors.white
+                    //  ),
+                    // timeSlotViewSettings: TimeSlotViewSettings(
+                    //     startHour: 9,
+                    //     endHour: 16,
+                    //     nonWorkingDays: <int>[DateTime.friday, DateTime.saturday]),
+                    // monthViewSettings: const MonthViewSettings(
+                    //   appointmentDisplayMode:
+                    //   MonthAppointmentDisplayMode.appointment,
+                    // ),
+                    // firstDayOfWeek: 1,
+                    // // dataSource: _dataSource,
+                    onTap: calendarTapped,
                   ),
-                );
-              },
-            )
-          : const SizedBox(),
+                ),
+                SizedBox(height: 30.h),
+              ],
+            ),
+          );
+        },
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           showDialog(
