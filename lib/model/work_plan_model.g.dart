@@ -17,21 +17,24 @@ class WorkPlanModelAdapter extends TypeAdapter<WorkPlanModel> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return WorkPlanModel(
-      workPlanName: fields[0] as String,
-      startWorkPlanTime: fields[1] as DateTime,
-      endWorkPlanTime: fields[2] as DateTime,
+      id: fields[0] as String,
+      workPlanName: fields[1] as String,
+      startWorkPlanTime: fields[2] as DateTime,
+      endWorkPlanTime: fields[3] as DateTime,
     );
   }
 
   @override
   void write(BinaryWriter writer, WorkPlanModel obj) {
     writer
-      ..writeByte(3)
+      ..writeByte(4)
       ..writeByte(0)
-      ..write(obj.workPlanName)
+      ..write(obj.id)
       ..writeByte(1)
-      ..write(obj.startWorkPlanTime)
+      ..write(obj.workPlanName)
       ..writeByte(2)
+      ..write(obj.startWorkPlanTime)
+      ..writeByte(3)
       ..write(obj.endWorkPlanTime);
   }
 

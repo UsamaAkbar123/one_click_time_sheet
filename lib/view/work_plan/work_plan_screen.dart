@@ -8,6 +8,7 @@ import 'package:one_click_time_sheet/utills/constants/colors.dart';
 import 'package:one_click_time_sheet/utills/constants/text_styles.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:uuid/uuid.dart';
 
 class WorkPlanScreen extends StatefulWidget {
   const WorkPlanScreen({Key? key}) : super(key: key);
@@ -27,10 +28,85 @@ class _WorkPlanScreenState extends State<WorkPlanScreen> {
   DateTime endTimeForBackEnd = DateTime.now();
   PreferenceManager preferenceManager = PreferenceManager();
   final formKey = GlobalKey<FormState>();
+  final Box box = Hive.box('workPlan');
 
   void calendarTapped(CalendarTapDetails calendarTapDetails) {
     setState(() {});
     calendarTapDetail = calendarTapDetails;
+  }
+
+  List<Appointment> getAppointments(
+      {required List<WorkPlanModel> workPlanList}) {
+    print(workPlanList.length);
+    List<Appointment> meetings = [];
+    // final DateTime today = DateTime.now();
+    // final DateTime startTime = DateTime(
+    //   today.year,
+    //   today.month,
+    //   today.day,
+    //   9,
+    //   0,
+    //   0,
+    // );
+    // final DateTime endTime = startTime.add(const Duration(hours: 2));
+
+    for (int i = 0; i < workPlanList.length; i++) {
+      final DateTime startTime = DateTime(
+        workPlanList[i].startWorkPlanTime.year,
+        workPlanList[i].startWorkPlanTime.month,
+        workPlanList[i].startWorkPlanTime.day,
+        workPlanList[i].startWorkPlanTime.hour,
+        workPlanList[i].startWorkPlanTime.minute,
+        workPlanList[i].startWorkPlanTime.second,
+      );
+
+      final DateTime endTime = DateTime(
+        workPlanList[i].endWorkPlanTime.year,
+        workPlanList[i].endWorkPlanTime.month,
+        workPlanList[i].endWorkPlanTime.day,
+        workPlanList[i].endWorkPlanTime.hour,
+        workPlanList[i].endWorkPlanTime.minute,
+        workPlanList[i].endWorkPlanTime.second,
+      );
+
+      // meetings.add(
+      // Appointment(
+      //   startTime: workPlanList[i].startWorkPlanTime,
+      //   endTime: workPlanList[i].endWorkPlanTime,
+      //   subject: workPlanList[i].workPlanName,
+      //   color: greenColor,
+      // ),
+      //);
+      meetings.add(
+        Appointment(
+          startTime: startTime,
+          endTime: endTime,
+          subject: workPlanList[i].workPlanName,
+          color: greenColor,
+        ),
+      );
+    }
+
+    print('meeting length: ${meetings.length}');
+
+    // meetings.add(
+    //   Appointment(
+    //     startTime: startTime,
+    //     endTime: endTime,
+    //     subject: 'Conference',
+    //     color: greenColor,
+    //   ),
+    // );
+    // meetings.add(
+    //   Appointment(
+    //     startTime: startTime.add(const Duration(hours: 3)),
+    //     endTime: endTime,
+    //     subject: 'Meeting With Client',
+    //     color: blueColor,
+    //   ),
+    // );
+
+    return meetings;
   }
 
   @override
@@ -43,59 +119,70 @@ class _WorkPlanScreenState extends State<WorkPlanScreen> {
         ),
         centerTitle: true,
       ),
-      body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 10.w),
-        child: Column(
-          children: [
-            // Row(
-            //   children: [
-            //     Icon(
-            //       Icons.lock_clock,
-            //       color: greenColor,
-            //       size: 27.w,
-            //     ),
-            //     SizedBox(width: 10.w),
-            //     Text(
-            //       '20 hrs 22 mins',
-            //       style: CustomTextStyle.kBodyText1.copyWith(
-            //         fontSize: 18.sp,
-            //         fontWeight: FontWeight.bold,
-            //       ),
-            //     ),
-            //   ],
-            // ),
-            SizedBox(height: 20.h),
-            Expanded(
-              child: SfCalendar(
-                cellBorderColor: Colors.transparent,
-                // view: CalendarView.day,
-                view: CalendarView.week,
-                // monthViewSettings: const MonthViewSettings(showAgenda: true),
-                firstDayOfWeek: 1,
-                dataSource: MeetingDateSource(getAppointments()),
-                // initialDisplayDate: DateTime(2023, 4, 15, 08, 30),
-                // initialSelectedDate: DateTime(2023, 4, 15, 08, 30),
-                //backgroundColor: Colors.white,
-                // appointmentTextStyle: const TextStyle(color: Colors.black
-                // //   // darkThemeProvider.darkTheme? Colors.black: Colors.white
-                //  ),
-                // timeSlotViewSettings: TimeSlotViewSettings(
-                //     startHour: 9,
-                //     endHour: 16,
-                //     nonWorkingDays: <int>[DateTime.friday, DateTime.saturday]),
-                // monthViewSettings: const MonthViewSettings(
-                //   appointmentDisplayMode:
-                //   MonthAppointmentDisplayMode.appointment,
-                // ),
-                // firstDayOfWeek: 1,
-                // // dataSource: _dataSource,
-                onTap: calendarTapped,
-              ),
-            ),
-            SizedBox(height: 30.h),
-          ],
-        ),
-      ),
+      body: box.isNotEmpty
+          ? ValueListenableBuilder(
+              valueListenable: box.listenable(),
+              builder: (context, Box box, widget) {
+                List<dynamic> dynamicWorkPlanList = box.values.toList();
+
+                List<WorkPlanModel> workPlanList = [];
+                if (dynamicWorkPlanList.isNotEmpty) {
+                  workPlanList = dynamicWorkPlanList.cast<WorkPlanModel>();
+                }
+
+                // List<WorkPlanModel> workPlanList = dynamicWorkPlanList.map((data) {
+                //   // Convert dynamic data to Person instance
+                //   return WorkPlanModel.fromJson(data as Map<String,dynamic>);
+                // }).toList();
+
+                print(workPlanList.first.startWorkPlanTime);
+
+                // List<WorkPlanModel> workPlanList =
+                // box.values.cast<WorkPlanModel>();
+
+                return Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 10.w),
+                  child: Column(
+                    children: [
+                      SizedBox(height: 20.h),
+                      Expanded(
+                        child: SfCalendar(
+                          cellBorderColor: Colors.transparent,
+                          // view: CalendarView.day,
+                          view: CalendarView.day,
+                          // monthViewSettings: const MonthViewSettings(showAgenda: true),
+                          firstDayOfWeek: 1,
+                          dataSource: MeetingDateSource(
+                            getAppointments(
+                              workPlanList: workPlanList,
+                            ),
+                          ),
+                          // initialDisplayDate: DateTime(2023, 4, 15, 08, 30),
+                          // initialSelectedDate: DateTime(2023, 4, 15, 08, 30),
+                          //backgroundColor: Colors.white,
+                          // appointmentTextStyle: const TextStyle(color: Colors.black
+                          // //   // darkThemeProvider.darkTheme? Colors.black: Colors.white
+                          //  ),
+                          // timeSlotViewSettings: TimeSlotViewSettings(
+                          //     startHour: 9,
+                          //     endHour: 16,
+                          //     nonWorkingDays: <int>[DateTime.friday, DateTime.saturday]),
+                          // monthViewSettings: const MonthViewSettings(
+                          //   appointmentDisplayMode:
+                          //   MonthAppointmentDisplayMode.appointment,
+                          // ),
+                          // firstDayOfWeek: 1,
+                          // // dataSource: _dataSource,
+                          onTap: calendarTapped,
+                        ),
+                      ),
+                      SizedBox(height: 30.h),
+                    ],
+                  ),
+                );
+              },
+            )
+          : const SizedBox(),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           showDialog(
@@ -293,19 +380,23 @@ class _WorkPlanScreenState extends State<WorkPlanScreen> {
                                 ),
                               );
                             } else {
-                              final Box box = Hive.box('workPlan');
+                              const uuid = Uuid();
+                              String id = uuid.v4();
                               WorkPlanModel workPlanModel = WorkPlanModel(
+                                id: id,
                                 workPlanName: nameController.text,
                                 startWorkPlanTime: startTimeForBackEnd,
                                 endWorkPlanTime: endTimeForBackEnd,
                               );
 
-                             await box.put('plan1', workPlanModel).then((value) {
-
-                               print(box.values.length);
-                             });
-
-
+                              await box.put(id, workPlanModel).then((value) {
+                                nameController.clear();
+                                startTimeForFrontEnd = 'select start time';
+                                endTimeForFrontEnd = 'select end time';
+                                workPlanDateForFrontEnd = 'select date';
+                                Navigator.of(context).pop();
+                                print(box.values.length);
+                              });
                             }
                           }
                         },
@@ -330,39 +421,6 @@ class _WorkPlanScreenState extends State<WorkPlanScreen> {
       ),
     );
   }
-}
-
-List<Appointment> getAppointments() {
-  List<Appointment> meetings = [];
-  final DateTime today = DateTime.now();
-  final DateTime startTime = DateTime(
-    today.year,
-    today.month,
-    today.day,
-    9,
-    0,
-    0,
-  );
-  final DateTime endTime = startTime.add(const Duration(hours: 2));
-
-  meetings.add(
-    Appointment(
-      startTime: startTime,
-      endTime: endTime,
-      subject: 'Conference',
-      color: greenColor,
-    ),
-  );
-  meetings.add(
-    Appointment(
-      startTime: startTime.add(const Duration(hours: 3)),
-      endTime: endTime,
-      subject: 'Meeting With Client',
-      color: blueColor,
-    ),
-  );
-
-  return meetings;
 }
 
 class MeetingDateSource extends CalendarDataSource {
