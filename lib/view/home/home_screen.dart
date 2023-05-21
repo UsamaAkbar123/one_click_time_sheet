@@ -1,9 +1,9 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:intl/intl.dart';
 import 'package:one_click_time_sheet/generated/assets/icons.dart';
+import 'package:one_click_time_sheet/managers/preference_manager.dart';
 import 'package:one_click_time_sheet/model/hive_job_history_model.dart';
 import 'package:one_click_time_sheet/model/work_plan_model.dart';
 import 'package:one_click_time_sheet/utills/constants/colors.dart';
@@ -27,14 +27,12 @@ class _HomeScreenState extends State<HomeScreen> {
   final Box jobHistoryBox = Hive.box('jobHistoryBox');
   final Box workPlanBox = Hive.box('workPlan');
   List<JobHistoryModel> jobHistoryData = [];
-
-  Timer? _timer;
-  int _seconds = 0;
+  PreferenceManager preferenceManager = PreferenceManager();
+  final int _seconds = 0;
   DateTime startJobTime = DateTime.now();
   DateTime endJob = DateTime.now();
   DateTime paidBreak = DateTime.now();
   DateTime unPaidBreak = DateTime.now();
-  bool _isRunning = false;
 
   bool isStartJobSelectCustomTime = false;
   bool isEndJobSelectCustomTime = false;
@@ -42,23 +40,6 @@ class _HomeScreenState extends State<HomeScreen> {
   bool isUnpaidBreakSelectCustomTime = false;
 
   List<HistoryElement> jobHistory = [];
-
-  _startJobTime() {
-    if (_isRunning) {
-      // Stop the timer
-      _timer?.cancel();
-      _isRunning = false;
-      setState(() {});
-    } else {
-      // Start the timer
-      _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-        setState(() {
-          _seconds++;
-        });
-      });
-      _isRunning = true;
-    }
-  }
 
   int currentIndex = -1;
 
@@ -92,7 +73,7 @@ class _HomeScreenState extends State<HomeScreen> {
             SizedBox(height: 10.h),
 
             /// future work plan widget
-            ValueListenableBuilder(
+           workPlanBox.isEmpty ? const SizedBox() : ValueListenableBuilder(
               valueListenable: workPlanBox.listenable(),
               builder: (context, Box box, widget) {
                 List<WorkPlanModel> workPlanList = [];
@@ -102,7 +83,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
                     if (dynamicWorkPlanList.isNotEmpty) {
                       workPlanList = dynamicWorkPlanList.cast<WorkPlanModel>();
-                      print(workPlanList.first.startWorkPlanTime);
                     }
                   }
                 }
@@ -126,11 +106,18 @@ class _HomeScreenState extends State<HomeScreen> {
                           itemBuilder: (context, index) {
                             String startTime;
                             String endTime;
-                            startTime = DateFormat.jm()
-                                .format(workPlanList[index].startWorkPlanTime);
+                            if (preferenceManager.getTimeFormat == '12h') {
+                              startTime = DateFormat('h:mm').format(
+                                  workPlanList[index].startWorkPlanTime);
+                              endTime = DateFormat('h:mm')
+                                  .format(workPlanList[index].endWorkPlanTime);
+                            } else {
+                              startTime = DateFormat('H:mm').format(
+                                  workPlanList[index].startWorkPlanTime);
+                              endTime = DateFormat('H:mm')
+                                  .format(workPlanList[index].endWorkPlanTime);
+                            }
 
-                            endTime = DateFormat.jm()
-                                .format(workPlanList[index].endWorkPlanTime);
                             return Center(
                               child: CustomWorkPlanTime(
                                 startTime: startTime,
@@ -214,7 +201,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     );
                   });
                 } else {
-                  print("Time is not selected");
+                  debugPrint("Time is not selected");
                 }
               },
               onTab: currentIndex == 0
@@ -268,7 +255,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     );
                   });
                 } else {
-                  print("Time is not selected");
+                  debugPrint("Time is not selected");
                 }
               },
               startingDate: endJob,
@@ -355,7 +342,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           );
                         });
                       } else {
-                        print("Time is not selected");
+                        debugPrint("Time is not selected");
                       }
                     },
                     startingDate: paidBreak,
@@ -418,7 +405,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           );
                         });
                       } else {
-                        print("Time is not selected");
+                        debugPrint("Time is not selected");
                       }
                     },
                     onTab: currentIndex == 3

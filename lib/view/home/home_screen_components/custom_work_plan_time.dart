@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:one_click_time_sheet/utills/constants/colors.dart';
 import 'package:one_click_time_sheet/utills/constants/text_styles.dart';
 
@@ -23,7 +22,6 @@ class CustomWorkPlanTime extends StatelessWidget {
             text: startTime,
             style: CustomTextStyle.kHeading2.copyWith(
               color: lightGreenColor,
-              fontSize: 16.sp,
             ),
           ),
           TextSpan(
@@ -34,7 +32,6 @@ class CustomWorkPlanTime extends StatelessWidget {
             text: endTime,
             style: CustomTextStyle.kHeading2.copyWith(
               color: redColor,
-              fontSize: 16.sp,
             ),
           ),
         ],

@@ -35,21 +35,10 @@ class _WorkPlanScreenState extends State<WorkPlanScreen> {
     calendarTapDetail = calendarTapDetails;
   }
 
-  List<Appointment> getAppointments(
-      {required List<WorkPlanModel> workPlanList}) {
-    print(workPlanList.length);
+  List<Appointment> getAppointments({
+    required List<WorkPlanModel> workPlanList,
+  }) {
     List<Appointment> meetings = [];
-    // final DateTime today = DateTime.now();
-    // final DateTime startTime = DateTime(
-    //   today.year,
-    //   today.month,
-    //   today.day,
-    //   9,
-    //   0,
-    //   0,
-    // );
-    // final DateTime endTime = startTime.add(const Duration(hours: 2));
-
     for (int i = 0; i < workPlanList.length; i++) {
       final DateTime startTime = DateTime(
         workPlanList[i].startWorkPlanTime.year,
@@ -68,15 +57,6 @@ class _WorkPlanScreenState extends State<WorkPlanScreen> {
         workPlanList[i].endWorkPlanTime.minute,
         workPlanList[i].endWorkPlanTime.second,
       );
-
-      // meetings.add(
-      // Appointment(
-      //   startTime: workPlanList[i].startWorkPlanTime,
-      //   endTime: workPlanList[i].endWorkPlanTime,
-      //   subject: workPlanList[i].workPlanName,
-      //   color: greenColor,
-      // ),
-      //);
       meetings.add(
         Appointment(
           startTime: startTime,
@@ -86,25 +66,6 @@ class _WorkPlanScreenState extends State<WorkPlanScreen> {
         ),
       );
     }
-
-    print('meeting length: ${meetings.length}');
-
-    // meetings.add(
-    //   Appointment(
-    //     startTime: startTime,
-    //     endTime: endTime,
-    //     subject: 'Conference',
-    //     color: greenColor,
-    //   ),
-    // );
-    // meetings.add(
-    //   Appointment(
-    //     startTime: startTime.add(const Duration(hours: 3)),
-    //     endTime: endTime,
-    //     subject: 'Meeting With Client',
-    //     color: blueColor,
-    //   ),
-    // );
 
     return meetings;
   }
@@ -128,21 +89,8 @@ class _WorkPlanScreenState extends State<WorkPlanScreen> {
 
             if (dynamicWorkPlanList.isNotEmpty) {
               workPlanList = dynamicWorkPlanList.cast<WorkPlanModel>();
-              print(workPlanList.first.startWorkPlanTime);
             }
-          }else{
-            print('empty');
           }
-
-          // List<WorkPlanModel> workPlanList = dynamicWorkPlanList.map((data) {
-          //   // Convert dynamic data to Person instance
-          //   return WorkPlanModel.fromJson(data as Map<String,dynamic>);
-          // }).toList();
-
-          //
-
-          // List<WorkPlanModel> workPlanList =
-          // box.values.cast<WorkPlanModel>();
 
           return Padding(
             padding: EdgeInsets.symmetric(horizontal: 10.w),
@@ -414,7 +362,6 @@ class _WorkPlanScreenState extends State<WorkPlanScreen> {
                                 endTimeForFrontEnd = 'select end time';
                                 workPlanDateForFrontEnd = 'select date';
                                 Navigator.of(context).pop();
-                                print(box.values.length);
                               });
                             }
                           }
