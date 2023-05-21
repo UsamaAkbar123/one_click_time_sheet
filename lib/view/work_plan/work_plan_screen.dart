@@ -33,6 +33,60 @@ class _WorkPlanScreenState extends State<WorkPlanScreen> {
   void calendarTapped(CalendarTapDetails calendarTapDetails) {
     setState(() {});
     calendarTapDetail = calendarTapDetails;
+    if (calendarTapDetail?.appointments != null &&
+        calendarTapDetail!.appointments!.isNotEmpty) {
+      showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: const Text('Appointment Details'),
+            content: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                AppointmentTextWidget(
+                  title: 'Subject: ',
+                  value: calendarTapDetail?.appointments?.first.subject,
+                  valueTextColor: blueColor,
+                ),
+                AppointmentTextWidget(
+                  title: 'Start Time: ',
+                  value: preferenceManager.getTimeFormat == '12h'
+                      ? DateFormat.jm().format(
+                          calendarTapDetail?.appointments?.first.startTime)
+                      : DateFormat.Hm().addPattern('a').format(
+                          calendarTapDetail?.appointments?.first.startTime),
+                  valueTextColor: greenColor,
+                ),
+                AppointmentTextWidget(
+                  title: 'End Time: ',
+                  value: preferenceManager.getTimeFormat == '12h'
+                      ? DateFormat.jm().format(
+                          calendarTapDetail?.appointments?.first.endTime)
+                      : DateFormat.Hm().addPattern('a').format(
+                          calendarTapDetail?.appointments?.first.endTime),
+                  valueTextColor: redColor,
+                ),
+                // Text(
+                //     'Subject: ${calendarTapDetail?.appointments?.first.subject}'),
+                // Text(
+                //     'Start Time: ${DateFormat.jm().format(calendarTapDetail?.appointments?.first.startTime)}'),
+                // Text(
+                //     'End Time: ${DateFormat.jm().format(calendarTapDetail?.appointments?.first.endTime)}'),
+              ],
+            ),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Text('Close'),
+              ),
+            ],
+          );
+        },
+      );
+    }
   }
 
   List<Appointment> getAppointments({
@@ -384,6 +438,42 @@ class _WorkPlanScreenState extends State<WorkPlanScreen> {
         child: const Icon(
           Icons.add,
         ),
+      ),
+    );
+  }
+}
+
+class AppointmentTextWidget extends StatelessWidget {
+  final String? title;
+  final String? value;
+  final Color? valueTextColor;
+
+  const AppointmentTextWidget({
+    super.key,
+    this.title,
+    this.value,
+    this.valueTextColor,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return RichText(
+      text: TextSpan(
+        children: [
+          TextSpan(
+            text: title,
+            style: CustomTextStyle.kBodyText1.copyWith(
+              fontSize: 17.sp,
+            ),
+          ),
+          TextSpan(
+            text: value,
+            style: CustomTextStyle.kBodyText1.copyWith(
+              color: valueTextColor ?? Colors.transparent,
+              fontSize: 17.sp,
+            ),
+          ),
+        ],
       ),
     );
   }
