@@ -29,7 +29,9 @@ class _WorkPlanScreenState extends State<WorkPlanScreen> {
       showDialog(
         context: context,
         builder: (context) {
-          return const AppointmentDetailsBox();
+          return AppointmentDetailsBox(
+            calendarTapDetail: calendarTapDetails,
+          );
         },
       );
     }
