@@ -5,6 +5,7 @@ import 'package:hive_flutter/adapters.dart';
 import 'package:intl/intl.dart';
 import 'package:one_click_time_sheet/generated/assets/icons.dart';
 import 'package:one_click_time_sheet/model/hive_job_history_model.dart';
+import 'package:one_click_time_sheet/model/work_plan_model.dart';
 import 'package:one_click_time_sheet/utills/constants/colors.dart';
 import 'package:one_click_time_sheet/utills/constants/text_styles.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -23,8 +24,8 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   DateTime nowDateTime = DateTime.now();
-  final Box box = Hive.box('jobHistoryBox');
-
+  final Box jobHistoryBox = Hive.box('jobHistoryBox');
+  final Box workPlanBox = Hive.box('workPlan');
   List<JobHistoryModel> jobHistoryData = [];
 
   Timer? _timer;
@@ -91,43 +92,77 @@ class _HomeScreenState extends State<HomeScreen> {
             SizedBox(height: 10.h),
 
             /// future work plan widget
-            Container(
-              height: 50.h,
-              width: double.infinity,
-              decoration: BoxDecoration(
-                border: Border.all(color: blackColor),
-              ),
-              child: Row(
-                children: [
-                  Text(
-                    AppLocalizations.of(context)?.homeScreenPlan ?? '',
-                    style: CustomTextStyle.kHeading2,
+            ValueListenableBuilder(
+              valueListenable: workPlanBox.listenable(),
+              builder: (context, Box box, widget) {
+                List<WorkPlanModel> workPlanList = [];
+                if (workPlanBox.isNotEmpty) {
+                  if (box.isNotEmpty) {
+                    List<dynamic> dynamicWorkPlanList = box.values.toList();
+
+                    if (dynamicWorkPlanList.isNotEmpty) {
+                      workPlanList = dynamicWorkPlanList.cast<WorkPlanModel>();
+                      print(workPlanList.first.startWorkPlanTime);
+                    }
+                  }
+                }
+                return Container(
+                  height: 50.h,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    border: Border.all(color: blackColor),
                   ),
-                  SizedBox(width: 10.w),
-                  const CustomWorkPlanTime(
-                    startTime: '8:00',
-                    endTime: '11:30',
+                  child: Row(
+                    children: [
+                      Text(
+                        AppLocalizations.of(context)?.homeScreenPlan ?? '',
+                        style: CustomTextStyle.kHeading2,
+                      ),
+                      SizedBox(width: 10.w),
+                      Expanded(
+                        child: ListView.separated(
+                          shrinkWrap: true,
+                          scrollDirection: Axis.horizontal,
+                          itemBuilder: (context, index) {
+                            String startTime;
+                            String endTime;
+                            startTime = DateFormat.jm()
+                                .format(workPlanList[index].startWorkPlanTime);
+
+                            endTime = DateFormat.jm()
+                                .format(workPlanList[index].endWorkPlanTime);
+                            return Center(
+                              child: CustomWorkPlanTime(
+                                startTime: startTime,
+                                endTime: endTime,
+                              ),
+                            );
+                          },
+                          separatorBuilder: (BuildContext context, int index) {
+                            return Center(
+                              child: Text(
+                                ',',
+                                style: CustomTextStyle.kHeading2,
+                              ),
+                            );
+                          },
+                          itemCount:
+                              workPlanList.length < 2 ? workPlanList.length : 2,
+                        ),
+                      ),
+                      //const Spacer(),
+                      IconButton(
+                        onPressed: () {},
+                        icon: Icon(
+                          Icons.edit,
+                          color: greyColor,
+                          size: 30.h,
+                        ),
+                      ),
+                    ],
                   ),
-                  Text(
-                    ',',
-                    style: CustomTextStyle.kHeading2,
-                  ),
-                  SizedBox(width: 5.w),
-                  const CustomWorkPlanTime(
-                    startTime: '12:00',
-                    endTime: '15:00',
-                  ),
-                  const Spacer(),
-                  IconButton(
-                    onPressed: () {},
-                    icon: Icon(
-                      Icons.edit,
-                      color: greyColor,
-                      size: 30.h,
-                    ),
-                  ),
-                ],
-              ),
+                );
+              },
             ),
             SizedBox(height: 5.h),
 
@@ -419,9 +454,9 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             SizedBox(height: 20.h),
             SizedBox(height: 10.h),
-            box.isNotEmpty
+            jobHistoryBox.isNotEmpty
                 ? ValueListenableBuilder(
-                    valueListenable: box.listenable(),
+                    valueListenable: jobHistoryBox.listenable(),
                     builder: (context, Box box, widget) {
                       return ListView.builder(
                           itemCount: box.length,
