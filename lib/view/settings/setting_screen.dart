@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:one_click_time_sheet/managers/preference_manager.dart';
+import 'package:one_click_time_sheet/provider/bottom_nav_provider.dart';
 import 'package:one_click_time_sheet/utills/constants/colors.dart';
 import 'package:one_click_time_sheet/utills/constants/text_styles.dart';
 import 'package:one_click_time_sheet/view/component/custom_button.dart';
@@ -11,6 +12,7 @@ import 'package:one_click_time_sheet/view/settings/setting_components/choose_lan
 import 'package:one_click_time_sheet/view/settings/setting_components/end_job_notification_widget.dart';
 import 'package:one_click_time_sheet/view/settings/setting_components/start_job_notification_widget.dart';
 import 'package:one_click_time_sheet/view/settings/setting_components/time_format_widget.dart';
+import 'package:provider/provider.dart';
 
 class SettingScreen extends StatefulWidget {
   const SettingScreen({Key? key}) : super(key: key);
@@ -93,7 +95,7 @@ class _SettingScreenState extends State<SettingScreen> {
               buttonWidth: double.infinity,
               buttonColor: greenColor,
               onButtonTab: () {
-
+                context.read<BottomNavigationProvider>().setCurrentTab = 0;
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                     content: const Text('Changes Safe'),
