@@ -75,7 +75,9 @@ class _ChooseLanguageWidgetState extends State<ChooseLanguageWidget> {
                     value: languagesList[i],
                     child: Text(
                       languagesList[i],
-                      style: CustomTextStyle.kBodyText2,
+                      style: CustomTextStyle.kBodyText2.copyWith(
+                        fontSize: 14.sp,
+                      ),
                     ),
                   ),
               ],

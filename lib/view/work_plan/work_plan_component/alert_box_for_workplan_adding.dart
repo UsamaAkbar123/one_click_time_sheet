@@ -9,7 +9,20 @@ import 'package:one_click_time_sheet/utills/constants/text_styles.dart';
 import 'package:uuid/uuid.dart';
 
 class AddWorkPlanBox extends StatefulWidget {
-  const AddWorkPlanBox({Key? key}) : super(key: key);
+  final bool? isEditMode;
+  final String? id;
+  final String? workPlanName;
+  final DateTime? startTime;
+  final DateTime? endTime;
+
+  const AddWorkPlanBox({
+    Key? key,
+    this.isEditMode,
+    this.id,
+    this.workPlanName,
+    this.startTime,
+    this.endTime,
+  }) : super(key: key);
 
   @override
   State<AddWorkPlanBox> createState() => _AddWorkPlanBoxState();
@@ -26,6 +39,84 @@ class _AddWorkPlanBoxState extends State<AddWorkPlanBox> {
   DateTime endTimeForBackEnd = DateTime.now();
   PreferenceManager preferenceManager = PreferenceManager();
   final Box box = Hive.box('workPlan');
+
+  setStartTimeForFrontAndBackend({
+    TimeOfDay? pickedTime,
+    DateTime? editDateTime,
+  }) {
+    setState(() {
+      workPlanDateForBackend = DateTime(
+        workPlanDateForBackend.year,
+        workPlanDateForBackend.month,
+        workPlanDateForBackend.day,
+        pickedTime?.hour ?? editDateTime!.hour,
+        pickedTime?.minute ?? editDateTime!.minute,
+      );
+    });
+
+    startTimeForBackEnd = workPlanDateForBackend;
+
+    if (preferenceManager.getTimeFormat == '24h') {
+      startTimeForFrontEnd =
+          DateFormat.Hm().addPattern('a').format(workPlanDateForBackend);
+    } else {
+      startTimeForFrontEnd = DateFormat.jm().format(workPlanDateForBackend);
+    }
+  }
+
+  setEndTimeForFrontAndBackend({
+    TimeOfDay? pickedTime,
+    DateTime? editDateTime,
+  }) {
+    setState(() {
+      workPlanDateForBackend = DateTime(
+        workPlanDateForBackend.year,
+        workPlanDateForBackend.month,
+        workPlanDateForBackend.day,
+        pickedTime?.hour ?? editDateTime!.hour,
+        pickedTime?.minute ?? editDateTime!.minute,
+      );
+    });
+
+    endTimeForBackEnd = workPlanDateForBackend;
+    if (preferenceManager.getTimeFormat == '24h') {
+      endTimeForFrontEnd =
+          DateFormat.Hm().addPattern('a').format(workPlanDateForBackend);
+    } else {
+      endTimeForFrontEnd = DateFormat.jm().format(workPlanDateForBackend);
+    }
+  }
+
+  @override
+  void initState() {
+    if (widget.isEditMode == true) {
+      nameController.text = widget.workPlanName ?? '';
+      if (preferenceManager.getTimeFormat == '24h') {
+        startTimeForFrontEnd = DateFormat.Hm()
+            .addPattern('a')
+            .format(widget.startTime ?? DateTime.now());
+      } else {
+        startTimeForFrontEnd =
+            DateFormat.jm().format(widget.startTime ?? DateTime.now());
+      }
+      if (preferenceManager.getTimeFormat == '24h') {
+        endTimeForFrontEnd = DateFormat.Hm()
+            .addPattern('a')
+            .format(widget.endTime ?? DateTime.now());
+      } else {
+        endTimeForFrontEnd =
+            DateFormat.jm().format(widget.endTime ?? DateTime.now());
+      }
+      workPlanDateForFrontEnd = DateFormat('MM/dd/yyyy').format(
+        widget.startTime ?? DateTime.now(),
+      );
+      workPlanDateForBackend = widget.startTime ?? DateTime.now();
+      startTimeForBackEnd = widget.startTime ?? DateTime.now();
+      endTimeForBackEnd = widget.endTime ?? DateTime.now();
+    }
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
@@ -38,7 +129,7 @@ class _AddWorkPlanBoxState extends State<AddWorkPlanBox> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Work Plan Information',
+            'Work',
             style: CustomTextStyle.kHeading2.copyWith(
               fontSize: 14.sp,
             ),
@@ -50,8 +141,8 @@ class _AddWorkPlanBoxState extends State<AddWorkPlanBox> {
               controller: nameController,
               style: CustomTextStyle.kBodyText2,
               decoration: InputDecoration(
-                  contentPadding: EdgeInsets.symmetric(
-                      vertical: 5.0.h, horizontal: 10.0.w),
+                  contentPadding:
+                      EdgeInsets.symmetric(vertical: 5.0.h, horizontal: 10.0.w),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8.r),
                     borderSide: BorderSide(color: greenColor),
@@ -87,12 +178,19 @@ class _AddWorkPlanBoxState extends State<AddWorkPlanBox> {
                 lastDate: DateTime(2030, 12, 31),
               );
               if (dateTime != null) {
-                workPlanDateForFrontEnd =
-                    DateFormat('MM/dd/yyyy').format(
-                      dateTime,
-                    );
+                workPlanDateForFrontEnd = DateFormat('MM/dd/yyyy').format(
+                  dateTime,
+                );
                 workPlanDateForBackend = dateTime;
                 setState(() {});
+                if (widget.isEditMode == true) {
+                  setEndTimeForFrontAndBackend(editDateTime: widget.endTime);
+
+                  /// start time
+                  setStartTimeForFrontAndBackend(
+                    editDateTime: widget.startTime,
+                  );
+                }
               }
             },
             child: Container(
@@ -118,26 +216,7 @@ class _AddWorkPlanBoxState extends State<AddWorkPlanBox> {
                 context: context, //context of current state
               );
               if (pickedTime != null) {
-                setState(() {
-                  workPlanDateForBackend = DateTime(
-                    workPlanDateForBackend.year,
-                    workPlanDateForBackend.month,
-                    workPlanDateForBackend.day,
-                    pickedTime.hour,
-                    pickedTime.minute,
-                  );
-                });
-
-                startTimeForBackEnd = workPlanDateForBackend;
-
-                if (preferenceManager.getTimeFormat == '24h') {
-                  startTimeForFrontEnd = DateFormat.Hm()
-                      .addPattern('a')
-                      .format(workPlanDateForBackend);
-                } else {
-                  startTimeForFrontEnd = DateFormat.jm()
-                      .format(workPlanDateForBackend);
-                }
+                setStartTimeForFrontAndBackend(pickedTime: pickedTime);
               } else {
                 debugPrint("Time is not selected");
               }
@@ -164,25 +243,7 @@ class _AddWorkPlanBoxState extends State<AddWorkPlanBox> {
                 context: context, //context of current state
               );
               if (pickedTime != null) {
-                setState(() {
-                  workPlanDateForBackend = DateTime(
-                    workPlanDateForBackend.year,
-                    workPlanDateForBackend.month,
-                    workPlanDateForBackend.day,
-                    pickedTime.hour,
-                    pickedTime.minute,
-                  );
-                });
-
-                endTimeForBackEnd = workPlanDateForBackend;
-                if (preferenceManager.getTimeFormat == '24h') {
-                  endTimeForFrontEnd = DateFormat.Hm()
-                      .addPattern('a')
-                      .format(workPlanDateForBackend);
-                } else {
-                  endTimeForFrontEnd = DateFormat.jm()
-                      .format(workPlanDateForBackend);
-                }
+                setEndTimeForFrontAndBackend(pickedTime: pickedTime);
               } else {
                 debugPrint("Time is not selected");
               }
@@ -212,28 +273,47 @@ class _AddWorkPlanBoxState extends State<AddWorkPlanBox> {
                   endTimeForFrontEnd == 'select end time') {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
-                    content: const Text(
-                        'Select Date or Start Time or End Time'),
+                    content:
+                        const Text('Select Date or Start Time or End Time'),
                     backgroundColor: redColor,
                   ),
                 );
               } else {
-                const uuid = Uuid();
-                String id = uuid.v4();
-                WorkPlanModel workPlanModel = WorkPlanModel(
-                  id: id,
-                  workPlanName: nameController.text,
-                  startWorkPlanTime: startTimeForBackEnd,
-                  endWorkPlanTime: endTimeForBackEnd,
-                );
+                if (widget.isEditMode == true) {
+                  WorkPlanModel workPlanModel = WorkPlanModel(
+                    id: widget.id ?? '',
+                    workPlanName: nameController.text,
+                    startWorkPlanTime: startTimeForBackEnd,
+                    endWorkPlanTime: endTimeForBackEnd,
+                  );
 
-                await box.put(id, workPlanModel).then((value) {
-                  nameController.clear();
-                  startTimeForFrontEnd = 'select start time';
-                  endTimeForFrontEnd = 'select end time';
-                  workPlanDateForFrontEnd = 'select date';
-                  Navigator.of(context).pop();
-                });
+                  if (box.containsKey(workPlanModel.id)) {
+                    box.put(widget.id, workPlanModel).then((value) {
+                      nameController.clear();
+                      startTimeForFrontEnd = 'select start time';
+                      endTimeForFrontEnd = 'select end time';
+                      workPlanDateForFrontEnd = 'select date';
+                      Navigator.of(context).pop();
+                    });
+                  }
+                } else {
+                  const uuid = Uuid();
+                  String id = uuid.v4();
+                  WorkPlanModel workPlanModel = WorkPlanModel(
+                    id: id,
+                    workPlanName: nameController.text,
+                    startWorkPlanTime: startTimeForBackEnd,
+                    endWorkPlanTime: endTimeForBackEnd,
+                  );
+
+                  await box.put(id, workPlanModel).then((value) {
+                    nameController.clear();
+                    startTimeForFrontEnd = 'select start time';
+                    endTimeForFrontEnd = 'select end time';
+                    workPlanDateForFrontEnd = 'select date';
+                    Navigator.of(context).pop();
+                  });
+                }
               }
             }
           },

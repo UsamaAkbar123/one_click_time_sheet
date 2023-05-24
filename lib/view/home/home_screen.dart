@@ -6,6 +6,7 @@ import 'package:one_click_time_sheet/generated/assets/icons.dart';
 import 'package:one_click_time_sheet/managers/preference_manager.dart';
 import 'package:one_click_time_sheet/model/hive_job_history_model.dart';
 import 'package:one_click_time_sheet/model/work_plan_model.dart';
+import 'package:one_click_time_sheet/provider/bottom_nav_provider.dart';
 import 'package:one_click_time_sheet/utills/constants/colors.dart';
 import 'package:one_click_time_sheet/utills/constants/text_styles.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -14,6 +15,7 @@ import 'package:one_click_time_sheet/view/home/home_screen_components/paid_unpai
 import 'package:one_click_time_sheet/view/home/home_screen_components/refresh_time_button_widget.dart';
 import 'package:one_click_time_sheet/view/home/home_screen_components/start_end_job_box.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -139,7 +141,9 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                       //const Spacer(),
                       IconButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          context.read<BottomNavigationProvider>().setCurrentTab = 2;
+                        },
                         icon: Icon(
                           Icons.edit,
                           color: greyColor,

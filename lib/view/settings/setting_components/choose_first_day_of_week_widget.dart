@@ -87,7 +87,9 @@ class _ChooseFirstDayOfWeekWidgetState
                     value: weekDaysList[i],
                     child: Text(
                       weekDaysList[i],
-                      style: CustomTextStyle.kBodyText2,
+                      style: CustomTextStyle.kBodyText2.copyWith(
+                        fontSize: 14.sp,
+                      ),
                     ),
                   ),
               ],
