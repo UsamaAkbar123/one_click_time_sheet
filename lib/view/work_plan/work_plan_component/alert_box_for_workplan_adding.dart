@@ -129,7 +129,7 @@ class _AddWorkPlanBoxState extends State<AddWorkPlanBox> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Work Plan Information',
+            'Work',
             style: CustomTextStyle.kHeading2.copyWith(
               fontSize: 14.sp,
             ),
