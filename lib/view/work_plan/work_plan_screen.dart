@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:one_click_time_sheet/model/work_plan_model.dart';
@@ -7,7 +8,6 @@ import 'package:one_click_time_sheet/view/work_plan/work_plan_component/alert_bo
 import 'package:one_click_time_sheet/view/work_plan/work_plan_component/appoinment_details_box.dart';
 import 'package:one_click_time_sheet/view/work_plan/work_plan_component/meeting_data_source.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class WorkPlanScreen extends StatefulWidget {
   const WorkPlanScreen({Key? key}) : super(key: key);
