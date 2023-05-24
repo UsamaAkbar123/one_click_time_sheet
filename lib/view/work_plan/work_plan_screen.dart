@@ -67,7 +67,7 @@ class _WorkPlanScreenState extends State<WorkPlanScreen> {
                 Expanded(
                   child: SfCalendar(
                     cellBorderColor: Colors.transparent,
-                    view: CalendarView.day,
+                    view: CalendarView.week,
                     firstDayOfWeek: 1,
                     dataSource: MeetingDateSource(
                       getAppointments(

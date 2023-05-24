@@ -84,7 +84,9 @@ class _ChooseDateFormatWidgetState extends State<ChooseDateFormatWidget> {
                     value: dateFormatList[i],
                     child: Text(
                       dateFormatList[i],
-                      style: CustomTextStyle.kBodyText2,
+                      style: CustomTextStyle.kBodyText2.copyWith(
+                        fontSize: 14.sp,
+                      ),
                     ),
                   ),
               ],

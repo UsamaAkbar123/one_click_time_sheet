@@ -84,7 +84,9 @@ class _StartJobNotificationWidgetState
                     value: startJobNotificationList[i],
                     child: Text(
                       startJobNotificationList[i],
-                      style: CustomTextStyle.kBodyText2,
+                      style: CustomTextStyle.kBodyText2.copyWith(
+                        fontSize: 14.sp,
+                      ),
                     ),
                   ),
               ],
