@@ -30,7 +30,7 @@ class AddWorkPlanBox extends StatefulWidget {
 
 class _AddWorkPlanBoxState extends State<AddWorkPlanBox> {
   final formKey = GlobalKey<FormState>();
-  final nameController = TextEditingController();
+  final nameController = TextEditingController(text: 'work');
   String workPlanDateForFrontEnd = 'select date';
   DateTime workPlanDateForBackend = DateTime.now();
   String startTimeForFrontEnd = 'select start time';
