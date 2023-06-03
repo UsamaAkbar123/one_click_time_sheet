@@ -75,86 +75,96 @@ class _HomeScreenState extends State<HomeScreen> {
             SizedBox(height: 10.h),
 
             /// future work plan widget
-           workPlanBox.isEmpty ? const SizedBox() : ValueListenableBuilder(
-              valueListenable: workPlanBox.listenable(),
-              builder: (context, Box box, widget) {
-                List<WorkPlanModel> workPlanList = [];
-                if (workPlanBox.isNotEmpty) {
-                  if (box.isNotEmpty) {
-                    List<dynamic> dynamicWorkPlanList = box.values.toList();
+            workPlanBox.isEmpty
+                ? const SizedBox()
+                : ValueListenableBuilder(
+                    valueListenable: workPlanBox.listenable(),
+                    builder: (context, Box box, widget) {
+                      List<WorkPlanModel> workPlanList = [];
+                      if (workPlanBox.isNotEmpty) {
+                        if (box.isNotEmpty) {
+                          List<dynamic> dynamicWorkPlanList =
+                              box.values.toList();
 
-                    if (dynamicWorkPlanList.isNotEmpty) {
-                      workPlanList = dynamicWorkPlanList.cast<WorkPlanModel>();
-                    }
-                  }
-                }
-                return Container(
-                  height: 50.h,
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    border: Border.all(color: blackColor),
-                  ),
-                  child: Row(
-                    children: [
-                      Text(
-                        AppLocalizations.of(context)?.homeScreenPlan ?? '',
-                        style: CustomTextStyle.kHeading2,
-                      ),
-                      SizedBox(width: 10.w),
-                      Expanded(
-                        child: ListView.separated(
-                          shrinkWrap: true,
-                          scrollDirection: Axis.horizontal,
-                          itemBuilder: (context, index) {
-                            String startTime;
-                            String endTime;
-                            if (preferenceManager.getTimeFormat == '12h') {
-                              startTime = DateFormat('h:mm').format(
-                                  workPlanList[index].startWorkPlanTime);
-                              endTime = DateFormat('h:mm')
-                                  .format(workPlanList[index].endWorkPlanTime);
-                            } else {
-                              startTime = DateFormat('H:mm').format(
-                                  workPlanList[index].startWorkPlanTime);
-                              endTime = DateFormat('H:mm')
-                                  .format(workPlanList[index].endWorkPlanTime);
-                            }
+                          if (dynamicWorkPlanList.isNotEmpty) {
+                            workPlanList =
+                                dynamicWorkPlanList.cast<WorkPlanModel>();
+                          }
+                        }
+                      }
+                      return Container(
+                        height: 50.h,
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                          border: Border.all(color: blackColor),
+                        ),
+                        child: Row(
+                          children: [
+                            Text(
+                              AppLocalizations.of(context)?.homeScreenPlan ??
+                                  '',
+                              style: CustomTextStyle.kHeading2,
+                            ),
+                            SizedBox(width: 10.w),
+                            Expanded(
+                              child: ListView.separated(
+                                shrinkWrap: true,
+                                scrollDirection: Axis.horizontal,
+                                itemBuilder: (context, index) {
+                                  String startTime;
+                                  String endTime;
+                                  if (preferenceManager.getTimeFormat ==
+                                      '12h') {
+                                    startTime = DateFormat('h:mm').format(
+                                        workPlanList[index].startWorkPlanTime);
+                                    endTime = DateFormat('h:mm').format(
+                                        workPlanList[index].endWorkPlanTime);
+                                  } else {
+                                    startTime = DateFormat('H:mm').format(
+                                        workPlanList[index].startWorkPlanTime);
+                                    endTime = DateFormat('H:mm').format(
+                                        workPlanList[index].endWorkPlanTime);
+                                  }
 
-                            return Center(
-                              child: CustomWorkPlanTime(
-                                startTime: startTime,
-                                endTime: endTime,
+                                  return Center(
+                                    child: CustomWorkPlanTime(
+                                      startTime: startTime,
+                                      endTime: endTime,
+                                    ),
+                                  );
+                                },
+                                separatorBuilder:
+                                    (BuildContext context, int index) {
+                                  return Center(
+                                    child: Text(
+                                      ',',
+                                      style: CustomTextStyle.kHeading2,
+                                    ),
+                                  );
+                                },
+                                itemCount: workPlanList.length < 2
+                                    ? workPlanList.length
+                                    : 2,
                               ),
-                            );
-                          },
-                          separatorBuilder: (BuildContext context, int index) {
-                            return Center(
-                              child: Text(
-                                ',',
-                                style: CustomTextStyle.kHeading2,
+                            ),
+                            //const Spacer(),
+                            IconButton(
+                              onPressed: () {
+                                context
+                                    .read<BottomNavigationProvider>()
+                                    .setCurrentTab = 2;
+                              },
+                              icon: Icon(
+                                Icons.edit,
+                                color: greyColor,
+                                size: 30.h,
                               ),
-                            );
-                          },
-                          itemCount:
-                              workPlanList.length < 2 ? workPlanList.length : 2,
+                            ),
+                          ],
                         ),
-                      ),
-                      //const Spacer(),
-                      IconButton(
-                        onPressed: () {
-                          context.read<BottomNavigationProvider>().setCurrentTab = 2;
-                        },
-                        icon: Icon(
-                          Icons.edit,
-                          color: greyColor,
-                          size: 30.h,
-                        ),
-                      ),
-                    ],
+                      );
+                    },
                   ),
-                );
-              },
-            ),
             SizedBox(height: 5.h),
 
             /// refresh time widget
