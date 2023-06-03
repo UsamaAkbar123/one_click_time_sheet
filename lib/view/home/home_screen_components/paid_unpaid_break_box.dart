@@ -12,9 +12,9 @@ class PaidUnPaidBreakBox extends StatelessWidget {
   final Color color;
   final String iconPath;
   final DateTime startingDate;
-  final VoidCallback plusMinuteTap;
-  final VoidCallback minusMinuteTap;
-  final VoidCallback manualTimeTap;
+  final VoidCallback? plusMinuteTap;
+  final VoidCallback? minusMinuteTap;
+  final VoidCallback? manualTimeTap;
 
   static PreferenceManager preferenceManager = PreferenceManager();
 
@@ -24,9 +24,9 @@ class PaidUnPaidBreakBox extends StatelessWidget {
     required this.breakStatus,
     required this.color,
     required this.iconPath,
-    required this.plusMinuteTap,
-    required this.minusMinuteTap,
-    required this.manualTimeTap,
+    this.plusMinuteTap,
+    this.minusMinuteTap,
+    this.manualTimeTap,
     required this.startingDate,
   });
 

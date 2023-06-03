@@ -4,12 +4,12 @@ import 'package:one_click_time_sheet/utills/constants/colors.dart';
 import 'package:one_click_time_sheet/utills/constants/text_styles.dart';
 
 class PlusMinusManualTimeAdjustmentForPaidUnPaid extends StatelessWidget {
-  final VoidCallback onTab;
+  final VoidCallback? onTab;
   final String text;
 
   const PlusMinusManualTimeAdjustmentForPaidUnPaid({
     super.key,
-    required this.onTab,
+    this.onTab,
     required this.text,
   });
 
