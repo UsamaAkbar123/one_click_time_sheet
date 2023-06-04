@@ -518,19 +518,33 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             SizedBox(height: 20.h),
 
-            ListView.builder(
-              shrinkWrap: true,
-              itemCount: jobHistory.length,
-              itemBuilder: (context, index) {
-                return Text(
-                  "${DateFormat('d.M.y').format(jobHistory[index].time ?? DateTime.now())}-"
-                  "${DateFormat('h:mm a').format(jobHistory[index].time ?? DateTime.now())}-${jobHistory[index].type}",
-                  style: CustomTextStyle.kBodyText1.copyWith(
-                      color: getTextColor(jobHistory[index].type ?? ''),
-                      fontWeight: FontWeight.w400),
-                );
-              },
-            ),
+            jobHistory.isEmpty
+                ? const SizedBox()
+                : Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Current Job',
+                        style: CustomTextStyle.kBodyText1.copyWith(
+                            color: blueColor, fontWeight: FontWeight.w600),
+                      ),
+                      SizedBox(height: 10.h),
+                      ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: jobHistory.length,
+                        itemBuilder: (context, index) {
+                          return Text(
+                            "${DateFormat('d.M.y').format(jobHistory[index].time ?? DateTime.now())}-"
+                            "${DateFormat('h:mm a').format(jobHistory[index].time ?? DateTime.now())}-${jobHistory[index].type}",
+                            style: CustomTextStyle.kBodyText1.copyWith(
+                                color:
+                                    getTextColor(jobHistory[index].type ?? ''),
+                                fontWeight: FontWeight.w400),
+                          );
+                        },
+                      ),
+                    ],
+                  ),
 
             SizedBox(height: 10.h),
             jobHistoryBox.isNotEmpty
@@ -562,9 +576,6 @@ class _HomeScreenState extends State<HomeScreen> {
                                     List<HistoryElement> historyList =
                                         jobList[j].historyElement ?? [];
 
-                                    historyList.sort(
-                                        (a, b) => b.time!.compareTo(a.time!));
-
                                     return Padding(
                                       padding:
                                           EdgeInsets.symmetric(vertical: 15.h),
@@ -575,16 +586,17 @@ class _HomeScreenState extends State<HomeScreen> {
                                         padding: EdgeInsets.zero,
                                         shrinkWrap: true,
                                         itemBuilder: (context, k) {
+                                          final reversedIndex =
+                                              historyList.length - 1 - k;
                                           return Text(
-                                            "${DateFormat('d.M.y').format(historyList[k].time ?? DateTime.now())}-"
-                                            "${DateFormat('h:mm a').format(historyList[k].time ?? DateTime.now())}-${historyList[k].type}",
+                                            "${DateFormat('d.M.y').format(historyList[reversedIndex].time ?? DateTime.now())}-"
+                                            "${DateFormat('h:mm a').format(historyList[reversedIndex].time ?? DateTime.now())}-${historyList[reversedIndex].type}",
                                             style: CustomTextStyle.kBodyText1
                                                 .copyWith(
-                                                    color: getTextColor(jobList[
-                                                                j]
-                                                            .historyElement?[k]
-                                                            .type ??
-                                                        ''),
+                                                    color: getTextColor(
+                                                        historyList[reversedIndex]
+                                                                .type ??
+                                                            ''),
                                                     fontWeight:
                                                         FontWeight.w400),
                                           );
@@ -602,7 +614,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           });
                     })
                 : const Center(
-                    child: Text("No history found"),
+                    child: Text(""),
                   ),
 
             SizedBox(height: 20.h),
