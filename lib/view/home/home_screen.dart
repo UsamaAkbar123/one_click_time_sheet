@@ -304,13 +304,14 @@ class _HomeScreenState extends State<HomeScreen> {
                           HistoryElement(time: endJob, type: "End job");
                       jobHistory.add(historyElement);
 
-                      String dateKey =
-                          DateFormat('EEEE, d, M, y').format(DateTime.now());
+                      String dateKey = DateFormat('EEEE, d, M, y')
+                          .format(DateTime.now().add(const Duration(days: 1)));
                       final Box box = Hive.box('jobHistoryBox');
                       JobHistoryModel jobHistoryModel = JobHistoryModel(
-                          id: DateFormat('EEEE, d, M, y')
-                              .format(DateTime.now()),
-                          historyElement: jobHistory);
+                        id: DateFormat('EEEE, d, M, y').format(DateTime.now()),
+                        historyElement: jobHistory,
+                        timestamp: DateTime.now(),
+                      );
 
                       List<JobHistoryModel> jobHistoryList = [];
                       if (box.isNotEmpty) {
@@ -493,6 +494,8 @@ class _HomeScreenState extends State<HomeScreen> {
                           itemBuilder: (context, i) {
                             List<JobHistoryModel> jobList =
                                 box.getAt(i).cast<JobHistoryModel>();
+                            jobList.sort(
+                                (a, b) => b.timestamp.compareTo(a.timestamp));
                             String dataKey = box.keyAt(i);
                             return Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
