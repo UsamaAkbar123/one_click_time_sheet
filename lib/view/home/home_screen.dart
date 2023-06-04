@@ -288,51 +288,63 @@ class _HomeScreenState extends State<HomeScreen> {
               startingDate: endJob,
               color: currentIndex == 1 ? greyColor.withOpacity(0.3) : redColor,
               time: 0,
-              onTab: currentIndex == 1
-                  ? null
-                  : () async {
-                      currentIndex = 1;
-
-                      setState(() {
-                        if (isEndJobSelectCustomTime) {
-                          endJob = endJob;
-                        } else {
-                          endJob = DateTime.now();
-                        }
-                      });
-                      HistoryElement historyElement =
-                          HistoryElement(time: endJob, type: "End job");
-                      jobHistory.add(historyElement);
-
-                      String dateKey =
-                          DateFormat('EEEE, d, M, y').format(DateTime.now());
-                      final Box box = Hive.box('jobHistoryBox');
-                      JobHistoryModel jobHistoryModel = JobHistoryModel(
-                        id: DateFormat('EEEE, d, M, y').format(DateTime.now()),
-                        historyElement: jobHistory,
-                        timestamp: DateTime.now(),
+              onTab: currentIndex == -1
+                  ? () {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: const Text('Please first start the job'),
+                          backgroundColor: redColor,
+                          showCloseIcon: true,
+                          closeIconColor: whiteColor,
+                        ),
                       );
+                    }
+                  : currentIndex == 1
+                      ? null
+                      : () async {
+                          currentIndex = 1;
 
-                      List<JobHistoryModel> jobHistoryList = [];
-                      if (box.isNotEmpty) {
-                        List? dynamicList = box.get(dateKey);
-                        if (dynamicList != null) {
-                          List<JobHistoryModel> boxDataList =
-                              dynamicList.cast<JobHistoryModel>();
-                          jobHistoryData = boxDataList;
-                          boxDataList.add(jobHistoryModel);
-                          jobHistoryList = boxDataList;
-                        } else {
-                          jobHistoryList.add(jobHistoryModel);
-                        }
-                      } else {
-                        jobHistoryList.add(jobHistoryModel);
-                      }
+                          setState(() {
+                            if (isEndJobSelectCustomTime) {
+                              endJob = endJob;
+                            } else {
+                              endJob = DateTime.now();
+                            }
+                          });
+                          HistoryElement historyElement =
+                              HistoryElement(time: endJob, type: "End job");
+                          jobHistory.add(historyElement);
 
-                      box.put(dateKey, jobHistoryList).then((value) {
-                        jobHistory = [];
-                      });
-                    },
+                          String dateKey = DateFormat('EEEE, d, M, y')
+                              .format(DateTime.now());
+                          final Box box = Hive.box('jobHistoryBox');
+                          JobHistoryModel jobHistoryModel = JobHistoryModel(
+                            id: DateFormat('EEEE, d, M, y')
+                                .format(DateTime.now()),
+                            historyElement: jobHistory,
+                            timestamp: DateTime.now(),
+                          );
+
+                          List<JobHistoryModel> jobHistoryList = [];
+                          if (box.isNotEmpty) {
+                            List? dynamicList = box.get(dateKey);
+                            if (dynamicList != null) {
+                              List<JobHistoryModel> boxDataList =
+                                  dynamicList.cast<JobHistoryModel>();
+                              jobHistoryData = boxDataList;
+                              boxDataList.add(jobHistoryModel);
+                              jobHistoryList = boxDataList;
+                            } else {
+                              jobHistoryList.add(jobHistoryModel);
+                            }
+                          } else {
+                            jobHistoryList.add(jobHistoryModel);
+                          }
+
+                          box.put(dateKey, jobHistoryList).then((value) {
+                            jobHistory = [];
+                          });
+                        },
             ),
             SizedBox(height: 8.h),
             Row(
@@ -381,21 +393,33 @@ class _HomeScreenState extends State<HomeScreen> {
                             }
                           },
                     startingDate: paidBreak,
-                    onTab: currentIndex == 2
-                        ? null
-                        : () {
-                            currentIndex = 2;
-                            setState(() {
-                              if (isPaidBreakSelectCustomTime) {
-                                paidBreak = paidBreak;
-                              } else {
-                                paidBreak = DateTime.now();
-                              }
-                            });
-                            HistoryElement historyElement = HistoryElement(
-                                time: paidBreak, type: "Paid break");
-                            jobHistory.add(historyElement);
-                          },
+                    onTab: currentIndex == -1
+                        ? () {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content:
+                                    const Text('Please first start the job'),
+                                backgroundColor: redColor,
+                                showCloseIcon: true,
+                                closeIconColor: whiteColor,
+                              ),
+                            );
+                          }
+                        : currentIndex == 2
+                            ? null
+                            : () {
+                                currentIndex = 2;
+                                setState(() {
+                                  if (isPaidBreakSelectCustomTime) {
+                                    paidBreak = paidBreak;
+                                  } else {
+                                    paidBreak = DateTime.now();
+                                  }
+                                });
+                                HistoryElement historyElement = HistoryElement(
+                                    time: paidBreak, type: "Paid break");
+                                jobHistory.add(historyElement);
+                              },
                     breakStatus:
                         AppLocalizations.of(context)?.homeScreenPaidBreak ?? '',
                     color: currentIndex == 2
@@ -449,21 +473,33 @@ class _HomeScreenState extends State<HomeScreen> {
                               debugPrint("Time is not selected");
                             }
                           },
-                    onTab: currentIndex == 3
-                        ? null
-                        : () {
-                            currentIndex = 3;
-                            setState(() {
-                              if (isUnpaidBreakSelectCustomTime) {
-                                unPaidBreak = unPaidBreak;
-                              } else {
-                                unPaidBreak = DateTime.now();
-                              }
-                            });
-                            HistoryElement historyElement = HistoryElement(
-                                time: unPaidBreak, type: "Unpaid break");
-                            jobHistory.add(historyElement);
-                          },
+                    onTab: currentIndex == -1
+                        ? () {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content:
+                                    const Text('Please first start the job'),
+                                backgroundColor: redColor,
+                                showCloseIcon: true,
+                                closeIconColor: whiteColor,
+                              ),
+                            );
+                          }
+                        : currentIndex == 3
+                            ? null
+                            : () {
+                                currentIndex = 3;
+                                setState(() {
+                                  if (isUnpaidBreakSelectCustomTime) {
+                                    unPaidBreak = unPaidBreak;
+                                  } else {
+                                    unPaidBreak = DateTime.now();
+                                  }
+                                });
+                                HistoryElement historyElement = HistoryElement(
+                                    time: unPaidBreak, type: "Unpaid break");
+                                jobHistory.add(historyElement);
+                              },
                     breakStatus:
                         AppLocalizations.of(context)?.homeScreenUnPaidBreak ??
                             '',

@@ -100,6 +100,8 @@ class _SettingScreenState extends State<SettingScreen> {
                   SnackBar(
                     content: const Text('Changes Safe'),
                     backgroundColor: greenColor,
+                    showCloseIcon: true,
+                    closeIconColor: whiteColor,
                   ),
                 );
 
