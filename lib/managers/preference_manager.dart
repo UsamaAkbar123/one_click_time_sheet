@@ -55,26 +55,29 @@ class PreferenceManager {
       _prefs?.setBool(_Keys.firstTimeLaunch, value);
 
   String get getTimeFormat => _prefs?.getString(_Keys.timeFormat) ?? '24h';
-  set setTimeFormat(String value) => _prefs?.setString(_Keys.timeFormat,value) ?? '24h';
+  set setTimeFormat(String value) =>
+      _prefs?.setString(_Keys.timeFormat, value) ?? '24h';
 
-  String get getDateFormat => _prefs?.getString(_Keys.dateFormat) ?? 'dd/mm/yyyy';
-  set setDateFormat(String value) => _prefs?.setString(_Keys.dateFormat,value) ?? 'dd/mm/yyyy';
-
+  String get getDateFormat =>
+      _prefs?.getString(_Keys.dateFormat) ?? 'dd/MM/yyyy';
+  set setDateFormat(String value) =>
+      _prefs?.setString(_Keys.dateFormat, value) ?? 'dd/MM/yyyy';
 
   String get getLanguage => _prefs?.getString(_Keys.language) ?? '';
-  set setLanguage(String value) => _prefs?.setString(_Keys.language,value) ?? '';
-
+  set setLanguage(String value) =>
+      _prefs?.setString(_Keys.language, value) ?? '';
 
   String get getFirstDayOfWeek => _prefs?.getString(_Keys.firstDayOfWeek) ?? '';
-  set setFirstDayOfWeek(String value) => _prefs?.setString(_Keys.firstDayOfWeek,value) ?? '';
+  set setFirstDayOfWeek(String value) =>
+      _prefs?.setString(_Keys.firstDayOfWeek, value) ?? '';
 
+  String get getStartJobNotification =>
+      _prefs?.getString(_Keys.startJobNotification) ?? '';
+  set setStartJobNotification(String value) =>
+      _prefs?.setString(_Keys.startJobNotification, value) ?? '';
 
-  String get getStartJobNotification => _prefs?.getString(_Keys.startJobNotification) ?? '';
-  set setStartJobNotification(String value) => _prefs?.setString(_Keys.startJobNotification,value) ?? '';
-
-
-  String get getEndJobNotification => _prefs?.getString(_Keys.endJobNotification) ?? '';
-  set setEndJobNotification(String value) => _prefs?.setString(_Keys.endJobNotification,value) ?? '';
-
-
+  String get getEndJobNotification =>
+      _prefs?.getString(_Keys.endJobNotification) ?? '';
+  set setEndJobNotification(String value) =>
+      _prefs?.setString(_Keys.endJobNotification, value) ?? '';
 }

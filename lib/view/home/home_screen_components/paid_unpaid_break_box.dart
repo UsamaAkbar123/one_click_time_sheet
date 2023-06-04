@@ -12,18 +12,22 @@ class PaidUnPaidBreakBox extends StatelessWidget {
   final Color color;
   final String iconPath;
   final DateTime startingDate;
-  final VoidCallback plusMinuteTap;
-  final VoidCallback minusMinuteTap;
-  final VoidCallback manualTimeTap;
+  final VoidCallback? plusMinuteTap;
+  final VoidCallback? minusMinuteTap;
+  final VoidCallback? manualTimeTap;
 
   static PreferenceManager preferenceManager = PreferenceManager();
 
   const PaidUnPaidBreakBox({
     super.key,
-     this.onTab,
+    this.onTab,
     required this.breakStatus,
     required this.color,
-    required this.iconPath, required this.plusMinuteTap, required this.minusMinuteTap, required this.manualTimeTap, required this.startingDate,
+    required this.iconPath,
+    this.plusMinuteTap,
+    this.minusMinuteTap,
+    this.manualTimeTap,
+    required this.startingDate,
   });
 
   @override
@@ -50,7 +54,10 @@ class PaidUnPaidBreakBox extends StatelessWidget {
                 children: [
                   SizedBox(
                     height: 40.h,
-                    child: Image.asset(iconPath,fit: BoxFit.cover,),
+                    child: Image.asset(
+                      iconPath,
+                      fit: BoxFit.cover,
+                    ),
                   ),
                   // SizedBox(width: 5.w),
                   Column(
@@ -62,23 +69,22 @@ class PaidUnPaidBreakBox extends StatelessWidget {
                       ),
                       SizedBox(height: 5.h),
                       preferenceManager.getTimeFormat == '' ||
-                          preferenceManager.getTimeFormat == '12h' ? Text(
-                        DateFormat.jm().format(startingDate),
-                        style:
-                            CustomTextStyle.kHeading1.copyWith(fontSize: 16.sp),
-                      ):Text(
-                        DateFormat.Hm().addPattern('a').format(startingDate),
-                        style:
-                        CustomTextStyle.kHeading1.copyWith(fontSize: 16.sp),
-                      ),
-                      preferenceManager.getDateFormat == '' ? Text(
-                        DateFormat('EEEE, d, M, y').format(startingDate),
-                        style:
-                            CustomTextStyle.kBodyText1.copyWith(fontSize: 11.sp),
-                      ):Text(
-                        DateFormat(preferenceManager.getDateFormat).format(startingDate),
-                        style:
-                        CustomTextStyle.kBodyText1.copyWith(fontSize: 11.sp),
+                              preferenceManager.getTimeFormat == '12h'
+                          ? Text(
+                              DateFormat.jm().format(startingDate),
+                              style: CustomTextStyle.kHeading1
+                                  .copyWith(fontSize: 16.sp),
+                            )
+                          : Text(
+                              DateFormat.Hm().format(startingDate),
+                              style: CustomTextStyle.kHeading1
+                                  .copyWith(fontSize: 16.sp),
+                            ),
+                      Text(
+                        DateFormat(preferenceManager.getDateFormat)
+                            .format(startingDate),
+                        style: CustomTextStyle.kBodyText1
+                            .copyWith(fontSize: 11.sp),
                       ),
                     ],
                   ),
