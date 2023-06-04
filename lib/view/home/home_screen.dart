@@ -481,6 +481,21 @@ class _HomeScreenState extends State<HomeScreen> {
               style: CustomTextStyle.kHeading2,
             ),
             SizedBox(height: 20.h),
+
+            ListView.builder(
+              shrinkWrap: true,
+              itemCount: jobHistory.length,
+              itemBuilder: (context, index) {
+                return Text(
+                  "${DateFormat('d.M.y').format(jobHistory[index].time ?? DateTime.now())}-"
+                  "${DateFormat('h:mm a').format(jobHistory[index].time ?? DateTime.now())}-${jobHistory[index].type}",
+                  style: CustomTextStyle.kBodyText1.copyWith(
+                      color: getTextColor(jobHistory[index].type ?? ''),
+                      fontWeight: FontWeight.w400),
+                );
+              },
+            ),
+
             SizedBox(height: 10.h),
             jobHistoryBox.isNotEmpty
                 ? ValueListenableBuilder(
