@@ -304,8 +304,8 @@ class _HomeScreenState extends State<HomeScreen> {
                           HistoryElement(time: endJob, type: "End job");
                       jobHistory.add(historyElement);
 
-                      String dateKey = DateFormat('EEEE, d, M, y')
-                          .format(DateTime.now().add(const Duration(days: 1)));
+                      String dateKey =
+                          DateFormat('EEEE, d, M, y').format(DateTime.now());
                       final Box box = Hive.box('jobHistoryBox');
                       JobHistoryModel jobHistoryModel = JobHistoryModel(
                         id: DateFormat('EEEE, d, M, y').format(DateTime.now()),
@@ -508,14 +508,25 @@ class _HomeScreenState extends State<HomeScreen> {
                                 ),
                                 ListView.builder(
                                   itemBuilder: (context, j) {
+                                    List<HistoryElement> historyList =
+                                        jobList[j].historyElement ?? [];
+
+                                    historyList.sort(
+                                        (a, b) => b.time!.compareTo(a.time!));
+
                                     return Padding(
                                       padding:
                                           EdgeInsets.symmetric(vertical: 15.h),
                                       child: ListView.builder(
+                                        itemCount: historyList.length,
+                                        physics:
+                                            const NeverScrollableScrollPhysics(),
+                                        padding: EdgeInsets.zero,
+                                        shrinkWrap: true,
                                         itemBuilder: (context, k) {
                                           return Text(
-                                            "${DateFormat('d.M.y').format(jobList[j].historyElement?[k].time ?? DateTime.now())}-"
-                                            "${DateFormat('h:mm a').format(jobList[j].historyElement?[k].time ?? DateTime.now())}-${jobList[j].historyElement?[k].type}",
+                                            "${DateFormat('d.M.y').format(historyList[k].time ?? DateTime.now())}-"
+                                            "${DateFormat('h:mm a').format(historyList[k].time ?? DateTime.now())}-${historyList[k].type}",
                                             style: CustomTextStyle.kBodyText1
                                                 .copyWith(
                                                     color: getTextColor(jobList[
@@ -527,12 +538,6 @@ class _HomeScreenState extends State<HomeScreen> {
                                                         FontWeight.w400),
                                           );
                                         },
-                                        itemCount:
-                                            jobList[j].historyElement?.length,
-                                        physics:
-                                            const NeverScrollableScrollPhysics(),
-                                        padding: EdgeInsets.zero,
-                                        shrinkWrap: true,
                                       ),
                                     );
                                   },
