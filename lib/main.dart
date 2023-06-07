@@ -20,6 +20,7 @@ void main() async {
   Hive.registerAdapter(WorkPlanModelAdapter());
   await Hive.openBox('jobHistoryBox');
   await Hive.openBox('workPlan');
+  await Hive.openBox('currentWorkHistoryElement');
   CustomTextStyle();
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
       .then((_) {

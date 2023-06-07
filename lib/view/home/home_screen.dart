@@ -28,6 +28,7 @@ class _HomeScreenState extends State<HomeScreen> {
   DateTime nowDateTime = DateTime.now();
   final Box jobHistoryBox = Hive.box('jobHistoryBox');
   final Box workPlanBox = Hive.box('workPlan');
+  final Box currentWorkHistoryElement = Hive.box('currentWorkHistoryElement');
   List<JobHistoryModel> jobHistoryData = [];
   PreferenceManager preferenceManager = PreferenceManager();
   final int _seconds = 0;
@@ -40,8 +41,6 @@ class _HomeScreenState extends State<HomeScreen> {
   bool isEndJobSelectCustomTime = false;
   bool isPaidBreakSelectCustomTime = false;
   bool isUnpaidBreakSelectCustomTime = false;
-
-  List<HistoryElement> jobHistory = [];
 
   int currentIndex = -1;
 
@@ -238,7 +237,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       });
                       HistoryElement historyElement =
                           HistoryElement(time: startJobTime, type: "Start job");
-                      jobHistory.add(historyElement);
+
+                      await currentWorkHistoryElement.add(historyElement);
                     },
               time: _seconds,
               startingDate: startJobTime,
@@ -313,7 +313,15 @@ class _HomeScreenState extends State<HomeScreen> {
                           });
                           HistoryElement historyElement =
                               HistoryElement(time: endJob, type: "End job");
-                          jobHistory.add(historyElement);
+
+                          await currentWorkHistoryElement.add(historyElement);
+
+                          List<HistoryElement> jobList =
+                              currentWorkHistoryElement.values
+                                  .toList()
+                                  .cast<HistoryElement>();
+
+                          await currentWorkHistoryElement.clear();
 
                           String dateKey = DateFormat('EEEE, d, M, y')
                               .format(DateTime.now());
@@ -321,7 +329,8 @@ class _HomeScreenState extends State<HomeScreen> {
                           JobHistoryModel jobHistoryModel = JobHistoryModel(
                             id: DateFormat('EEEE, d, M, y')
                                 .format(DateTime.now()),
-                            historyElement: jobHistory,
+                            // historyElement: jobHistory,
+                            historyElement: jobList,
                             timestamp: DateTime.now(),
                           );
 
@@ -332,6 +341,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               List<JobHistoryModel> boxDataList =
                                   dynamicList.cast<JobHistoryModel>();
                               jobHistoryData = boxDataList;
+
                               boxDataList.add(jobHistoryModel);
                               jobHistoryList = boxDataList;
                             } else {
@@ -341,9 +351,9 @@ class _HomeScreenState extends State<HomeScreen> {
                             jobHistoryList.add(jobHistoryModel);
                           }
 
-                          box.put(dateKey, jobHistoryList).then((value) {
-                            jobHistory = [];
-                          });
+                          box.put(dateKey, jobHistoryList).then((value) {});
+
+                          jobList = [];
                         },
             ),
             SizedBox(height: 8.h),
@@ -407,7 +417,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           }
                         : currentIndex == 2
                             ? null
-                            : () {
+                            : () async {
                                 currentIndex = 2;
                                 setState(() {
                                   if (isPaidBreakSelectCustomTime) {
@@ -418,7 +428,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                 });
                                 HistoryElement historyElement = HistoryElement(
                                     time: paidBreak, type: "Paid break");
-                                jobHistory.add(historyElement);
+
+                                await currentWorkHistoryElement
+                                    .add(historyElement);
                               },
                     breakStatus:
                         AppLocalizations.of(context)?.homeScreenPaidBreak ?? '',
@@ -487,7 +499,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           }
                         : currentIndex == 3
                             ? null
-                            : () {
+                            : () async {
                                 currentIndex = 3;
                                 setState(() {
                                   if (isUnpaidBreakSelectCustomTime) {
@@ -498,7 +510,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                 });
                                 HistoryElement historyElement = HistoryElement(
                                     time: unPaidBreak, type: "Unpaid break");
-                                jobHistory.add(historyElement);
+
+                                await currentWorkHistoryElement
+                                    .add(historyElement);
                               },
                     breakStatus:
                         AppLocalizations.of(context)?.homeScreenUnPaidBreak ??
@@ -518,32 +532,41 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             SizedBox(height: 20.h),
 
-            jobHistory.isEmpty
+            currentWorkHistoryElement.isEmpty
                 ? const SizedBox()
-                : Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Current Job',
-                        style: CustomTextStyle.kBodyText1.copyWith(
-                            color: blueColor, fontWeight: FontWeight.w600),
-                      ),
-                      SizedBox(height: 10.h),
-                      ListView.builder(
-                        shrinkWrap: true,
-                        itemCount: jobHistory.length,
-                        itemBuilder: (context, index) {
-                          return Text(
-                            "${DateFormat('d.M.y').format(jobHistory[index].time ?? DateTime.now())}-"
-                            "${DateFormat('h:mm a').format(jobHistory[index].time ?? DateTime.now())}-${jobHistory[index].type}",
+                : ValueListenableBuilder(
+                    valueListenable: currentWorkHistoryElement.listenable(),
+                    builder: (context, Box box, widget) {
+                      List<HistoryElement> jobList = currentWorkHistoryElement
+                          .values
+                          .toList()
+                          .cast<HistoryElement>();
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Current Job',
                             style: CustomTextStyle.kBodyText1.copyWith(
-                                color:
-                                    getTextColor(jobHistory[index].type ?? ''),
-                                fontWeight: FontWeight.w400),
-                          );
-                        },
-                      ),
-                    ],
+                                color: blueColor, fontWeight: FontWeight.w600),
+                          ),
+                          SizedBox(height: 10.h),
+                          ListView.builder(
+                            shrinkWrap: true,
+                            itemCount: jobList.length,
+                            itemBuilder: (context, index) {
+                              return Text(
+                                "${DateFormat('d.M.y').format(jobList[index].time ?? DateTime.now())}-"
+                                "${DateFormat('h:mm a').format(jobList[index].time ?? DateTime.now())}-${jobList[index].type}",
+                                style: CustomTextStyle.kBodyText1.copyWith(
+                                    color:
+                                        getTextColor(jobList[index].type ?? ''),
+                                    fontWeight: FontWeight.w400),
+                              );
+                            },
+                          ),
+                        ],
+                      );
+                    },
                   ),
 
             SizedBox(height: 10.h),
