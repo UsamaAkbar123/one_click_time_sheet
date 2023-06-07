@@ -67,9 +67,10 @@ class PreferenceManager {
   set setLanguage(String value) =>
       _prefs?.setString(_Keys.language, value) ?? '';
 
-  String get getFirstDayOfWeek => _prefs?.getString(_Keys.firstDayOfWeek) ?? '';
+  String get getFirstDayOfWeek =>
+      _prefs?.getString(_Keys.firstDayOfWeek) ?? 'Monday';
   set setFirstDayOfWeek(String value) =>
-      _prefs?.setString(_Keys.firstDayOfWeek, value) ?? '';
+      _prefs?.setString(_Keys.firstDayOfWeek, value) ?? 'Monday';
 
   String get getStartJobNotification =>
       _prefs?.getString(_Keys.startJobNotification) ?? '';

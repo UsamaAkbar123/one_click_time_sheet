@@ -22,6 +22,27 @@ class _WorkPlanScreenState extends State<WorkPlanScreen> {
   PreferenceManager preferenceManager = PreferenceManager();
   final Box box = Hive.box('workPlan');
 
+  int getFirstDayOfWeek(String weekDay) {
+    switch (weekDay) {
+      case 'Monday':
+        return 1;
+      case 'Tuesday':
+        return 2;
+      case 'Wednesday':
+        return 3;
+      case 'Thursday':
+        return 4;
+      case 'Friday':
+        return 5;
+      case 'Saturday':
+        return 6;
+      case 'Sunday':
+        return 7;
+      default:
+        return 7;
+    }
+  }
+
   void calendarTapped(CalendarTapDetails calendarTapDetails) {
     setState(() {});
     calendarTapDetail = calendarTapDetails;
@@ -74,7 +95,8 @@ class _WorkPlanScreenState extends State<WorkPlanScreen> {
                           ? 'hh:mm a'
                           : 'HH:mm',
                     ),
-                    firstDayOfWeek: 1,
+                    firstDayOfWeek:
+                        getFirstDayOfWeek(preferenceManager.getFirstDayOfWeek),
                     dataSource: MeetingDateSource(
                       getAppointments(
                         workPlanList: workPlanList,
