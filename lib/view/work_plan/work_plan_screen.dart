@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hive_flutter/adapters.dart';
+import 'package:one_click_time_sheet/managers/preference_manager.dart';
 import 'package:one_click_time_sheet/model/work_plan_model.dart';
 import 'package:one_click_time_sheet/utills/constants/text_styles.dart';
 import 'package:one_click_time_sheet/view/work_plan/work_plan_component/alert_box_for_workplan_adding.dart';
@@ -18,7 +19,7 @@ class WorkPlanScreen extends StatefulWidget {
 
 class _WorkPlanScreenState extends State<WorkPlanScreen> {
   CalendarTapDetails? calendarTapDetail;
-
+  PreferenceManager preferenceManager = PreferenceManager();
   final Box box = Hive.box('workPlan');
 
   void calendarTapped(CalendarTapDetails calendarTapDetails) {
@@ -67,7 +68,12 @@ class _WorkPlanScreenState extends State<WorkPlanScreen> {
                 Expanded(
                   child: SfCalendar(
                     cellBorderColor: Colors.transparent,
-                    view: CalendarView.week,
+                    view: CalendarView.day,
+                    timeSlotViewSettings: TimeSlotViewSettings(
+                      timeFormat: preferenceManager.getTimeFormat == '12h'
+                          ? 'hh:mm a'
+                          : 'HH:mm',
+                    ),
                     firstDayOfWeek: 1,
                     dataSource: MeetingDateSource(
                       getAppointments(
