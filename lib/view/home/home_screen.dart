@@ -44,6 +44,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   int currentIndex = -1;
 
+  List<HistoryElement> currentHistoryElementJobList = [];
+
   Color getTextColor(String type) {
     switch (type) {
       case "Start job":
@@ -55,6 +57,36 @@ class _HomeScreenState extends State<HomeScreen> {
       default:
         return orangeColor;
     }
+  }
+
+  void setCurrentIndexAccordingToJobType(String jobType) {
+    switch (jobType) {
+      case 'Start job':
+        currentIndex = 0;
+        break;
+      case 'Paid break':
+        currentIndex = 2;
+        break;
+      case 'Unpaid break':
+        currentIndex = 3;
+        break;
+      default:
+        currentIndex = -1;
+    }
+  }
+
+  @override
+  void initState() {
+    currentHistoryElementJobList =
+        currentWorkHistoryElement.values.toList().cast<HistoryElement>();
+
+    if (currentHistoryElementJobList.isNotEmpty) {
+      HistoryElement historyElement = currentHistoryElementJobList.last;
+      print(historyElement.type);
+      setCurrentIndexAccordingToJobType(historyElement.type ?? '');
+    }
+
+    super.initState();
   }
 
   @override
@@ -316,7 +348,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
                           await currentWorkHistoryElement.add(historyElement);
 
-                          List<HistoryElement> jobList =
+                          currentHistoryElementJobList =
                               currentWorkHistoryElement.values
                                   .toList()
                                   .cast<HistoryElement>();
@@ -330,7 +362,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             id: DateFormat('EEEE, d, M, y')
                                 .format(DateTime.now()),
                             // historyElement: jobHistory,
-                            historyElement: jobList,
+                            historyElement: currentHistoryElementJobList,
                             timestamp: DateTime.now(),
                           );
 
@@ -353,7 +385,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
                           box.put(dateKey, jobHistoryList).then((value) {});
 
-                          jobList = [];
+                          currentHistoryElementJobList = [];
                         },
             ),
             SizedBox(height: 8.h),
@@ -537,7 +569,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 : ValueListenableBuilder(
                     valueListenable: currentWorkHistoryElement.listenable(),
                     builder: (context, Box box, widget) {
-                      List<HistoryElement> jobList = currentWorkHistoryElement
+                      currentHistoryElementJobList = currentWorkHistoryElement
                           .values
                           .toList()
                           .cast<HistoryElement>();
@@ -552,14 +584,16 @@ class _HomeScreenState extends State<HomeScreen> {
                           SizedBox(height: 10.h),
                           ListView.builder(
                             shrinkWrap: true,
-                            itemCount: jobList.length,
+                            itemCount: currentHistoryElementJobList.length,
                             itemBuilder: (context, index) {
                               return Text(
-                                "${DateFormat('d.M.y').format(jobList[index].time ?? DateTime.now())}-"
-                                "${DateFormat('h:mm a').format(jobList[index].time ?? DateTime.now())}-${jobList[index].type}",
+                                "${DateFormat('d.M.y').format(currentHistoryElementJobList[index].time ?? DateTime.now())}-"
+                                "${DateFormat('h:mm a').format(currentHistoryElementJobList[index].time ?? DateTime.now())}-${currentHistoryElementJobList[index].type}",
                                 style: CustomTextStyle.kBodyText1.copyWith(
-                                    color:
-                                        getTextColor(jobList[index].type ?? ''),
+                                    color: getTextColor(
+                                        currentHistoryElementJobList[index]
+                                                .type ??
+                                            ''),
                                     fontWeight: FontWeight.w400),
                               );
                             },
