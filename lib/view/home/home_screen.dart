@@ -82,7 +82,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
     if (currentHistoryElementJobList.isNotEmpty) {
       HistoryElement historyElement = currentHistoryElementJobList.last;
-      print(historyElement.type);
       setCurrentIndexAccordingToJobType(historyElement.type ?? '');
     }
 

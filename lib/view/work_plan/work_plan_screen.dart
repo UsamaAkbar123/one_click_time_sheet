@@ -89,7 +89,7 @@ class _WorkPlanScreenState extends State<WorkPlanScreen> {
                 Expanded(
                   child: SfCalendar(
                     cellBorderColor: Colors.transparent,
-                    view: CalendarView.day,
+                    view: CalendarView.week,
                     timeSlotViewSettings: TimeSlotViewSettings(
                       timeFormat: preferenceManager.getTimeFormat == '12h'
                           ? 'hh:mm a'
