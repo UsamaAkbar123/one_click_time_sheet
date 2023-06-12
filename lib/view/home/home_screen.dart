@@ -46,14 +46,25 @@ class _HomeScreenState extends State<HomeScreen> {
 
   List<HistoryElement> currentHistoryElementJobList = [];
 
+  String formatJobData({required DateTime? jobTime, required String? jobType}) {
+    if (preferenceManager.getTimeFormat == '12h') {
+      return "${DateFormat(preferenceManager.getDateFormat).format(jobTime ?? DateTime.now())} - "
+          "${DateFormat('h:mm a').format(jobTime ?? DateTime.now())} - jobType";
+    } else {
+      // DateFormat.Hm().format(widget.endTime ?? DateTime.now());
+      return "${DateFormat(preferenceManager.getDateFormat).format(jobTime ?? DateTime.now())} - "
+          "${DateFormat.Hm().format(jobTime ?? DateTime.now())} - $jobType";
+    }
+  }
+
   Color getTextColor(String type) {
     switch (type) {
       case "Start job":
-        return lightGreenColor;
+        return greenColor;
       case "End job":
         return redColor;
       case "Paid break":
-        return greenColor;
+        return lightGreenColor;
       default:
         return orangeColor;
     }
@@ -211,9 +222,8 @@ class _HomeScreenState extends State<HomeScreen> {
             SizedBox(height: 12.h),
             StartEndJobBox(
               jobStatus: AppLocalizations.of(context)?.homeScreenStartJob ?? '',
-              color: currentIndex == 0
-                  ? greyColor.withOpacity(0.3)
-                  : lightGreenColor,
+              color:
+                  currentIndex == 0 ? greyColor.withOpacity(0.3) : greenColor,
               plusMinuteTap: currentIndex == 0
                   ? null
                   : () {
@@ -237,7 +247,16 @@ class _HomeScreenState extends State<HomeScreen> {
                   : () async {
                       TimeOfDay? pickedTime = await showTimePicker(
                         initialTime: TimeOfDay.now(),
-                        context: context, //context of current state
+                        context: context,
+                        builder: (context, child) {
+                          return MediaQuery(
+                            data: MediaQuery.of(context).copyWith(
+                              alwaysUse24HourFormat:
+                                  preferenceManager.getTimeFormat == '24h',
+                            ),
+                            child: child ?? const SizedBox(),
+                          );
+                        }, //context of current state
                       );
 
                       if (pickedTime != null) {
@@ -298,7 +317,16 @@ class _HomeScreenState extends State<HomeScreen> {
                   : () async {
                       TimeOfDay? pickedTime = await showTimePicker(
                         initialTime: TimeOfDay.now(),
-                        context: context, //context of current state
+                        context: context,
+                        builder: (context, child) {
+                          return MediaQuery(
+                            data: MediaQuery.of(context).copyWith(
+                              alwaysUse24HourFormat:
+                                  preferenceManager.getTimeFormat == '24h',
+                            ),
+                            child: child ?? const SizedBox(),
+                          );
+                        }, //context of current state
                       );
 
                       if (pickedTime != null) {
@@ -415,7 +443,17 @@ class _HomeScreenState extends State<HomeScreen> {
                         : () async {
                             TimeOfDay? pickedTime = await showTimePicker(
                               initialTime: TimeOfDay.now(),
-                              context: context, //context of current state
+                              context: context,
+                              builder: (context, child) {
+                                return MediaQuery(
+                                  data: MediaQuery.of(context).copyWith(
+                                    alwaysUse24HourFormat:
+                                        preferenceManager.getTimeFormat ==
+                                            '24h',
+                                  ),
+                                  child: child ?? const SizedBox(),
+                                );
+                              }, //context of current state
                             );
 
                             if (pickedTime != null) {
@@ -467,7 +505,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         AppLocalizations.of(context)?.homeScreenPaidBreak ?? '',
                     color: currentIndex == 2
                         ? greyColor.withOpacity(0.3)
-                        : greenColor,
+                        : lightGreenColor,
                     iconPath: AssetsIcon.paidBreakIcon,
                   ),
                 ),
@@ -498,7 +536,17 @@ class _HomeScreenState extends State<HomeScreen> {
                         : () async {
                             TimeOfDay? pickedTime = await showTimePicker(
                               initialTime: TimeOfDay.now(),
-                              context: context, //context of current state
+                              context: context,
+                              builder: (context, child) {
+                                return MediaQuery(
+                                  data: MediaQuery.of(context).copyWith(
+                                    alwaysUse24HourFormat:
+                                        preferenceManager.getTimeFormat ==
+                                            '24h',
+                                  ),
+                                  child: child ?? const SizedBox(),
+                                );
+                              }, //context of current state
                             );
 
                             if (pickedTime != null) {
@@ -586,13 +634,21 @@ class _HomeScreenState extends State<HomeScreen> {
                             itemCount: currentHistoryElementJobList.length,
                             itemBuilder: (context, index) {
                               return Text(
-                                "${DateFormat('d.M.y').format(currentHistoryElementJobList[index].time ?? DateTime.now())}-"
-                                "${DateFormat('h:mm a').format(currentHistoryElementJobList[index].time ?? DateTime.now())}-${currentHistoryElementJobList[index].type}",
+                                formatJobData(
+                                  jobTime: currentHistoryElementJobList[index]
+                                          .time ??
+                                      DateTime.now(),
+                                  jobType:
+                                      currentHistoryElementJobList[index].type,
+                                ),
+                                // "${DateFormat('d.M.y').format(currentHistoryElementJobList[index].time ?? DateTime.now())}-"
+                                // "${DateFormat('h:mm a').format(currentHistoryElementJobList[index].time ?? DateTime.now())}-${currentHistoryElementJobList[index].type}",
                                 style: CustomTextStyle.kBodyText1.copyWith(
                                     color: getTextColor(
-                                        currentHistoryElementJobList[index]
-                                                .type ??
-                                            ''),
+                                      currentHistoryElementJobList[index]
+                                              .type ??
+                                          '',
+                                    ),
                                     fontWeight: FontWeight.w400),
                               );
                             },
@@ -645,8 +701,15 @@ class _HomeScreenState extends State<HomeScreen> {
                                           final reversedIndex =
                                               historyList.length - 1 - k;
                                           return Text(
-                                            "${DateFormat('d.M.y').format(historyList[reversedIndex].time ?? DateTime.now())}-"
-                                            "${DateFormat('h:mm a').format(historyList[reversedIndex].time ?? DateTime.now())}-${historyList[reversedIndex].type}",
+                                            formatJobData(
+                                                jobTime:
+                                                    historyList[reversedIndex]
+                                                            .time ??
+                                                        DateTime.now(),
+                                                jobType:
+                                                    historyList[reversedIndex]
+                                                            .type ??
+                                                        ''),
                                             style: CustomTextStyle.kBodyText1
                                                 .copyWith(
                                                     color: getTextColor(
