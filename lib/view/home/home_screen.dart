@@ -247,7 +247,16 @@ class _HomeScreenState extends State<HomeScreen> {
                   : () async {
                       TimeOfDay? pickedTime = await showTimePicker(
                         initialTime: TimeOfDay.now(),
-                        context: context, //context of current state
+                        context: context,
+                        builder: (context, child) {
+                          return MediaQuery(
+                            data: MediaQuery.of(context).copyWith(
+                              alwaysUse24HourFormat:
+                                  preferenceManager.getTimeFormat == '24h',
+                            ),
+                            child: child ?? const SizedBox(),
+                          );
+                        }, //context of current state
                       );
 
                       if (pickedTime != null) {
@@ -308,7 +317,16 @@ class _HomeScreenState extends State<HomeScreen> {
                   : () async {
                       TimeOfDay? pickedTime = await showTimePicker(
                         initialTime: TimeOfDay.now(),
-                        context: context, //context of current state
+                        context: context,
+                        builder: (context, child) {
+                          return MediaQuery(
+                            data: MediaQuery.of(context).copyWith(
+                              alwaysUse24HourFormat:
+                                  preferenceManager.getTimeFormat == '24h',
+                            ),
+                            child: child ?? const SizedBox(),
+                          );
+                        }, //context of current state
                       );
 
                       if (pickedTime != null) {
@@ -425,7 +443,17 @@ class _HomeScreenState extends State<HomeScreen> {
                         : () async {
                             TimeOfDay? pickedTime = await showTimePicker(
                               initialTime: TimeOfDay.now(),
-                              context: context, //context of current state
+                              context: context,
+                              builder: (context, child) {
+                                return MediaQuery(
+                                  data: MediaQuery.of(context).copyWith(
+                                    alwaysUse24HourFormat:
+                                        preferenceManager.getTimeFormat ==
+                                            '24h',
+                                  ),
+                                  child: child ?? const SizedBox(),
+                                );
+                              }, //context of current state
                             );
 
                             if (pickedTime != null) {
@@ -508,7 +536,17 @@ class _HomeScreenState extends State<HomeScreen> {
                         : () async {
                             TimeOfDay? pickedTime = await showTimePicker(
                               initialTime: TimeOfDay.now(),
-                              context: context, //context of current state
+                              context: context,
+                              builder: (context, child) {
+                                return MediaQuery(
+                                  data: MediaQuery.of(context).copyWith(
+                                    alwaysUse24HourFormat:
+                                        preferenceManager.getTimeFormat ==
+                                            '24h',
+                                  ),
+                                  child: child ?? const SizedBox(),
+                                );
+                              }, //context of current state
                             );
 
                             if (pickedTime != null) {
