@@ -49,9 +49,8 @@ class _HomeScreenState extends State<HomeScreen> {
   String formatJobData({required DateTime? jobTime, required String? jobType}) {
     if (preferenceManager.getTimeFormat == '12h') {
       return "${DateFormat(preferenceManager.getDateFormat).format(jobTime ?? DateTime.now())} - "
-          "${DateFormat('h:mm a').format(jobTime ?? DateTime.now())} - jobType";
+          "${DateFormat('h:mm a').format(jobTime ?? DateTime.now())} - $jobType";
     } else {
-      // DateFormat.Hm().format(widget.endTime ?? DateTime.now());
       return "${DateFormat(preferenceManager.getDateFormat).format(jobTime ?? DateTime.now())} - "
           "${DateFormat.Hm().format(jobTime ?? DateTime.now())} - $jobType";
     }
