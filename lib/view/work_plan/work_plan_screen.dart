@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:one_click_time_sheet/utills/constants/colors.dart';
-import 'package:one_click_time_sheet/utills/constants/text_styles.dart';
-import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:hive_flutter/adapters.dart';
+import 'package:one_click_time_sheet/managers/preference_manager.dart';
+import 'package:one_click_time_sheet/model/work_plan_model.dart';
+import 'package:one_click_time_sheet/utills/constants/text_styles.dart';
+import 'package:one_click_time_sheet/view/work_plan/work_plan_component/alert_box_for_workplan_adding.dart';
+import 'package:one_click_time_sheet/view/work_plan/work_plan_component/appoinment_details_box.dart';
+import 'package:one_click_time_sheet/view/work_plan/work_plan_component/meeting_data_source.dart';
+import 'package:syncfusion_flutter_calendar/calendar.dart';
 
 class WorkPlanScreen extends StatefulWidget {
   const WorkPlanScreen({Key? key}) : super(key: key);
@@ -14,10 +19,44 @@ class WorkPlanScreen extends StatefulWidget {
 
 class _WorkPlanScreenState extends State<WorkPlanScreen> {
   CalendarTapDetails? calendarTapDetail;
+  PreferenceManager preferenceManager = PreferenceManager();
+  final Box box = Hive.box('workPlan');
+
+  int getFirstDayOfWeek(String weekDay) {
+    switch (weekDay) {
+      case 'Monday':
+        return 1;
+      case 'Tuesday':
+        return 2;
+      case 'Wednesday':
+        return 3;
+      case 'Thursday':
+        return 4;
+      case 'Friday':
+        return 5;
+      case 'Saturday':
+        return 6;
+      case 'Sunday':
+        return 7;
+      default:
+        return 7;
+    }
+  }
 
   void calendarTapped(CalendarTapDetails calendarTapDetails) {
     setState(() {});
     calendarTapDetail = calendarTapDetails;
+    if (calendarTapDetail?.appointments != null &&
+        calendarTapDetail!.appointments!.isNotEmpty) {
+      showDialog(
+        context: context,
+        builder: (context) {
+          return AppointmentDetailsBox(
+            calendarTapDetail: calendarTapDetails,
+          );
+        },
+      );
+    }
   }
 
   @override
@@ -30,98 +69,61 @@ class _WorkPlanScreenState extends State<WorkPlanScreen> {
         ),
         centerTitle: true,
       ),
-      body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 10.w),
-        child: Column(
-          children: [
-            // Row(
-            //   children: [
-            //     Icon(
-            //       Icons.lock_clock,
-            //       color: greenColor,
-            //       size: 27.w,
-            //     ),
-            //     SizedBox(width: 10.w),
-            //     Text(
-            //       '20 hrs 22 mins',
-            //       style: CustomTextStyle.kBodyText1.copyWith(
-            //         fontSize: 18.sp,
-            //         fontWeight: FontWeight.bold,
-            //       ),
-            //     ),
-            //   ],
-            // ),
-            SizedBox(height: 20.h),
-            Expanded(
-              child: SfCalendar(
-                cellBorderColor: Colors.transparent,
-                // view: CalendarView.day,
-                view: CalendarView.week,
-                // monthViewSettings: const MonthViewSettings(showAgenda: true),
-                firstDayOfWeek: 1,
-                dataSource: MeetingDateSource(getAppointments()),
-                // initialDisplayDate: DateTime(2023, 4, 15, 08, 30),
-                // initialSelectedDate: DateTime(2023, 4, 15, 08, 30),
-                //backgroundColor: Colors.white,
-                // appointmentTextStyle: const TextStyle(color: Colors.black
-                // //   // darkThemeProvider.darkTheme? Colors.black: Colors.white
-                //  ),
-                // timeSlotViewSettings: TimeSlotViewSettings(
-                //     startHour: 9,
-                //     endHour: 16,
-                //     nonWorkingDays: <int>[DateTime.friday, DateTime.saturday]),
-                // monthViewSettings: const MonthViewSettings(
-                //   appointmentDisplayMode:
-                //   MonthAppointmentDisplayMode.appointment,
-                // ),
-                // firstDayOfWeek: 1,
-                // // dataSource: _dataSource,
-                onTap: calendarTapped,
-              ),
+      body: ValueListenableBuilder(
+        valueListenable: box.listenable(),
+        builder: (context, Box box, widget) {
+          List<WorkPlanModel> workPlanList = [];
+          if (box.isNotEmpty) {
+            List<dynamic> dynamicWorkPlanList = box.values.toList();
+
+            if (dynamicWorkPlanList.isNotEmpty) {
+              workPlanList = dynamicWorkPlanList.cast<WorkPlanModel>();
+            }
+          }
+
+          return Padding(
+            padding: EdgeInsets.symmetric(horizontal: 10.w),
+            child: Column(
+              children: [
+                SizedBox(height: 20.h),
+                Expanded(
+                  child: SfCalendar(
+                    cellBorderColor: Colors.transparent,
+                    view: CalendarView.week,
+                    timeSlotViewSettings: TimeSlotViewSettings(
+                      timeFormat: preferenceManager.getTimeFormat == '12h'
+                          ? 'hh:mm a'
+                          : 'HH:mm',
+                    ),
+                    firstDayOfWeek:
+                        getFirstDayOfWeek(preferenceManager.getFirstDayOfWeek),
+                    dataSource: MeetingDateSource(
+                      getAppointments(
+                        workPlanList: workPlanList,
+                      ),
+                    ),
+                    onTap: calendarTapped,
+                  ),
+                ),
+                SizedBox(height: 30.h),
+              ],
             ),
-            SizedBox(height: 30.h),
-          ],
+          );
+        },
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          showDialog(
+            context: context,
+            builder: (context) {
+              return const AddWorkPlanBox();
+            },
+          );
+        },
+        child: const Icon(
+          Icons.add,
         ),
       ),
     );
-  }
-}
-
-List<Appointment> getAppointments() {
-  List<Appointment> meetings = [];
-  final DateTime today = DateTime.now();
-  final DateTime startTime = DateTime(
-    today.year,
-    today.month,
-    today.day,
-    9,
-    0,
-    0,
-  );
-  final DateTime endTime = startTime.add(const Duration(hours: 2));
-
-  meetings.add(
-    Appointment(
-      startTime: startTime,
-      endTime: endTime,
-      subject: 'Conference',
-      color: greenColor,
-    ),
-  );
-  meetings.add(
-    Appointment(
-      startTime: startTime.add(const Duration(hours: 3)),
-      endTime: endTime,
-      subject: 'Meeting With Client',
-      color: blueColor,
-    ),
-  );
-
-  return meetings;
-}
-
-class MeetingDateSource extends CalendarDataSource {
-  MeetingDateSource(List<Appointment> source) {
-    appointments = source;
   }
 }

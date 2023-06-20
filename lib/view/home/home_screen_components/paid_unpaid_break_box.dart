@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
+import 'package:one_click_time_sheet/managers/preference_manager.dart';
 import 'package:one_click_time_sheet/utills/constants/colors.dart';
 import 'package:one_click_time_sheet/utills/constants/text_styles.dart';
 import 'package:one_click_time_sheet/view/home/home_screen_components/plus_minus_manual_time_adjust_for_paid_unpaid.dart';
@@ -11,16 +12,22 @@ class PaidUnPaidBreakBox extends StatelessWidget {
   final Color color;
   final String iconPath;
   final DateTime startingDate;
-  final VoidCallback plusMinuteTap;
-  final VoidCallback minusMinuteTap;
-  final VoidCallback manualTimeTap;
+  final VoidCallback? plusMinuteTap;
+  final VoidCallback? minusMinuteTap;
+  final VoidCallback? manualTimeTap;
+
+  static PreferenceManager preferenceManager = PreferenceManager();
 
   const PaidUnPaidBreakBox({
     super.key,
-     this.onTab,
+    this.onTab,
     required this.breakStatus,
     required this.color,
-    required this.iconPath, required this.plusMinuteTap, required this.minusMinuteTap, required this.manualTimeTap, required this.startingDate,
+    required this.iconPath,
+    this.plusMinuteTap,
+    this.minusMinuteTap,
+    this.manualTimeTap,
+    required this.startingDate,
   });
 
   @override
@@ -45,13 +52,12 @@ class PaidUnPaidBreakBox extends StatelessWidget {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Icon(
-                  //   Icons.coffee_outlined,
-                  //   size: 50.h,
-                  // ),
                   SizedBox(
                     height: 40.h,
-                    child: Image.asset(iconPath,fit: BoxFit.cover,),
+                    child: Image.asset(
+                      iconPath,
+                      fit: BoxFit.cover,
+                    ),
                   ),
                   // SizedBox(width: 5.w),
                   Column(
@@ -62,15 +68,23 @@ class PaidUnPaidBreakBox extends StatelessWidget {
                             CustomTextStyle.kHeading1.copyWith(fontSize: 16.sp),
                       ),
                       SizedBox(height: 5.h),
+                      preferenceManager.getTimeFormat == '' ||
+                              preferenceManager.getTimeFormat == '12h'
+                          ? Text(
+                              DateFormat.jm().format(startingDate),
+                              style: CustomTextStyle.kHeading1
+                                  .copyWith(fontSize: 16.sp),
+                            )
+                          : Text(
+                              DateFormat.Hm().format(startingDate),
+                              style: CustomTextStyle.kHeading1
+                                  .copyWith(fontSize: 16.sp),
+                            ),
                       Text(
-                        DateFormat('h:mm a').format(startingDate),
-                        style:
-                            CustomTextStyle.kHeading1.copyWith(fontSize: 16.sp),
-                      ),
-                      Text(
-                        DateFormat('EEEE, d, M, y').format(startingDate),
-                        style:
-                            CustomTextStyle.kBodyText1.copyWith(fontSize: 11.sp),
+                        DateFormat(preferenceManager.getDateFormat)
+                            .format(startingDate),
+                        style: CustomTextStyle.kBodyText1
+                            .copyWith(fontSize: 11.sp),
                       ),
                     ],
                   ),

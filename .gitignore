@@ -28,6 +28,7 @@ migrate_working_dir/
 .dart_tool/package_config.json
 .dart_tool/package_config_subset
 .dart_tool/version
+.dart_tool/flutter_gen/
 .flutter-plugins
 .flutter-plugins-dependencies
 .packages
@@ -45,3 +46,6 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+
+.dart_tool/

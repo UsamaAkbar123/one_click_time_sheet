@@ -15,7 +15,7 @@
   "settingScreenTitle": "Settings",
   "settingScreenSelectLanguage": "Language",
   "settingScreenFirstDayOfWeek": "First Day Of Week",
-  "settingScreenDateFormat": "Data Format",
+  "settingScreenDateFormat": "Date Format",
   "settingScreenTimeFormat": "Time Format",
   "settingScreenStartJobNotification": "Start Job Notification",
   "settingScreenEndJobNotification": "End Job Notification",

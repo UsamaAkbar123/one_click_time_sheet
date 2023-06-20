@@ -38,7 +38,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingScreenFirstDayOfWeek => 'First Day Of Week';
 
   @override
-  String get settingScreenDateFormat => 'Data Format';
+  String get settingScreenDateFormat => 'Date Format';
 
   @override
   String get settingScreenTimeFormat => 'Time Format';

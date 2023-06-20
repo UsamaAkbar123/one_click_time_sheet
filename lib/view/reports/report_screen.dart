@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:hive/hive.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:intl/intl.dart';
 import 'package:one_click_time_sheet/model/hive_job_history_model.dart';
@@ -192,29 +191,72 @@ class _ReportScreenState extends State<ReportScreen> {
                                       const HeaderDataOfTable(),
                                       ListView.builder(
                                         itemBuilder: (context, k) {
-                                          String ? firstRowStartTime;
-                                          String ?firstRowEndTime;
-                                          String ? firstRowConsidered;
-                                          String ?firstRowDifference;
                                           String startTime = '';
                                           String endTime = '';
-                                          String difference = '';
-                                          String consider = '';
+                                          int difference = 0;
+                                          if (k == 0) {
+                                            startTime = DateFormat('h:mm a')
+                                                .format(jobList[j]
+                                                        .historyElement
+                                                        ?.first
+                                                        .time ??
+                                                    DateTime.now());
 
-                                          print(jobList[j].historyElement!.length);
+                                            endTime = DateFormat('h:mm a')
+                                                .format(jobList[j]
+                                                        .historyElement
+                                                        ?.last
+                                                        .time ??
+                                                    DateTime.now());
+                                          } else {
+                                            if (k + 1 <
+                                                jobList[j]
+                                                    .historyElement!
+                                                    .length) {
+                                              startTime = DateFormat('h:mm a')
+                                                  .format(jobList[j]
+                                                          .historyElement?[k]
+                                                          .time ??
+                                                      DateTime.now());
+                                              endTime = DateFormat('h:mm a')
+                                                  .format(jobList[j]
+                                                          .historyElement?[
+                                                              k + 1]
+                                                          .time ??
+                                                      DateTime.now());
+                                            }
+                                          }
 
+                                          DateFormat format =
+                                              DateFormat('hh:mm a');
+                                          DateTime time1 =
+                                              format.parse(startTime);
+                                          DateTime time2 =
+                                              format.parse(endTime);
 
-                                          
+                                          difference =
+                                              time2.difference(time1).inMinutes;
+
+                                          // int difference =
+                                          //     int.parse(endTime).toInt() -
+                                          //         int.parse(startTime).toInt();
+
                                           return TableMetaDataWidget(
-                                            jobType: jobList[j].historyElement?[k].type ?? '',
-                                            startTime: DateFormat('h:mm a').format(jobList[j].historyElement?[k].time ?? DateTime.now()) ,
-                                            endTime: DateFormat('h:mm a').format(jobList[j].historyElement?[k].time ?? DateTime.now()) ,
-                                            difference: '2:00',
+                                            jobType: k == 0
+                                                ? 'work'
+                                                : jobList[j]
+                                                        .historyElement?[k]
+                                                        .type ??
+                                                    '',
+                                            startTime: startTime,
+                                            endTime: endTime,
+                                            difference: difference.toString(),
                                             consider: '2:00',
                                           );
                                         },
                                         itemCount:
-                                            jobList[j].historyElement?.length,
+                                            jobList[j].historyElement!.length -
+                                                1,
                                         physics:
                                             const NeverScrollableScrollPhysics(),
                                         padding: EdgeInsets.zero,

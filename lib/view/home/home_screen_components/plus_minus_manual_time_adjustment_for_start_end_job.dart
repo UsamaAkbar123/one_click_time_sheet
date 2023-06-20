@@ -4,7 +4,7 @@ import 'package:one_click_time_sheet/utills/constants/colors.dart';
 import 'package:one_click_time_sheet/utills/constants/text_styles.dart';
 
 class PlusMinusManualTimeAdjustmentForStartEndJob extends StatelessWidget {
-  final VoidCallback onTab;
+  final VoidCallback? onTab;
   final String text;
 
   const PlusMinusManualTimeAdjustmentForStartEndJob({
