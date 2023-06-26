@@ -434,6 +434,8 @@ class _ReportScreenState extends State<ReportScreen> {
                                                 : '$hours:${minutes.toString().padLeft(2, '0')}',
                                             editDeleteHistoryElement:
                                                 jobList[j].historyElement,
+                                            indexKey: id,
+                                            // jobList: jobList,
                                             jIndex: j,
                                             iIndex: i,
                                           );
@@ -734,6 +736,8 @@ class TableMetaDataWidget extends StatelessWidget {
   final String difference;
   final String consider;
   final List<HistoryElement>? editDeleteHistoryElement;
+  final String indexKey;
+  // final List<JobHistoryModel> jobList;
   final int jIndex;
   final int iIndex;
 
@@ -745,6 +749,8 @@ class TableMetaDataWidget extends StatelessWidget {
     required this.difference,
     required this.consider,
     required this.editDeleteHistoryElement,
+    required this.indexKey,
+    // required this.jobList,
     required this.jIndex,
     required this.iIndex,
   }) : super(key: key);
@@ -864,6 +870,8 @@ class TableMetaDataWidget extends StatelessWidget {
                       builder: (context) {
                         return EditDeleteHistoryElement(
                           historyElement: editDeleteHistoryElement,
+                          listKey: indexKey,
+                          // jobList: jobList,
                           iIndex: iIndex,
                           jIndex: jIndex,
                         );
@@ -879,6 +887,7 @@ class TableMetaDataWidget extends StatelessWidget {
                 Container(color: Colors.grey, width: 1),
                 GestureDetector(
                   onTap: () {
+                    // print(jobList);
                     // print(editDeleteHistoryElement);
                     // print('j index: $jIndex');
                     // print('i index: $iIndex');
@@ -886,6 +895,8 @@ class TableMetaDataWidget extends StatelessWidget {
                       builder: (context) {
                         return EditDeleteHistoryElement(
                           historyElement: editDeleteHistoryElement,
+                          listKey: indexKey,
+                          // jobList: jobList,
                           iIndex: iIndex,
                           jIndex: jIndex,
                         );
@@ -909,10 +920,15 @@ class TableMetaDataWidget extends StatelessWidget {
 
 class EditDeleteHistoryElement extends StatefulWidget {
   final List<HistoryElement>? historyElement;
+  final String listKey;
+  // final List<JobHistoryModel> jobList;
   final int iIndex;
   final int jIndex;
+
   const EditDeleteHistoryElement({
     required this.historyElement,
+    required this.listKey,
+    // required this.jobList,
     required this.iIndex,
     required this.jIndex,
     super.key,
@@ -925,6 +941,15 @@ class EditDeleteHistoryElement extends StatefulWidget {
 
 class _EditDeleteHistoryElementState extends State<EditDeleteHistoryElement> {
   PreferenceManager preferenceManager = PreferenceManager();
+  final Box jobHistoryBox = Hive.box('jobHistoryBox');
+  List<dynamic> jobList = [];
+
+  @override
+  void initState() {
+    super.initState();
+    jobList = jobHistoryBox.get(widget.listKey);
+    // print(jobList.runtimeType);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -1017,39 +1042,53 @@ class _EditDeleteHistoryElementState extends State<EditDeleteHistoryElement> {
                     SizedBox(width: 5.w),
 
                     /// Save Button
-                    Container(
-                      height: 28.h,
-                      width: 50.w,
-                      decoration: BoxDecoration(
-                        color: greenColor,
-                        borderRadius: BorderRadius.circular(6.r),
-                      ),
-                      alignment: Alignment.center,
-                      child: Text(
-                        'Save',
-                        style: CustomTextStyle.kBodyText1.copyWith(
-                            fontSize: 12.sp,
-                            color: whiteColor,
-                            fontWeight: FontWeight.bold),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: Container(
+                        height: 28.h,
+                        width: 50.w,
+                        decoration: BoxDecoration(
+                          color: greenColor,
+                          borderRadius: BorderRadius.circular(6.r),
+                        ),
+                        alignment: Alignment.center,
+                        child: Text(
+                          'Save',
+                          style: CustomTextStyle.kBodyText1.copyWith(
+                              fontSize: 12.sp,
+                              color: whiteColor,
+                              fontWeight: FontWeight.bold),
+                        ),
                       ),
                     ),
                     SizedBox(width: 5.w),
 
                     /// Delete Button
-                    Container(
-                      height: 28.h,
-                      width: 50.w,
-                      decoration: BoxDecoration(
-                        color: redColor,
-                        borderRadius: BorderRadius.circular(6.r),
-                      ),
-                      alignment: Alignment.center,
-                      child: Text(
-                        'Delete',
-                        style: CustomTextStyle.kBodyText1.copyWith(
-                            fontSize: 12.sp,
-                            color: whiteColor,
-                            fontWeight: FontWeight.bold),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.of(context).pop();
+                        // jobList[widget.iIndex][widget.jIndex]['historyElement']
+                        //     .removeAt(index)
+                        //     .put(widget.listKey, jobList);
+                        // widget.jobList[widget.jIndex].historyElement[index]
+                      },
+                      child: Container(
+                        height: 28.h,
+                        width: 50.w,
+                        decoration: BoxDecoration(
+                          color: redColor,
+                          borderRadius: BorderRadius.circular(6.r),
+                        ),
+                        alignment: Alignment.center,
+                        child: Text(
+                          'Delete',
+                          style: CustomTextStyle.kBodyText1.copyWith(
+                              fontSize: 12.sp,
+                              color: whiteColor,
+                              fontWeight: FontWeight.bold),
+                        ),
                       ),
                     ),
                   ],
