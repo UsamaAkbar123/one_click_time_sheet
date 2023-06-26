@@ -432,6 +432,10 @@ class _ReportScreenState extends State<ReportScreen> {
                                                     'Paid break'
                                                 ? '-$hours:${minutes.toString().padLeft(2, '0')}'
                                                 : '$hours:${minutes.toString().padLeft(2, '0')}',
+                                            editDeleteHistoryElement:
+                                                jobList[j].historyElement,
+                                            jIndex: j,
+                                            iIndex: i,
                                           );
                                         },
                                         itemCount:
@@ -729,6 +733,9 @@ class TableMetaDataWidget extends StatelessWidget {
   final String endTime;
   final String difference;
   final String consider;
+  final List<HistoryElement>? editDeleteHistoryElement;
+  final int jIndex;
+  final int iIndex;
 
   const TableMetaDataWidget({
     Key? key,
@@ -737,6 +744,9 @@ class TableMetaDataWidget extends StatelessWidget {
     required this.endTime,
     required this.difference,
     required this.consider,
+    required this.editDeleteHistoryElement,
+    required this.jIndex,
+    required this.iIndex,
   }) : super(key: key);
 
   @override
@@ -846,7 +856,20 @@ class TableMetaDataWidget extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 GestureDetector(
-                  onTap: () {},
+                  onTap: () {
+                    // print(editDeleteHistoryElement);
+                    // print('j index: $jIndex');
+                    // print('i index: $iIndex');
+                    Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) {
+                        return EditDeleteHistoryElement(
+                          historyElement: editDeleteHistoryElement,
+                          iIndex: iIndex,
+                          jIndex: jIndex,
+                        );
+                      },
+                    ));
+                  },
                   child: Icon(
                     Icons.cancel_outlined,
                     color: redColor,
@@ -855,7 +878,20 @@ class TableMetaDataWidget extends StatelessWidget {
                 ),
                 Container(color: Colors.grey, width: 1),
                 GestureDetector(
-                  onTap: () {},
+                  onTap: () {
+                    // print(editDeleteHistoryElement);
+                    // print('j index: $jIndex');
+                    // print('i index: $iIndex');
+                    Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) {
+                        return EditDeleteHistoryElement(
+                          historyElement: editDeleteHistoryElement,
+                          iIndex: iIndex,
+                          jIndex: jIndex,
+                        );
+                      },
+                    ));
+                  },
                   child: Icon(
                     Icons.edit,
                     color: lightGreenColor,
@@ -866,6 +902,163 @@ class TableMetaDataWidget extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class EditDeleteHistoryElement extends StatefulWidget {
+  final List<HistoryElement>? historyElement;
+  final int iIndex;
+  final int jIndex;
+  const EditDeleteHistoryElement({
+    required this.historyElement,
+    required this.iIndex,
+    required this.jIndex,
+    super.key,
+  });
+
+  @override
+  State<EditDeleteHistoryElement> createState() =>
+      _EditDeleteHistoryElementState();
+}
+
+class _EditDeleteHistoryElementState extends State<EditDeleteHistoryElement> {
+  PreferenceManager preferenceManager = PreferenceManager();
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          'Edit & Delete',
+          style: CustomTextStyle.kHeading2,
+        ),
+        centerTitle: true,
+      ),
+      body: ListView.builder(
+        itemBuilder: (context, index) {
+          TextEditingController jobNameController =
+              TextEditingController(text: widget.historyElement?[index].type);
+          DateTime? jobTime = widget.historyElement?[index].time;
+
+          String showJobTime = preferenceManager.getTimeFormat == '12h'
+              ? DateFormat.jm().format(jobTime ?? DateTime.now())
+              : DateFormat.Hm().format(jobTime ?? DateTime.now());
+
+          String dateOfJob = DateFormat(preferenceManager.getDateFormat)
+              .format(jobTime ?? DateTime.now());
+
+          return Padding(
+            padding: EdgeInsets.symmetric(horizontal: 15.w),
+            child: Column(
+              children: [
+                SizedBox(height: 20.h),
+                Row(
+                  children: [
+                    Container(
+                      height: 28.h,
+                      width: 80.w,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(3.r),
+                        border: Border.all(
+                          color: blackColor.withOpacity(0.3),
+                        ),
+                      ),
+                      alignment: Alignment.center,
+                      child: TextField(
+                        key: UniqueKey(),
+                        textAlign: TextAlign.center,
+                        controller: jobNameController,
+                        decoration: InputDecoration(
+                          border: InputBorder.none,
+                          contentPadding: EdgeInsets.only(
+                            // left: 4.w,
+                            bottom: 16.h,
+                          ),
+                        ),
+                        style: TextStyle(fontSize: 12.sp),
+                      ),
+                    ),
+                    SizedBox(width: 5.w),
+                    Container(
+                      height: 28.h,
+                      width: 55.w,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(3.r),
+                        border: Border.all(
+                          color: blackColor.withOpacity(0.3),
+                        ),
+                      ),
+                      alignment: Alignment.center,
+                      child: Text(
+                        showJobTime,
+                        style: CustomTextStyle.kBodyText1
+                            .copyWith(fontSize: 12.sp),
+                      ),
+                    ),
+                    SizedBox(width: 5.w),
+                    Container(
+                      height: 28.h,
+                      width: 80.w,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(3.r),
+                        border: Border.all(
+                          color: blackColor.withOpacity(0.3),
+                        ),
+                      ),
+                      alignment: Alignment.center,
+                      child: Text(
+                        dateOfJob,
+                        style: CustomTextStyle.kBodyText1
+                            .copyWith(fontSize: 12.sp),
+                      ),
+                    ),
+                    SizedBox(width: 5.w),
+
+                    /// Save Button
+                    Container(
+                      height: 28.h,
+                      width: 50.w,
+                      decoration: BoxDecoration(
+                        color: greenColor,
+                        borderRadius: BorderRadius.circular(6.r),
+                      ),
+                      alignment: Alignment.center,
+                      child: Text(
+                        'Save',
+                        style: CustomTextStyle.kBodyText1.copyWith(
+                            fontSize: 12.sp,
+                            color: whiteColor,
+                            fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                    SizedBox(width: 5.w),
+
+                    /// Delete Button
+                    Container(
+                      height: 28.h,
+                      width: 50.w,
+                      decoration: BoxDecoration(
+                        color: redColor,
+                        borderRadius: BorderRadius.circular(6.r),
+                      ),
+                      alignment: Alignment.center,
+                      child: Text(
+                        'Delete',
+                        style: CustomTextStyle.kBodyText1.copyWith(
+                            fontSize: 12.sp,
+                            color: whiteColor,
+                            fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          );
+        },
+        itemCount: widget.historyElement?.length ?? 0,
       ),
     );
   }

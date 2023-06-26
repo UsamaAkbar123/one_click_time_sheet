@@ -107,7 +107,6 @@ class _HomeScreenState extends State<HomeScreen> {
           AppLocalizations.of(context)?.homeScreenTitle ?? '',
           style: CustomTextStyle.kHeading2,
         ),
-
         centerTitle: true,
       ),
       body: Padding(
@@ -744,4 +743,3 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 }
-
