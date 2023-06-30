@@ -64,9 +64,6 @@ class _ReportScreenState extends State<ReportScreen> {
     }
   }
 
-  int totalHoursForFinalSumResult = 0;
-  int totalMinutesForFinalSumResult = 0;
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -156,7 +153,8 @@ class _ReportScreenState extends State<ReportScreen> {
                           List<JobHistoryModel> jobList =
                               box.getAt(i).cast<JobHistoryModel>();
                           String id = box.keyAt(i);
-
+                          jobList.sort(
+                              (a, b) => b.timestamp.compareTo(a.timestamp));
                           return Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -170,6 +168,8 @@ class _ReportScreenState extends State<ReportScreen> {
                               SizedBox(height: 5.h),
                               ListView.builder(
                                 itemBuilder: (context, j) {
+                                  int totalHoursForFinalSumResult = 0;
+                                  int totalMinutesForFinalSumResult = 0;
                                   return Column(
                                     children: [
                                       const HeaderDataOfTable(),
@@ -391,7 +391,7 @@ class _ReportScreenState extends State<ReportScreen> {
                                               if (jobList[j]
                                                       .historyElement?[k]
                                                       .type !=
-                                                  'Paid break') {
+                                                  'Unpaid break') {
                                                 totalHoursForFinalSumResult =
                                                     totalHoursForFinalSumResult +
                                                         hours;
@@ -411,33 +411,58 @@ class _ReportScreenState extends State<ReportScreen> {
                                             }
                                           }
 
+                                          // print(jobList[j]
+                                          //         .historyElement!
+                                          //         .length -
+                                          //     1);
+
+                                          // print('k: $k');
+                                          // print(
+                                          //     'Count k: $k : $totalMinutesForFinalSumResult');
+
                                           // int difference =
                                           //     int.parse(endTime).toInt() -
                                           //         int.parse(startTime).toInt();
 
-                                          return TableMetaDataWidget(
-                                            jobType: k == 0
-                                                ? 'work'
-                                                : jobList[j]
-                                                        .historyElement?[k]
-                                                        .type ??
-                                                    '',
-                                            startTime: startTime,
-                                            endTime: endTime,
-                                            difference:
-                                                '$hours:${minutes.toString().padLeft(2, '0')}',
-                                            consider: jobList[j]
-                                                        .historyElement?[k]
-                                                        .type ==
-                                                    'Paid break'
-                                                ? '-$hours:${minutes.toString().padLeft(2, '0')}'
-                                                : '$hours:${minutes.toString().padLeft(2, '0')}',
-                                            editDeleteHistoryElement:
-                                                jobList[j].historyElement,
-                                            indexKey: id,
-                                            // jobList: jobList,
-                                            jIndex: j,
-                                            iIndex: i,
+                                          return Column(
+                                            children: [
+                                              TableMetaDataWidget(
+                                                jobType: k == 0
+                                                    ? 'work'
+                                                    : jobList[j]
+                                                            .historyElement?[k]
+                                                            .type ??
+                                                        '',
+                                                startTime: startTime,
+                                                endTime: endTime,
+                                                difference:
+                                                    '$hours:${minutes.toString().padLeft(2, '0')}',
+                                                consider: jobList[j]
+                                                            .historyElement?[k]
+                                                            .type ==
+                                                        'Unpaid break'
+                                                    ? '-$hours:${minutes.toString().padLeft(2, '0')}'
+                                                    : '$hours:${minutes.toString().padLeft(2, '0')}',
+                                                editDeleteHistoryElement:
+                                                    jobList[j].historyElement,
+                                                indexKey: id,
+                                                // jobList: jobList,
+                                                jIndex: j,
+                                                iIndex: i,
+                                              ),
+                                              k + 1 ==
+                                                      jobList[j]
+                                                              .historyElement!
+                                                              .length -
+                                                          1
+                                                  ? sumBlock(
+                                                      totalHours:
+                                                          totalHoursForFinalSumResult,
+                                                      totalMinutes:
+                                                          totalMinutesForFinalSumResult,
+                                                    )
+                                                  : const SizedBox()
+                                            ],
                                           );
                                         },
                                         itemCount:
@@ -448,11 +473,11 @@ class _ReportScreenState extends State<ReportScreen> {
                                         padding: EdgeInsets.zero,
                                         shrinkWrap: true,
                                       ),
-                                      sumBlock(
-                                        totalHours: totalHoursForFinalSumResult,
-                                        totalMinutes:
-                                            totalMinutesForFinalSumResult,
-                                      ),
+                                      // sumBlock(
+                                      //   totalHours: totalHoursForFinalSumResult,
+                                      //   totalMinutes:
+                                      //       totalMinutesForFinalSumResult,
+                                      // ),
                                       SizedBox(height: 15.h),
                                     ],
                                   );
