@@ -51,7 +51,6 @@ class _HomeScreenState extends State<HomeScreen> {
       return "${DateFormat(preferenceManager.getDateFormat).format(jobTime ?? DateTime.now())} - "
           "${DateFormat('h:mm a').format(jobTime ?? DateTime.now())} - $jobType";
     } else {
-      // DateFormat.Hm().format(widget.endTime ?? DateTime.now());
       return "${DateFormat(preferenceManager.getDateFormat).format(jobTime ?? DateTime.now())} - "
           "${DateFormat.Hm().format(jobTime ?? DateTime.now())} - $jobType";
     }
@@ -128,82 +127,96 @@ class _HomeScreenState extends State<HomeScreen> {
                               box.values.toList();
 
                           if (dynamicWorkPlanList.isNotEmpty) {
-                            workPlanList =
+                            final tempWorkPlanList =
                                 dynamicWorkPlanList.cast<WorkPlanModel>();
+                            DateTime now = DateTime.now();
+                            for (final workPlan in tempWorkPlanList) {
+                              if (workPlan.workPlanDate ==
+                                  DateTime(now.year, now.month, now.day)) {
+                                workPlanList.add(workPlan);
+                              }
+                            }
                           }
                         }
                       }
-                      return Container(
-                        height: 50.h,
-                        width: double.infinity,
-                        decoration: BoxDecoration(
-                          border: Border.all(color: blackColor),
-                        ),
-                        child: Row(
-                          children: [
-                            Text(
-                              AppLocalizations.of(context)?.homeScreenPlan ??
-                                  '',
-                              style: CustomTextStyle.kHeading2,
-                            ),
-                            SizedBox(width: 10.w),
-                            Expanded(
-                              child: ListView.separated(
-                                shrinkWrap: true,
-                                scrollDirection: Axis.horizontal,
-                                itemBuilder: (context, index) {
-                                  String startTime;
-                                  String endTime;
-                                  if (preferenceManager.getTimeFormat ==
-                                      '12h') {
-                                    startTime = DateFormat('h:mm').format(
-                                        workPlanList[index].startWorkPlanTime);
-                                    endTime = DateFormat('h:mm').format(
-                                        workPlanList[index].endWorkPlanTime);
-                                  } else {
-                                    startTime = DateFormat('H:mm').format(
-                                        workPlanList[index].startWorkPlanTime);
-                                    endTime = DateFormat('H:mm').format(
-                                        workPlanList[index].endWorkPlanTime);
-                                  }
+                      return workPlanList.isEmpty
+                          ? const SizedBox()
+                          : Container(
+                              height: 50.h,
+                              width: double.infinity,
+                              decoration: BoxDecoration(
+                                border: Border.all(color: blackColor),
+                              ),
+                              child: Row(
+                                children: [
+                                  Text(
+                                    AppLocalizations.of(context)
+                                            ?.homeScreenPlan ??
+                                        '',
+                                    style: CustomTextStyle.kHeading2,
+                                  ),
+                                  SizedBox(width: 10.w),
+                                  Expanded(
+                                    child: ListView.separated(
+                                      shrinkWrap: true,
+                                      scrollDirection: Axis.horizontal,
+                                      itemBuilder: (context, index) {
+                                        String startTime;
+                                        String endTime;
+                                        if (preferenceManager.getTimeFormat ==
+                                            '12h') {
+                                          startTime = DateFormat('h:mm').format(
+                                              workPlanList[index]
+                                                  .startWorkPlanTime);
+                                          endTime = DateFormat('h:mm').format(
+                                              workPlanList[index]
+                                                  .endWorkPlanTime);
+                                        } else {
+                                          startTime = DateFormat('H:mm').format(
+                                              workPlanList[index]
+                                                  .startWorkPlanTime);
+                                          endTime = DateFormat('H:mm').format(
+                                              workPlanList[index]
+                                                  .endWorkPlanTime);
+                                        }
 
-                                  return Center(
-                                    child: CustomWorkPlanTime(
-                                      startTime: startTime,
-                                      endTime: endTime,
+                                        return Center(
+                                          child: CustomWorkPlanTime(
+                                            startTime: startTime,
+                                            endTime: endTime,
+                                          ),
+                                        );
+                                      },
+                                      separatorBuilder:
+                                          (BuildContext context, int index) {
+                                        return Center(
+                                          child: Text(
+                                            ',',
+                                            style: CustomTextStyle.kHeading2,
+                                          ),
+                                        );
+                                      },
+                                      itemCount: workPlanList.length < 2
+                                          ? workPlanList.length
+                                          : 2,
                                     ),
-                                  );
-                                },
-                                separatorBuilder:
-                                    (BuildContext context, int index) {
-                                  return Center(
-                                    child: Text(
-                                      ',',
-                                      style: CustomTextStyle.kHeading2,
+                                  ),
+                                  //const Spacer(),
+                                  IconButton(
+                                    onPressed: () {
+                                      context
+                                          .read<BottomNavigationProvider>()
+                                          .setCurrentTab = 2;
+                                    },
+                                    icon: Icon(
+                                      Icons.edit,
+                                      color: greyColor,
+                                      size: 30.h,
                                     ),
-                                  );
-                                },
-                                itemCount: workPlanList.length < 2
-                                    ? workPlanList.length
-                                    : 2,
+                                  ),
+                                ],
                               ),
-                            ),
-                            //const Spacer(),
-                            IconButton(
-                              onPressed: () {
-                                context
-                                    .read<BottomNavigationProvider>()
-                                    .setCurrentTab = 2;
-                              },
-                              icon: Icon(
-                                Icons.edit,
-                                color: greyColor,
-                                size: 30.h,
-                              ),
-                            ),
-                          ],
-                        ),
-                      );
+                            );
                     },
                   ),
             SizedBox(height: 5.h),
@@ -620,6 +633,8 @@ class _HomeScreenState extends State<HomeScreen> {
                           .values
                           .toList()
                           .cast<HistoryElement>();
+                      currentHistoryElementJobList =
+                          currentHistoryElementJobList.reversed.toList();
                       return Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -674,6 +689,11 @@ class _HomeScreenState extends State<HomeScreen> {
                             jobList.sort(
                                 (a, b) => b.timestamp.compareTo(a.timestamp));
                             String dataKey = box.keyAt(i);
+                            DateTime dateTime =
+                                DateFormat('EEEE, dd, M, yyyy').parse(dataKey);
+                            dataKey =
+                                DateFormat(preferenceManager.getDateFormat)
+                                    .format(dateTime);
                             return Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
@@ -688,6 +708,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                     List<HistoryElement> historyList =
                                         jobList[j].historyElement ?? [];
 
+                                    historyList = historyList.reversed.toList();
+
                                     return Padding(
                                       padding:
                                           EdgeInsets.symmetric(vertical: 15.h),
@@ -698,23 +720,18 @@ class _HomeScreenState extends State<HomeScreen> {
                                         padding: EdgeInsets.zero,
                                         shrinkWrap: true,
                                         itemBuilder: (context, k) {
-                                          final reversedIndex =
-                                              historyList.length - 1 - k;
+                                          // final reversedIndex =
+                                          //     historyList.length - 1 - k;
                                           return Text(
                                             formatJobData(
-                                                jobTime:
-                                                    historyList[reversedIndex]
-                                                            .time ??
-                                                        DateTime.now(),
+                                                jobTime: historyList[k].time ??
+                                                    DateTime.now(),
                                                 jobType:
-                                                    historyList[reversedIndex]
-                                                            .type ??
-                                                        ''),
+                                                    historyList[k].type ?? ''),
                                             style: CustomTextStyle.kBodyText1
                                                 .copyWith(
                                                     color: getTextColor(
-                                                        historyList[reversedIndex]
-                                                                .type ??
+                                                        historyList[k].type ??
                                                             ''),
                                                     fontWeight:
                                                         FontWeight.w400),

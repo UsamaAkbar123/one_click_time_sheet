@@ -21,6 +21,7 @@ class WorkPlanModelAdapter extends TypeAdapter<WorkPlanModel> {
       workPlanName: fields[1] as String,
       startWorkPlanTime: fields[2] as DateTime,
       endWorkPlanTime: fields[3] as DateTime,
+      workPlanDate: fields[4] as DateTime,
     );
   }
 

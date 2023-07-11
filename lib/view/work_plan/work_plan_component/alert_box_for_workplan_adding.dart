@@ -301,6 +301,11 @@ class _AddWorkPlanBoxState extends State<AddWorkPlanBox> {
                     workPlanName: nameController.text,
                     startWorkPlanTime: startTimeForBackEnd,
                     endWorkPlanTime: endTimeForBackEnd,
+                    workPlanDate: DateTime(
+                      startTimeForBackEnd.year,
+                      startTimeForBackEnd.month,
+                      startTimeForBackEnd.day,
+                    ),
                   );
 
                   if (box.containsKey(workPlanModel.id)) {
@@ -320,6 +325,11 @@ class _AddWorkPlanBoxState extends State<AddWorkPlanBox> {
                     workPlanName: nameController.text,
                     startWorkPlanTime: startTimeForBackEnd,
                     endWorkPlanTime: endTimeForBackEnd,
+                    workPlanDate: DateTime(
+                      startTimeForBackEnd.year,
+                      startTimeForBackEnd.month,
+                      startTimeForBackEnd.day,
+                    ),
                   );
 
                   await box.put(id, workPlanModel).then((value) {
