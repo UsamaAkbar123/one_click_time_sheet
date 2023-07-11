@@ -619,6 +619,8 @@ class _HomeScreenState extends State<HomeScreen> {
                           .values
                           .toList()
                           .cast<HistoryElement>();
+                      currentHistoryElementJobList =
+                          currentHistoryElementJobList.reversed.toList();
                       return Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -687,6 +689,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                     List<HistoryElement> historyList =
                                         jobList[j].historyElement ?? [];
 
+                                    historyList = historyList.reversed.toList();
+
                                     return Padding(
                                       padding:
                                           EdgeInsets.symmetric(vertical: 15.h),
@@ -697,23 +701,18 @@ class _HomeScreenState extends State<HomeScreen> {
                                         padding: EdgeInsets.zero,
                                         shrinkWrap: true,
                                         itemBuilder: (context, k) {
-                                          final reversedIndex =
-                                              historyList.length - 1 - k;
+                                          // final reversedIndex =
+                                          //     historyList.length - 1 - k;
                                           return Text(
                                             formatJobData(
-                                                jobTime:
-                                                    historyList[reversedIndex]
-                                                            .time ??
-                                                        DateTime.now(),
+                                                jobTime: historyList[k].time ??
+                                                    DateTime.now(),
                                                 jobType:
-                                                    historyList[reversedIndex]
-                                                            .type ??
-                                                        ''),
+                                                    historyList[k].type ?? ''),
                                             style: CustomTextStyle.kBodyText1
                                                 .copyWith(
                                                     color: getTextColor(
-                                                        historyList[reversedIndex]
-                                                                .type ??
+                                                        historyList[k].type ??
                                                             ''),
                                                     fontWeight:
                                                         FontWeight.w400),
