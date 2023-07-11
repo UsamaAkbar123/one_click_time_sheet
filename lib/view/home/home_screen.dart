@@ -675,6 +675,11 @@ class _HomeScreenState extends State<HomeScreen> {
                             jobList.sort(
                                 (a, b) => b.timestamp.compareTo(a.timestamp));
                             String dataKey = box.keyAt(i);
+                            DateTime dateTime =
+                                DateFormat('EEEE, dd, M, yyyy').parse(dataKey);
+                            dataKey =
+                                DateFormat(preferenceManager.getDateFormat)
+                                    .format(dateTime);
                             return Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
