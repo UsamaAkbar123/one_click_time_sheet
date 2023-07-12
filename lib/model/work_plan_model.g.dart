@@ -28,7 +28,7 @@ class WorkPlanModelAdapter extends TypeAdapter<WorkPlanModel> {
   @override
   void write(BinaryWriter writer, WorkPlanModel obj) {
     writer
-      ..writeByte(4)
+      ..writeByte(5)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -36,7 +36,9 @@ class WorkPlanModelAdapter extends TypeAdapter<WorkPlanModel> {
       ..writeByte(2)
       ..write(obj.startWorkPlanTime)
       ..writeByte(3)
-      ..write(obj.endWorkPlanTime);
+      ..write(obj.endWorkPlanTime)
+      ..writeByte(4)
+      ..write(obj.workPlanDate);
   }
 
   @override

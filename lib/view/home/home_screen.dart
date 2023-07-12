@@ -165,10 +165,10 @@ class _HomeScreenState extends State<HomeScreen> {
                                         String endTime;
                                         if (preferenceManager.getTimeFormat ==
                                             '12h') {
-                                          startTime = DateFormat('h:mm').format(
-                                              workPlanList[index]
+                                          startTime = DateFormat('h:mm a')
+                                              .format(workPlanList[index]
                                                   .startWorkPlanTime);
-                                          endTime = DateFormat('h:mm').format(
+                                          endTime = DateFormat('h:mm a').format(
                                               workPlanList[index]
                                                   .endWorkPlanTime);
                                         } else {

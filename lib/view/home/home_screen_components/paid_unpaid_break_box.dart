@@ -50,6 +50,7 @@ class PaidUnPaidBreakBox extends StatelessWidget {
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 3.0.w),
               child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   SizedBox(
@@ -59,7 +60,7 @@ class PaidUnPaidBreakBox extends StatelessWidget {
                       fit: BoxFit.cover,
                     ),
                   ),
-                  // SizedBox(width: 5.w),
+                  SizedBox(width: 4.w),
                   Column(
                     children: [
                       Text(
