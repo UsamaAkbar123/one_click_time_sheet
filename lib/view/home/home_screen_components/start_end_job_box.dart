@@ -8,9 +8,9 @@ import 'package:one_click_time_sheet/view/home/home_screen_components/plus_minus
 
 class StartEndJobBox extends StatelessWidget {
   final VoidCallback? onTab;
-  final VoidCallback plusMinuteTap;
-  final VoidCallback minusMinuteTap;
-  final VoidCallback manualTimeTap;
+  final VoidCallback? plusMinuteTap;
+  final VoidCallback? minusMinuteTap;
+  final VoidCallback? manualTimeTap;
   final Color color;
   final String jobStatus;
   final int time;
@@ -24,9 +24,9 @@ class StartEndJobBox extends StatelessWidget {
     this.onTab,
     required this.time,
     required this.startingDate,
-    required this.plusMinuteTap,
-    required this.minusMinuteTap,
-    required this.manualTimeTap,
+    this.plusMinuteTap,
+    this.minusMinuteTap,
+    this.manualTimeTap,
   });
 
   @override
@@ -54,21 +54,15 @@ class StartEndJobBox extends StatelessWidget {
             preferenceManager.getTimeFormat == '' ||
                     preferenceManager.getTimeFormat == '24h'
                 ? Text(
-                    DateFormat.Hm().addPattern('a').format(startingDate),
+                    DateFormat.Hm().format(startingDate),
                     style: CustomTextStyle.kHeading1,
                   )
                 : Text(DateFormat.jm().format(startingDate),
                     style: CustomTextStyle.kHeading1),
-            preferenceManager.getDateFormat == ''
-                ? Text(
-                    DateFormat('EEEE, d, M, y').format(startingDate),
-                    style: CustomTextStyle.kBodyText1,
-                  )
-                : Text(
-                    DateFormat(preferenceManager.getDateFormat)
-                        .format(startingDate),
-                    style: CustomTextStyle.kBodyText1,
-                  ),
+            Text(
+              DateFormat(preferenceManager.getDateFormat).format(startingDate),
+              style: CustomTextStyle.kBodyText1,
+            ),
             const Spacer(),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,

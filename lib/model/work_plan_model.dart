@@ -1,12 +1,8 @@
-
 import 'package:hive/hive.dart';
 part 'work_plan_model.g.dart';
 
-
-
 @HiveType(typeId: 3)
-class WorkPlanModel{
-
+class WorkPlanModel {
   @HiveField(0)
   final String id;
 
@@ -19,13 +15,15 @@ class WorkPlanModel{
   @HiveField(3)
   final DateTime endWorkPlanTime;
 
-
+  @HiveField(4)
+  final DateTime workPlanDate;
 
   WorkPlanModel({
     required this.id,
     required this.workPlanName,
     required this.startWorkPlanTime,
     required this.endWorkPlanTime,
+    required this.workPlanDate,
   });
 
   // factory WorkPlanModel.fromJson(Map<String, dynamic> json) {

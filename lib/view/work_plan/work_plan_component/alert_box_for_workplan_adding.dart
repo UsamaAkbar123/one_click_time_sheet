@@ -30,7 +30,7 @@ class AddWorkPlanBox extends StatefulWidget {
 
 class _AddWorkPlanBoxState extends State<AddWorkPlanBox> {
   final formKey = GlobalKey<FormState>();
-  final nameController = TextEditingController();
+  final nameController = TextEditingController(text: 'work');
   String workPlanDateForFrontEnd = 'select date';
   DateTime workPlanDateForBackend = DateTime.now();
   String startTimeForFrontEnd = 'select start time';
@@ -57,8 +57,7 @@ class _AddWorkPlanBoxState extends State<AddWorkPlanBox> {
     startTimeForBackEnd = workPlanDateForBackend;
 
     if (preferenceManager.getTimeFormat == '24h') {
-      startTimeForFrontEnd =
-          DateFormat.Hm().addPattern('a').format(workPlanDateForBackend);
+      startTimeForFrontEnd = DateFormat.Hm().format(workPlanDateForBackend);
     } else {
       startTimeForFrontEnd = DateFormat.jm().format(workPlanDateForBackend);
     }
@@ -80,8 +79,7 @@ class _AddWorkPlanBoxState extends State<AddWorkPlanBox> {
 
     endTimeForBackEnd = workPlanDateForBackend;
     if (preferenceManager.getTimeFormat == '24h') {
-      endTimeForFrontEnd =
-          DateFormat.Hm().addPattern('a').format(workPlanDateForBackend);
+      endTimeForFrontEnd = DateFormat.Hm().format(workPlanDateForBackend);
     } else {
       endTimeForFrontEnd = DateFormat.jm().format(workPlanDateForBackend);
     }
@@ -92,22 +90,21 @@ class _AddWorkPlanBoxState extends State<AddWorkPlanBox> {
     if (widget.isEditMode == true) {
       nameController.text = widget.workPlanName ?? '';
       if (preferenceManager.getTimeFormat == '24h') {
-        startTimeForFrontEnd = DateFormat.Hm()
-            .addPattern('a')
-            .format(widget.startTime ?? DateTime.now());
+        startTimeForFrontEnd =
+            DateFormat.Hm().format(widget.startTime ?? DateTime.now());
       } else {
         startTimeForFrontEnd =
             DateFormat.jm().format(widget.startTime ?? DateTime.now());
       }
       if (preferenceManager.getTimeFormat == '24h') {
-        endTimeForFrontEnd = DateFormat.Hm()
-            .addPattern('a')
-            .format(widget.endTime ?? DateTime.now());
+        endTimeForFrontEnd =
+            DateFormat.Hm().format(widget.endTime ?? DateTime.now());
       } else {
         endTimeForFrontEnd =
             DateFormat.jm().format(widget.endTime ?? DateTime.now());
       }
-      workPlanDateForFrontEnd = DateFormat('MM/dd/yyyy').format(
+      workPlanDateForFrontEnd =
+          DateFormat(preferenceManager.getDateFormat).format(
         widget.startTime ?? DateTime.now(),
       );
       workPlanDateForBackend = widget.startTime ?? DateTime.now();
@@ -178,7 +175,8 @@ class _AddWorkPlanBoxState extends State<AddWorkPlanBox> {
                 lastDate: DateTime(2030, 12, 31),
               );
               if (dateTime != null) {
-                workPlanDateForFrontEnd = DateFormat('MM/dd/yyyy').format(
+                workPlanDateForFrontEnd =
+                    DateFormat(preferenceManager.getDateFormat).format(
                   dateTime,
                 );
                 workPlanDateForBackend = dateTime;
@@ -213,7 +211,16 @@ class _AddWorkPlanBoxState extends State<AddWorkPlanBox> {
             onTap: () async {
               TimeOfDay? pickedTime = await showTimePicker(
                 initialTime: TimeOfDay.now(),
-                context: context, //context of current state
+                context: context,
+                builder: (context, child) {
+                  return MediaQuery(
+                    data: MediaQuery.of(context).copyWith(
+                      alwaysUse24HourFormat:
+                          preferenceManager.getTimeFormat == '24h',
+                    ),
+                    child: child ?? const SizedBox(),
+                  );
+                }, //context of current state
               );
               if (pickedTime != null) {
                 setStartTimeForFrontAndBackend(pickedTime: pickedTime);
@@ -240,7 +247,16 @@ class _AddWorkPlanBoxState extends State<AddWorkPlanBox> {
             onTap: () async {
               TimeOfDay? pickedTime = await showTimePicker(
                 initialTime: TimeOfDay.now(),
-                context: context, //context of current state
+                context: context,
+                builder: (context, child) {
+                  return MediaQuery(
+                    data: MediaQuery.of(context).copyWith(
+                      alwaysUse24HourFormat:
+                          preferenceManager.getTimeFormat == '24h',
+                    ),
+                    child: child ?? const SizedBox(),
+                  );
+                }, //context of current state
               );
               if (pickedTime != null) {
                 setEndTimeForFrontAndBackend(pickedTime: pickedTime);
@@ -285,6 +301,11 @@ class _AddWorkPlanBoxState extends State<AddWorkPlanBox> {
                     workPlanName: nameController.text,
                     startWorkPlanTime: startTimeForBackEnd,
                     endWorkPlanTime: endTimeForBackEnd,
+                    workPlanDate: DateTime(
+                      startTimeForBackEnd.year,
+                      startTimeForBackEnd.month,
+                      startTimeForBackEnd.day,
+                    ),
                   );
 
                   if (box.containsKey(workPlanModel.id)) {
@@ -304,6 +325,11 @@ class _AddWorkPlanBoxState extends State<AddWorkPlanBox> {
                     workPlanName: nameController.text,
                     startWorkPlanTime: startTimeForBackEnd,
                     endWorkPlanTime: endTimeForBackEnd,
+                    workPlanDate: DateTime(
+                      startTimeForBackEnd.year,
+                      startTimeForBackEnd.month,
+                      startTimeForBackEnd.day,
+                    ),
                   );
 
                   await box.put(id, workPlanModel).then((value) {

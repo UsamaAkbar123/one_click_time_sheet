@@ -28,6 +28,7 @@ class _HomeScreenState extends State<HomeScreen> {
   DateTime nowDateTime = DateTime.now();
   final Box jobHistoryBox = Hive.box('jobHistoryBox');
   final Box workPlanBox = Hive.box('workPlan');
+  final Box currentWorkHistoryElement = Hive.box('currentWorkHistoryElement');
   List<JobHistoryModel> jobHistoryData = [];
   PreferenceManager preferenceManager = PreferenceManager();
   final int _seconds = 0;
@@ -41,21 +42,60 @@ class _HomeScreenState extends State<HomeScreen> {
   bool isPaidBreakSelectCustomTime = false;
   bool isUnpaidBreakSelectCustomTime = false;
 
-  List<HistoryElement> jobHistory = [];
-
   int currentIndex = -1;
+
+  List<HistoryElement> currentHistoryElementJobList = [];
+
+  String formatJobData({required DateTime? jobTime, required String? jobType}) {
+    if (preferenceManager.getTimeFormat == '12h') {
+      return "${DateFormat(preferenceManager.getDateFormat).format(jobTime ?? DateTime.now())} - "
+          "${DateFormat('h:mm a').format(jobTime ?? DateTime.now())} - $jobType";
+    } else {
+      return "${DateFormat(preferenceManager.getDateFormat).format(jobTime ?? DateTime.now())} - "
+          "${DateFormat.Hm().format(jobTime ?? DateTime.now())} - $jobType";
+    }
+  }
 
   Color getTextColor(String type) {
     switch (type) {
       case "Start job":
-        return lightGreenColor;
+        return greenColor;
       case "End job":
         return redColor;
       case "Paid break":
-        return greenColor;
+        return lightGreenColor;
       default:
         return orangeColor;
     }
+  }
+
+  void setCurrentIndexAccordingToJobType(String jobType) {
+    switch (jobType) {
+      case 'Start job':
+        currentIndex = 0;
+        break;
+      case 'Paid break':
+        currentIndex = 2;
+        break;
+      case 'Unpaid break':
+        currentIndex = 3;
+        break;
+      default:
+        currentIndex = -1;
+    }
+  }
+
+  @override
+  void initState() {
+    currentHistoryElementJobList =
+        currentWorkHistoryElement.values.toList().cast<HistoryElement>();
+
+    if (currentHistoryElementJobList.isNotEmpty) {
+      HistoryElement historyElement = currentHistoryElementJobList.last;
+      setCurrentIndexAccordingToJobType(historyElement.type ?? '');
+    }
+
+    super.initState();
   }
 
   @override
@@ -75,86 +115,110 @@ class _HomeScreenState extends State<HomeScreen> {
             SizedBox(height: 10.h),
 
             /// future work plan widget
-           workPlanBox.isEmpty ? const SizedBox() : ValueListenableBuilder(
-              valueListenable: workPlanBox.listenable(),
-              builder: (context, Box box, widget) {
-                List<WorkPlanModel> workPlanList = [];
-                if (workPlanBox.isNotEmpty) {
-                  if (box.isNotEmpty) {
-                    List<dynamic> dynamicWorkPlanList = box.values.toList();
+            workPlanBox.isEmpty
+                ? const SizedBox()
+                : ValueListenableBuilder(
+                    valueListenable: workPlanBox.listenable(),
+                    builder: (context, Box box, widget) {
+                      List<WorkPlanModel> workPlanList = [];
+                      if (workPlanBox.isNotEmpty) {
+                        if (box.isNotEmpty) {
+                          List<dynamic> dynamicWorkPlanList =
+                              box.values.toList();
 
-                    if (dynamicWorkPlanList.isNotEmpty) {
-                      workPlanList = dynamicWorkPlanList.cast<WorkPlanModel>();
-                    }
-                  }
-                }
-                return Container(
-                  height: 50.h,
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    border: Border.all(color: blackColor),
-                  ),
-                  child: Row(
-                    children: [
-                      Text(
-                        AppLocalizations.of(context)?.homeScreenPlan ?? '',
-                        style: CustomTextStyle.kHeading2,
-                      ),
-                      SizedBox(width: 10.w),
-                      Expanded(
-                        child: ListView.separated(
-                          shrinkWrap: true,
-                          scrollDirection: Axis.horizontal,
-                          itemBuilder: (context, index) {
-                            String startTime;
-                            String endTime;
-                            if (preferenceManager.getTimeFormat == '12h') {
-                              startTime = DateFormat('h:mm').format(
-                                  workPlanList[index].startWorkPlanTime);
-                              endTime = DateFormat('h:mm')
-                                  .format(workPlanList[index].endWorkPlanTime);
-                            } else {
-                              startTime = DateFormat('H:mm').format(
-                                  workPlanList[index].startWorkPlanTime);
-                              endTime = DateFormat('H:mm')
-                                  .format(workPlanList[index].endWorkPlanTime);
+                          if (dynamicWorkPlanList.isNotEmpty) {
+                            final tempWorkPlanList =
+                                dynamicWorkPlanList.cast<WorkPlanModel>();
+                            DateTime now = DateTime.now();
+                            for (final workPlan in tempWorkPlanList) {
+                              if (workPlan.workPlanDate ==
+                                  DateTime(now.year, now.month, now.day)) {
+                                workPlanList.add(workPlan);
+                              }
                             }
+                          }
+                        }
+                      }
+                      return workPlanList.isEmpty
+                          ? const SizedBox()
+                          : Container(
+                              height: 50.h,
+                              width: double.infinity,
+                              decoration: BoxDecoration(
+                                border: Border.all(color: blackColor),
+                              ),
+                              child: Row(
+                                children: [
+                                  Text(
+                                    AppLocalizations.of(context)
+                                            ?.homeScreenPlan ??
+                                        '',
+                                    style: CustomTextStyle.kHeading2,
+                                  ),
+                                  SizedBox(width: 10.w),
+                                  Expanded(
+                                    child: ListView.separated(
+                                      shrinkWrap: true,
+                                      scrollDirection: Axis.horizontal,
+                                      itemBuilder: (context, index) {
+                                        String startTime;
+                                        String endTime;
+                                        if (preferenceManager.getTimeFormat ==
+                                            '12h') {
+                                          startTime = DateFormat('h:mm a')
+                                              .format(workPlanList[index]
+                                                  .startWorkPlanTime);
+                                          endTime = DateFormat('h:mm a').format(
+                                              workPlanList[index]
+                                                  .endWorkPlanTime);
+                                        } else {
+                                          startTime = DateFormat('H:mm').format(
+                                              workPlanList[index]
+                                                  .startWorkPlanTime);
+                                          endTime = DateFormat('H:mm').format(
+                                              workPlanList[index]
+                                                  .endWorkPlanTime);
+                                        }
 
-                            return Center(
-                              child: CustomWorkPlanTime(
-                                startTime: startTime,
-                                endTime: endTime,
+                                        return Center(
+                                          child: CustomWorkPlanTime(
+                                            startTime: startTime,
+                                            endTime: endTime,
+                                          ),
+                                        );
+                                      },
+                                      separatorBuilder:
+                                          (BuildContext context, int index) {
+                                        return Center(
+                                          child: Text(
+                                            ',',
+                                            style: CustomTextStyle.kHeading2,
+                                          ),
+                                        );
+                                      },
+                                      itemCount: workPlanList.length < 2
+                                          ? workPlanList.length
+                                          : 2,
+                                    ),
+                                  ),
+                                  //const Spacer(),
+                                  IconButton(
+                                    onPressed: () {
+                                      context
+                                          .read<BottomNavigationProvider>()
+                                          .setCurrentTab = 2;
+                                    },
+                                    icon: Icon(
+                                      Icons.edit,
+                                      color: greyColor,
+                                      size: 30.h,
+                                    ),
+                                  ),
+                                ],
                               ),
                             );
-                          },
-                          separatorBuilder: (BuildContext context, int index) {
-                            return Center(
-                              child: Text(
-                                ',',
-                                style: CustomTextStyle.kHeading2,
-                              ),
-                            );
-                          },
-                          itemCount:
-                              workPlanList.length < 2 ? workPlanList.length : 2,
-                        ),
-                      ),
-                      //const Spacer(),
-                      IconButton(
-                        onPressed: () {
-                          context.read<BottomNavigationProvider>().setCurrentTab = 2;
-                        },
-                        icon: Icon(
-                          Icons.edit,
-                          color: greyColor,
-                          size: 30.h,
-                        ),
-                      ),
-                    ],
+                    },
                   ),
-                );
-              },
-            ),
             SizedBox(height: 5.h),
 
             /// refresh time widget
@@ -171,43 +235,58 @@ class _HomeScreenState extends State<HomeScreen> {
             SizedBox(height: 12.h),
             StartEndJobBox(
               jobStatus: AppLocalizations.of(context)?.homeScreenStartJob ?? '',
-              color: currentIndex == 0
-                  ? greyColor.withOpacity(0.3)
-                  : lightGreenColor,
-              plusMinuteTap: () {
-                setState(() {
-                  startJobTime = startJobTime.add(const Duration(minutes: 1));
-                  isStartJobSelectCustomTime = true;
-                });
-              },
-              minusMinuteTap: () {
-                setState(() {
-                  startJobTime =
-                      startJobTime.subtract(const Duration(minutes: 1));
-                  isStartJobSelectCustomTime = true;
-                });
-              },
-              manualTimeTap: () async {
-                TimeOfDay? pickedTime = await showTimePicker(
-                  initialTime: TimeOfDay.now(),
-                  context: context, //context of current state
-                );
+              color:
+                  currentIndex == 0 ? greyColor.withOpacity(0.3) : greenColor,
+              plusMinuteTap: currentIndex == 0
+                  ? null
+                  : () {
+                      setState(() {
+                        startJobTime =
+                            startJobTime.add(const Duration(minutes: 1));
+                        isStartJobSelectCustomTime = true;
+                      });
+                    },
+              minusMinuteTap: currentIndex == 0
+                  ? null
+                  : () {
+                      setState(() {
+                        startJobTime =
+                            startJobTime.subtract(const Duration(minutes: 1));
+                        isStartJobSelectCustomTime = true;
+                      });
+                    },
+              manualTimeTap: currentIndex == 0
+                  ? null
+                  : () async {
+                      TimeOfDay? pickedTime = await showTimePicker(
+                        initialTime: TimeOfDay.now(),
+                        context: context,
+                        builder: (context, child) {
+                          return MediaQuery(
+                            data: MediaQuery.of(context).copyWith(
+                              alwaysUse24HourFormat:
+                                  preferenceManager.getTimeFormat == '24h',
+                            ),
+                            child: child ?? const SizedBox(),
+                          );
+                        }, //context of current state
+                      );
 
-                if (pickedTime != null) {
-                  setState(() {
-                    isStartJobSelectCustomTime = true;
-                    startJobTime = DateTime(
-                      startJobTime.year,
-                      startJobTime.month,
-                      startJobTime.day,
-                      pickedTime.hour,
-                      pickedTime.minute,
-                    );
-                  });
-                } else {
-                  debugPrint("Time is not selected");
-                }
-              },
+                      if (pickedTime != null) {
+                        setState(() {
+                          isStartJobSelectCustomTime = true;
+                          startJobTime = DateTime(
+                            startJobTime.year,
+                            startJobTime.month,
+                            startJobTime.day,
+                            pickedTime.hour,
+                            pickedTime.minute,
+                          );
+                        });
+                      } else {
+                        debugPrint("Time is not selected");
+                      }
+                    },
               onTab: currentIndex == 0
                   ? null
                   : () async {
@@ -221,7 +300,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       });
                       HistoryElement historyElement =
                           HistoryElement(time: startJobTime, type: "Start job");
-                      jobHistory.add(historyElement);
+
+                      await currentWorkHistoryElement.add(historyElement);
                     },
               time: _seconds,
               startingDate: startJobTime,
@@ -229,118 +309,46 @@ class _HomeScreenState extends State<HomeScreen> {
             SizedBox(height: 8.h),
             StartEndJobBox(
               jobStatus: AppLocalizations.of(context)?.homeScreenEndJob ?? '',
-              plusMinuteTap: () {
-                setState(() {
-                  endJob = endJob.add(const Duration(minutes: 1));
-                  isEndJobSelectCustomTime = true;
-                });
-              },
-              minusMinuteTap: () {
-                setState(() {
-                  endJob = endJob.subtract(const Duration(minutes: 1));
-                  isEndJobSelectCustomTime = true;
-                });
-              },
-              manualTimeTap: () async {
-                TimeOfDay? pickedTime = await showTimePicker(
-                  initialTime: TimeOfDay.now(),
-                  context: context, //context of current state
-                );
-
-                if (pickedTime != null) {
-                  setState(() {
-                    isEndJobSelectCustomTime = true;
-                    endJob = DateTime(
-                      endJob.year,
-                      endJob.month,
-                      endJob.day,
-                      pickedTime.hour,
-                      pickedTime.minute,
-                    );
-                  });
-                } else {
-                  debugPrint("Time is not selected");
-                }
-              },
-              startingDate: endJob,
-              color: redColor,
-              time: 0,
-              onTab: currentIndex == -1
+              plusMinuteTap: currentIndex == 1
+                  ? null
+                  : () {
+                      setState(() {
+                        endJob = endJob.add(const Duration(minutes: 1));
+                        isEndJobSelectCustomTime = true;
+                      });
+                    },
+              minusMinuteTap: currentIndex == 1
+                  ? null
+                  : () {
+                      setState(() {
+                        endJob = endJob.subtract(const Duration(minutes: 1));
+                        isEndJobSelectCustomTime = true;
+                      });
+                    },
+              manualTimeTap: currentIndex == 1
                   ? null
                   : () async {
-                      currentIndex = -1;
-
-                      setState(() {
-                        if (isEndJobSelectCustomTime) {
-                          endJob = endJob;
-                        } else {
-                          endJob = DateTime.now();
-                        }
-                      });
-                      HistoryElement historyElement =
-                          HistoryElement(time: endJob, type: "End job");
-                      jobHistory.add(historyElement);
-
-                      String dateKey =
-                          DateFormat('EEEE, d, M, y').format(DateTime.now());
-                      final Box box = Hive.box('jobHistoryBox');
-                      JobHistoryModel jobHistoryModel = JobHistoryModel(
-                          id: DateFormat('EEEE, d, M, y')
-                              .format(DateTime.now()),
-                          historyElement: jobHistory);
-
-                      List<JobHistoryModel> jobHistoryList = [];
-                      if (box.isNotEmpty) {
-                        List? dynamicList = box.get(dateKey);
-                        if (dynamicList != null) {
-                          List<JobHistoryModel> boxDataList =
-                              dynamicList.cast<JobHistoryModel>();
-                          jobHistoryData = boxDataList;
-                          boxDataList.add(jobHistoryModel);
-                          jobHistoryList = boxDataList;
-                        } else {
-                          jobHistoryList.add(jobHistoryModel);
-                        }
-                      } else {
-                        jobHistoryList.add(jobHistoryModel);
-                      }
-
-                      box.put(dateKey, jobHistoryList).then((value) {
-                        jobHistory = [];
-                      });
-                    },
-            ),
-            SizedBox(height: 8.h),
-            Row(
-              children: [
-                Expanded(
-                  child: PaidUnPaidBreakBox(
-                    plusMinuteTap: () {
-                      setState(() {
-                        paidBreak = paidBreak.add(const Duration(minutes: 1));
-                        isPaidBreakSelectCustomTime = true;
-                      });
-                    },
-                    minusMinuteTap: () {
-                      setState(() {
-                        paidBreak =
-                            paidBreak.subtract(const Duration(minutes: 1));
-                        isPaidBreakSelectCustomTime = true;
-                      });
-                    },
-                    manualTimeTap: () async {
                       TimeOfDay? pickedTime = await showTimePicker(
                         initialTime: TimeOfDay.now(),
-                        context: context, //context of current state
+                        context: context,
+                        builder: (context, child) {
+                          return MediaQuery(
+                            data: MediaQuery.of(context).copyWith(
+                              alwaysUse24HourFormat:
+                                  preferenceManager.getTimeFormat == '24h',
+                            ),
+                            child: child ?? const SizedBox(),
+                          );
+                        }, //context of current state
                       );
 
                       if (pickedTime != null) {
                         setState(() {
-                          isPaidBreakSelectCustomTime = true;
-                          paidBreak = DateTime(
-                            paidBreak.year,
-                            paidBreak.month,
-                            paidBreak.day,
+                          isEndJobSelectCustomTime = true;
+                          endJob = DateTime(
+                            endJob.year,
+                            endJob.month,
+                            endJob.day,
                             pickedTime.hour,
                             pickedTime.minute,
                           );
@@ -349,27 +357,168 @@ class _HomeScreenState extends State<HomeScreen> {
                         debugPrint("Time is not selected");
                       }
                     },
-                    startingDate: paidBreak,
-                    onTab: currentIndex == 2
+              startingDate: endJob,
+              color: currentIndex == 1 ? greyColor.withOpacity(0.3) : redColor,
+              time: 0,
+              onTab: currentIndex == -1
+                  ? () {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: const Text('Please first start the job'),
+                          backgroundColor: redColor,
+                          showCloseIcon: true,
+                          closeIconColor: whiteColor,
+                        ),
+                      );
+                    }
+                  : currentIndex == 1
+                      ? null
+                      : () async {
+                          currentIndex = 1;
+
+                          setState(() {
+                            if (isEndJobSelectCustomTime) {
+                              endJob = endJob;
+                            } else {
+                              endJob = DateTime.now();
+                            }
+                          });
+                          HistoryElement historyElement =
+                              HistoryElement(time: endJob, type: "End job");
+
+                          await currentWorkHistoryElement.add(historyElement);
+
+                          currentHistoryElementJobList =
+                              currentWorkHistoryElement.values
+                                  .toList()
+                                  .cast<HistoryElement>();
+
+                          await currentWorkHistoryElement.clear();
+
+                          String dateKey = DateFormat('EEEE, d, M, y')
+                              .format(DateTime.now());
+                          final Box box = Hive.box('jobHistoryBox');
+                          JobHistoryModel jobHistoryModel = JobHistoryModel(
+                            id: DateFormat('EEEE, d, M, y')
+                                .format(DateTime.now()),
+                            // historyElement: jobHistory,
+                            historyElement: currentHistoryElementJobList,
+                            timestamp: DateTime.now(),
+                          );
+
+                          List<JobHistoryModel> jobHistoryList = [];
+                          if (box.isNotEmpty) {
+                            List? dynamicList = box.get(dateKey);
+                            if (dynamicList != null) {
+                              List<JobHistoryModel> boxDataList =
+                                  dynamicList.cast<JobHistoryModel>();
+                              jobHistoryData = boxDataList;
+
+                              boxDataList.add(jobHistoryModel);
+                              jobHistoryList = boxDataList;
+                            } else {
+                              jobHistoryList.add(jobHistoryModel);
+                            }
+                          } else {
+                            jobHistoryList.add(jobHistoryModel);
+                          }
+
+                          box.put(dateKey, jobHistoryList).then((value) {});
+
+                          currentHistoryElementJobList = [];
+                        },
+            ),
+            SizedBox(height: 8.h),
+            Row(
+              children: [
+                Expanded(
+                  child: PaidUnPaidBreakBox(
+                    plusMinuteTap: currentIndex == 2
                         ? null
                         : () {
-                            currentIndex = 2;
                             setState(() {
-                              if (isPaidBreakSelectCustomTime) {
-                                paidBreak = paidBreak;
-                              } else {
-                                paidBreak = DateTime.now();
-                              }
+                              paidBreak =
+                                  paidBreak.add(const Duration(minutes: 1));
+                              isPaidBreakSelectCustomTime = true;
                             });
-                            HistoryElement historyElement = HistoryElement(
-                                time: paidBreak, type: "Paid break");
-                            jobHistory.add(historyElement);
                           },
+                    minusMinuteTap: currentIndex == 2
+                        ? null
+                        : () {
+                            setState(() {
+                              paidBreak = paidBreak
+                                  .subtract(const Duration(minutes: 1));
+                              isPaidBreakSelectCustomTime = true;
+                            });
+                          },
+                    manualTimeTap: currentIndex == 2
+                        ? null
+                        : () async {
+                            TimeOfDay? pickedTime = await showTimePicker(
+                              initialTime: TimeOfDay.now(),
+                              context: context,
+                              builder: (context, child) {
+                                return MediaQuery(
+                                  data: MediaQuery.of(context).copyWith(
+                                    alwaysUse24HourFormat:
+                                        preferenceManager.getTimeFormat ==
+                                            '24h',
+                                  ),
+                                  child: child ?? const SizedBox(),
+                                );
+                              }, //context of current state
+                            );
+
+                            if (pickedTime != null) {
+                              setState(() {
+                                isPaidBreakSelectCustomTime = true;
+                                paidBreak = DateTime(
+                                  paidBreak.year,
+                                  paidBreak.month,
+                                  paidBreak.day,
+                                  pickedTime.hour,
+                                  pickedTime.minute,
+                                );
+                              });
+                            } else {
+                              debugPrint("Time is not selected");
+                            }
+                          },
+                    startingDate: paidBreak,
+                    onTab: currentIndex == -1
+                        ? () {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content:
+                                    const Text('Please first start the job'),
+                                backgroundColor: redColor,
+                                showCloseIcon: true,
+                                closeIconColor: whiteColor,
+                              ),
+                            );
+                          }
+                        : currentIndex == 2
+                            ? null
+                            : () async {
+                                currentIndex = 2;
+                                setState(() {
+                                  if (isPaidBreakSelectCustomTime) {
+                                    paidBreak = paidBreak;
+                                  } else {
+                                    paidBreak = DateTime.now();
+                                  }
+                                });
+                                HistoryElement historyElement = HistoryElement(
+                                    time: paidBreak, type: "Paid break");
+
+                                await currentWorkHistoryElement
+                                    .add(historyElement);
+                              },
                     breakStatus:
                         AppLocalizations.of(context)?.homeScreenPaidBreak ?? '',
                     color: currentIndex == 2
                         ? greyColor.withOpacity(0.3)
-                        : greenColor,
+                        : lightGreenColor,
                     iconPath: AssetsIcon.paidBreakIcon,
                   ),
                 ),
@@ -377,56 +526,86 @@ class _HomeScreenState extends State<HomeScreen> {
                 Expanded(
                   child: PaidUnPaidBreakBox(
                     startingDate: unPaidBreak,
-                    plusMinuteTap: () {
-                      setState(() {
-                        unPaidBreak =
-                            unPaidBreak.add(const Duration(minutes: 1));
-                        isUnpaidBreakSelectCustomTime = true;
-                      });
-                    },
-                    minusMinuteTap: () {
-                      setState(() {
-                        unPaidBreak =
-                            unPaidBreak.subtract(const Duration(minutes: 1));
-                        isUnpaidBreakSelectCustomTime = true;
-                      });
-                    },
-                    manualTimeTap: () async {
-                      TimeOfDay? pickedTime = await showTimePicker(
-                        initialTime: TimeOfDay.now(),
-                        context: context, //context of current state
-                      );
-
-                      if (pickedTime != null) {
-                        setState(() {
-                          isUnpaidBreakSelectCustomTime = true;
-                          unPaidBreak = DateTime(
-                            unPaidBreak.year,
-                            unPaidBreak.month,
-                            unPaidBreak.day,
-                            pickedTime.hour,
-                            pickedTime.minute,
-                          );
-                        });
-                      } else {
-                        debugPrint("Time is not selected");
-                      }
-                    },
-                    onTab: currentIndex == 3
+                    plusMinuteTap: currentIndex == 3
                         ? null
                         : () {
-                            currentIndex = 3;
                             setState(() {
-                              if (isUnpaidBreakSelectCustomTime) {
-                                unPaidBreak = unPaidBreak;
-                              } else {
-                                unPaidBreak = DateTime.now();
-                              }
+                              unPaidBreak =
+                                  unPaidBreak.add(const Duration(minutes: 1));
+                              isUnpaidBreakSelectCustomTime = true;
                             });
-                            HistoryElement historyElement = HistoryElement(
-                                time: unPaidBreak, type: "Unpaid break");
-                            jobHistory.add(historyElement);
                           },
+                    minusMinuteTap: currentIndex == 3
+                        ? null
+                        : () {
+                            setState(() {
+                              unPaidBreak = unPaidBreak
+                                  .subtract(const Duration(minutes: 1));
+                              isUnpaidBreakSelectCustomTime = true;
+                            });
+                          },
+                    manualTimeTap: currentIndex == 3
+                        ? null
+                        : () async {
+                            TimeOfDay? pickedTime = await showTimePicker(
+                              initialTime: TimeOfDay.now(),
+                              context: context,
+                              builder: (context, child) {
+                                return MediaQuery(
+                                  data: MediaQuery.of(context).copyWith(
+                                    alwaysUse24HourFormat:
+                                        preferenceManager.getTimeFormat ==
+                                            '24h',
+                                  ),
+                                  child: child ?? const SizedBox(),
+                                );
+                              }, //context of current state
+                            );
+
+                            if (pickedTime != null) {
+                              setState(() {
+                                isUnpaidBreakSelectCustomTime = true;
+                                unPaidBreak = DateTime(
+                                  unPaidBreak.year,
+                                  unPaidBreak.month,
+                                  unPaidBreak.day,
+                                  pickedTime.hour,
+                                  pickedTime.minute,
+                                );
+                              });
+                            } else {
+                              debugPrint("Time is not selected");
+                            }
+                          },
+                    onTab: currentIndex == -1
+                        ? () {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content:
+                                    const Text('Please first start the job'),
+                                backgroundColor: redColor,
+                                showCloseIcon: true,
+                                closeIconColor: whiteColor,
+                              ),
+                            );
+                          }
+                        : currentIndex == 3
+                            ? null
+                            : () async {
+                                currentIndex = 3;
+                                setState(() {
+                                  if (isUnpaidBreakSelectCustomTime) {
+                                    unPaidBreak = unPaidBreak;
+                                  } else {
+                                    unPaidBreak = DateTime.now();
+                                  }
+                                });
+                                HistoryElement historyElement = HistoryElement(
+                                    time: unPaidBreak, type: "Unpaid break");
+
+                                await currentWorkHistoryElement
+                                    .add(historyElement);
+                              },
                     breakStatus:
                         AppLocalizations.of(context)?.homeScreenUnPaidBreak ??
                             '',
@@ -444,6 +623,56 @@ class _HomeScreenState extends State<HomeScreen> {
               style: CustomTextStyle.kHeading2,
             ),
             SizedBox(height: 20.h),
+
+            currentWorkHistoryElement.isEmpty
+                ? const SizedBox()
+                : ValueListenableBuilder(
+                    valueListenable: currentWorkHistoryElement.listenable(),
+                    builder: (context, Box box, widget) {
+                      currentHistoryElementJobList = currentWorkHistoryElement
+                          .values
+                          .toList()
+                          .cast<HistoryElement>();
+                      currentHistoryElementJobList =
+                          currentHistoryElementJobList.reversed.toList();
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Current Job',
+                            style: CustomTextStyle.kBodyText1.copyWith(
+                                color: blueColor, fontWeight: FontWeight.w600),
+                          ),
+                          SizedBox(height: 10.h),
+                          ListView.builder(
+                            shrinkWrap: true,
+                            itemCount: currentHistoryElementJobList.length,
+                            itemBuilder: (context, index) {
+                              return Text(
+                                formatJobData(
+                                  jobTime: currentHistoryElementJobList[index]
+                                          .time ??
+                                      DateTime.now(),
+                                  jobType:
+                                      currentHistoryElementJobList[index].type,
+                                ),
+                                // "${DateFormat('d.M.y').format(currentHistoryElementJobList[index].time ?? DateTime.now())}-"
+                                // "${DateFormat('h:mm a').format(currentHistoryElementJobList[index].time ?? DateTime.now())}-${currentHistoryElementJobList[index].type}",
+                                style: CustomTextStyle.kBodyText1.copyWith(
+                                    color: getTextColor(
+                                      currentHistoryElementJobList[index]
+                                              .type ??
+                                          '',
+                                    ),
+                                    fontWeight: FontWeight.w400),
+                              );
+                            },
+                          ),
+                        ],
+                      );
+                    },
+                  ),
+
             SizedBox(height: 10.h),
             jobHistoryBox.isNotEmpty
                 ? ValueListenableBuilder(
@@ -457,7 +686,14 @@ class _HomeScreenState extends State<HomeScreen> {
                           itemBuilder: (context, i) {
                             List<JobHistoryModel> jobList =
                                 box.getAt(i).cast<JobHistoryModel>();
+                            jobList.sort(
+                                (a, b) => b.timestamp.compareTo(a.timestamp));
                             String dataKey = box.keyAt(i);
+                            DateTime dateTime =
+                                DateFormat('EEEE, dd, M, yyyy').parse(dataKey);
+                            dataKey =
+                                DateFormat(preferenceManager.getDateFormat)
+                                    .format(dateTime);
                             return Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
@@ -469,31 +705,38 @@ class _HomeScreenState extends State<HomeScreen> {
                                 ),
                                 ListView.builder(
                                   itemBuilder: (context, j) {
+                                    List<HistoryElement> historyList =
+                                        jobList[j].historyElement ?? [];
+
+                                    historyList = historyList.reversed.toList();
+
                                     return Padding(
                                       padding:
                                           EdgeInsets.symmetric(vertical: 15.h),
                                       child: ListView.builder(
-                                        itemBuilder: (context, k) {
-                                          return Text(
-                                            "${DateFormat('d.M.y').format(jobList[j].historyElement?[k].time ?? DateTime.now())}-"
-                                            "${DateFormat('h:mm a').format(jobList[j].historyElement?[k].time ?? DateTime.now())}-${jobList[j].historyElement?[k].type}",
-                                            style: CustomTextStyle.kBodyText1
-                                                .copyWith(
-                                                    color: getTextColor(jobList[
-                                                                j]
-                                                            .historyElement?[k]
-                                                            .type ??
-                                                        ''),
-                                                    fontWeight:
-                                                        FontWeight.w400),
-                                          );
-                                        },
-                                        itemCount:
-                                            jobList[j].historyElement?.length,
+                                        itemCount: historyList.length,
                                         physics:
                                             const NeverScrollableScrollPhysics(),
                                         padding: EdgeInsets.zero,
                                         shrinkWrap: true,
+                                        itemBuilder: (context, k) {
+                                          // final reversedIndex =
+                                          //     historyList.length - 1 - k;
+                                          return Text(
+                                            formatJobData(
+                                                jobTime: historyList[k].time ??
+                                                    DateTime.now(),
+                                                jobType:
+                                                    historyList[k].type ?? ''),
+                                            style: CustomTextStyle.kBodyText1
+                                                .copyWith(
+                                                    color: getTextColor(
+                                                        historyList[k].type ??
+                                                            ''),
+                                                    fontWeight:
+                                                        FontWeight.w400),
+                                          );
+                                        },
                                       ),
                                     );
                                   },
@@ -507,7 +750,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           });
                     })
                 : const Center(
-                    child: Text("No history found"),
+                    child: Text(""),
                   ),
 
             SizedBox(height: 20.h),

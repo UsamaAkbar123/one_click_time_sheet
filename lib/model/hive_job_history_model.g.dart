@@ -19,17 +19,20 @@ class JobHistoryModelAdapter extends TypeAdapter<JobHistoryModel> {
     return JobHistoryModel(
       id: fields[0] as String,
       historyElement: (fields[1] as List?)?.cast<HistoryElement>(),
+      timestamp: fields[2] as DateTime,
     );
   }
 
   @override
   void write(BinaryWriter writer, JobHistoryModel obj) {
     writer
-      ..writeByte(2)
+      ..writeByte(3)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
-      ..write(obj.historyElement);
+      ..write(obj.historyElement)
+      ..writeByte(2)
+      ..write(obj.timestamp);
   }
 
   @override

@@ -82,7 +82,6 @@ class AppointmentDetailsBox extends StatelessWidget {
                 ? DateFormat.jm()
                     .format(calendarTapDetail?.appointments?.first.startTime)
                 : DateFormat.Hm()
-                    .addPattern('a')
                     .format(calendarTapDetail?.appointments?.first.startTime),
             valueTextColor: greenColor,
           ),
@@ -92,7 +91,6 @@ class AppointmentDetailsBox extends StatelessWidget {
                 ? DateFormat.jm()
                     .format(calendarTapDetail?.appointments?.first.endTime)
                 : DateFormat.Hm()
-                    .addPattern('a')
                     .format(calendarTapDetail?.appointments?.first.endTime),
             valueTextColor: redColor,
           ),

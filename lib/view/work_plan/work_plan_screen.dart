@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hive_flutter/adapters.dart';
+import 'package:one_click_time_sheet/managers/preference_manager.dart';
 import 'package:one_click_time_sheet/model/work_plan_model.dart';
 import 'package:one_click_time_sheet/utills/constants/text_styles.dart';
 import 'package:one_click_time_sheet/view/work_plan/work_plan_component/alert_box_for_workplan_adding.dart';
@@ -18,8 +19,29 @@ class WorkPlanScreen extends StatefulWidget {
 
 class _WorkPlanScreenState extends State<WorkPlanScreen> {
   CalendarTapDetails? calendarTapDetail;
-
+  PreferenceManager preferenceManager = PreferenceManager();
   final Box box = Hive.box('workPlan');
+
+  int getFirstDayOfWeek(String weekDay) {
+    switch (weekDay) {
+      case 'Monday':
+        return 1;
+      case 'Tuesday':
+        return 2;
+      case 'Wednesday':
+        return 3;
+      case 'Thursday':
+        return 4;
+      case 'Friday':
+        return 5;
+      case 'Saturday':
+        return 6;
+      case 'Sunday':
+        return 7;
+      default:
+        return 7;
+    }
+  }
 
   void calendarTapped(CalendarTapDetails calendarTapDetails) {
     setState(() {});
@@ -68,7 +90,13 @@ class _WorkPlanScreenState extends State<WorkPlanScreen> {
                   child: SfCalendar(
                     cellBorderColor: Colors.transparent,
                     view: CalendarView.week,
-                    firstDayOfWeek: 1,
+                    timeSlotViewSettings: TimeSlotViewSettings(
+                      timeFormat: preferenceManager.getTimeFormat == '12h'
+                          ? 'hh:mm a'
+                          : 'HH:mm',
+                    ),
+                    firstDayOfWeek:
+                        getFirstDayOfWeek(preferenceManager.getFirstDayOfWeek),
                     dataSource: MeetingDateSource(
                       getAppointments(
                         workPlanList: workPlanList,
