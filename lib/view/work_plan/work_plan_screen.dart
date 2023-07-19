@@ -56,6 +56,17 @@ class _WorkPlanScreenState extends State<WorkPlanScreen> {
           );
         },
       );
+    } else {
+      showDialog(
+        context: context,
+        builder: (context) {
+          return AddWorkPlanBox(
+            isEmptySpaceClick: true,
+            startTime: calendarTapDetails.date,
+            endTime: calendarTapDetails.date?.add(const Duration(minutes: 60)),
+          );
+        },
+      );
     }
   }
 

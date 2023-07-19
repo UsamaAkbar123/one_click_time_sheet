@@ -10,6 +10,7 @@ import 'package:uuid/uuid.dart';
 
 class AddWorkPlanBox extends StatefulWidget {
   final bool? isEditMode;
+  final bool? isEmptySpaceClick;
   final String? id;
   final String? workPlanName;
   final DateTime? startTime;
@@ -18,6 +19,7 @@ class AddWorkPlanBox extends StatefulWidget {
   const AddWorkPlanBox({
     Key? key,
     this.isEditMode,
+    this.isEmptySpaceClick,
     this.id,
     this.workPlanName,
     this.startTime,
@@ -87,6 +89,29 @@ class _AddWorkPlanBoxState extends State<AddWorkPlanBox> {
 
   @override
   void initState() {
+    if (widget.isEmptySpaceClick == true) {
+      if (preferenceManager.getTimeFormat == '24h') {
+        startTimeForFrontEnd =
+            DateFormat.Hm().format(widget.startTime ?? DateTime.now());
+      } else {
+        startTimeForFrontEnd =
+            DateFormat.jm().format(widget.startTime ?? DateTime.now());
+      }
+      if (preferenceManager.getTimeFormat == '24h') {
+        endTimeForFrontEnd =
+            DateFormat.Hm().format(widget.endTime ?? DateTime.now());
+      } else {
+        endTimeForFrontEnd =
+            DateFormat.jm().format(widget.endTime ?? DateTime.now());
+      }
+      workPlanDateForFrontEnd =
+          DateFormat(preferenceManager.getDateFormat).format(
+        widget.startTime ?? DateTime.now(),
+      );
+      workPlanDateForBackend = widget.startTime ?? DateTime.now();
+      startTimeForBackEnd = widget.startTime ?? DateTime.now();
+      endTimeForBackEnd = widget.endTime ?? DateTime.now();
+    }
     if (widget.isEditMode == true) {
       nameController.text = widget.workPlanName ?? '';
       if (preferenceManager.getTimeFormat == '24h') {
@@ -181,7 +206,7 @@ class _AddWorkPlanBoxState extends State<AddWorkPlanBox> {
                 );
                 workPlanDateForBackend = dateTime;
                 setState(() {});
-                if (widget.isEditMode == true) {
+                if (widget.isEditMode == true || widget.isEmptySpaceClick == true) {
                   setEndTimeForFrontAndBackend(editDateTime: widget.endTime);
 
                   /// start time
@@ -317,6 +342,28 @@ class _AddWorkPlanBoxState extends State<AddWorkPlanBox> {
                       Navigator.of(context).pop();
                     });
                   }
+                } else if (widget.isEmptySpaceClick == true) {
+                  const uuid = Uuid();
+                  String id = uuid.v4();
+                  WorkPlanModel workPlanModel = WorkPlanModel(
+                    id: id,
+                    workPlanName: nameController.text,
+                    startWorkPlanTime: startTimeForBackEnd,
+                    endWorkPlanTime: endTimeForBackEnd,
+                    workPlanDate: DateTime(
+                      startTimeForBackEnd.year,
+                      startTimeForBackEnd.month,
+                      startTimeForBackEnd.day,
+                    ),
+                  );
+
+                  await box.put(id, workPlanModel).then((value) {
+                    nameController.clear();
+                    startTimeForFrontEnd = 'select start time';
+                    endTimeForFrontEnd = 'select end time';
+                    workPlanDateForFrontEnd = 'select date';
+                    Navigator.of(context).pop();
+                  });
                 } else {
                   const uuid = Uuid();
                   String id = uuid.v4();
