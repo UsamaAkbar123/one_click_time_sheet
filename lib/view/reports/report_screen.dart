@@ -390,16 +390,8 @@ class _ReportScreenState extends State<ReportScreen> {
                                                   .remainder(60);
                                               if (jobList[j]
                                                       .historyElement?[k]
-                                                      .type !=
+                                                      .type ==
                                                   'Unpaid break') {
-                                                totalHoursForFinalSumResult =
-                                                    totalHoursForFinalSumResult +
-                                                        hours;
-
-                                                totalMinutesForFinalSumResult =
-                                                    totalMinutesForFinalSumResult +
-                                                        minutes;
-                                              } else {
                                                 totalHoursForFinalSumResult =
                                                     totalHoursForFinalSumResult -
                                                         hours;
@@ -426,30 +418,58 @@ class _ReportScreenState extends State<ReportScreen> {
 
                                           return Column(
                                             children: [
-                                              TableMetaDataWidget(
-                                                jobType: k == 0
-                                                    ? 'work'
-                                                    : jobList[j]
-                                                            .historyElement?[k]
-                                                            .type ??
-                                                        '',
-                                                startTime: startTime,
-                                                endTime: endTime,
-                                                difference:
-                                                    '$hours:${minutes.toString().padLeft(2, '0')}',
-                                                consider: jobList[j]
-                                                            .historyElement?[k]
-                                                            .type ==
-                                                        'Unpaid break'
-                                                    ? '-$hours:${minutes.toString().padLeft(2, '0')}'
-                                                    : '$hours:${minutes.toString().padLeft(2, '0')}',
-                                                editDeleteHistoryElement:
-                                                    jobList[j].historyElement,
-                                                indexKey: id,
-                                                // jobList: jobList,
-                                                jIndex: j,
-                                                iIndex: i,
-                                              ),
+                                              if (k == 0)
+                                                TableMetaDataWidget(
+                                                  jobType: 'work',
+                                                  startTime: startTime,
+                                                  endTime: endTime,
+                                                  difference:
+                                                      '$hours:${minutes.toString().padLeft(2, '0')}',
+                                                  consider:
+                                                      '$hours:${minutes.toString().padLeft(2, '0')}',
+                                                  editDeleteHistoryElement:
+                                                      jobList[j].historyElement,
+                                                  indexKey: id,
+                                                  // jobList: jobList,
+                                                  jIndex: j,
+                                                  iIndex: i,
+                                                ),
+                                              jobList[j]
+                                                          .historyElement?[k]
+                                                          .type ==
+                                                      'Start job'
+                                                  ? const SizedBox()
+                                                  : TableMetaDataWidget(
+                                                      jobType: jobList[j]
+                                                              .historyElement?[
+                                                                  k]
+                                                              .type ??
+                                                          '',
+                                                      startTime: startTime,
+                                                      endTime: endTime,
+                                                      difference:
+                                                          '$hours:${minutes.toString().padLeft(2, '0')}',
+                                                      consider: jobList[j]
+                                                                  .historyElement?[
+                                                                      k]
+                                                                  .type ==
+                                                              'Unpaid break'
+                                                          ? '-$hours:${minutes.toString().padLeft(2, '0')}'
+                                                          : jobList[j]
+                                                                      .historyElement?[
+                                                                          k]
+                                                                      .type ==
+                                                                  'Paid break'
+                                                              ? '0:00'
+                                                              : '$hours:${minutes.toString().padLeft(2, '0')}',
+                                                      editDeleteHistoryElement:
+                                                          jobList[j]
+                                                              .historyElement,
+                                                      indexKey: id,
+                                                      // jobList: jobList,
+                                                      jIndex: j,
+                                                      iIndex: i,
+                                                    ),
                                               k + 1 ==
                                                       jobList[j]
                                                               .historyElement!
