@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:one_click_time_sheet/managers/preference_manager.dart';
 import 'package:one_click_time_sheet/model/work_plan_model.dart';
+import 'package:one_click_time_sheet/utills/constants/colors.dart';
 import 'package:one_click_time_sheet/utills/constants/text_styles.dart';
 import 'package:one_click_time_sheet/view/work_plan/work_plan_component/alert_box_for_workplan_adding.dart';
 import 'package:one_click_time_sheet/view/work_plan/work_plan_component/appoinment_details_box.dart';
@@ -57,16 +58,28 @@ class _WorkPlanScreenState extends State<WorkPlanScreen> {
         },
       );
     } else {
-      showDialog(
-        context: context,
-        builder: (context) {
-          return AddWorkPlanBox(
-            isEmptySpaceClick: true,
-            startTime: calendarTapDetails.date,
-            endTime: calendarTapDetails.date?.add(const Duration(minutes: 60)),
-          );
-        },
-      );
+      if (calendarTapDetails.date!.isBefore(DateTime.now())) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: const Text('cannot add workplan before today date'),
+            backgroundColor: redColor,
+            showCloseIcon: true,
+            closeIconColor: whiteColor,
+          ),
+        );
+      } else {
+        showDialog(
+          context: context,
+          builder: (context) {
+            return AddWorkPlanBox(
+              isEmptySpaceClick: true,
+              startTime: calendarTapDetails.date,
+              endTime:
+                  calendarTapDetails.date?.add(const Duration(minutes: 60)),
+            );
+          },
+        );
+      }
     }
   }
 
