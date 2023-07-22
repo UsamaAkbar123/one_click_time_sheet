@@ -717,11 +717,20 @@ class _HomeScreenState extends State<HomeScreen> {
                                       fontWeight: FontWeight.w600),
                                 ),
                                 ListView.builder(
+                                  itemCount: jobList.length,
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  padding: EdgeInsets.zero,
+                                  shrinkWrap: true,
                                   itemBuilder: (context, j) {
                                     List<HistoryElement> historyList =
                                         jobList[j].historyElement ?? [];
 
-                                    historyList = historyList.reversed.toList();
+                                    // historyList = historyList.reversed.toList();
+                                    // for (int i = 0;
+                                    //     i < historyList.length;
+                                    //     i++) {
+                                    //   print(historyList[i].type);
+                                    // }
 
                                     return Padding(
                                       padding:
@@ -753,10 +762,6 @@ class _HomeScreenState extends State<HomeScreen> {
                                       ),
                                     );
                                   },
-                                  itemCount: jobList.length,
-                                  physics: const NeverScrollableScrollPhysics(),
-                                  padding: EdgeInsets.zero,
-                                  shrinkWrap: true,
                                 )
                               ],
                             );

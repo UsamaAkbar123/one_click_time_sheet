@@ -167,14 +167,38 @@ class _ReportScreenState extends State<ReportScreen> {
                               ),
                               SizedBox(height: 5.h),
                               ListView.builder(
+                                itemCount: jobList.length,
+                                physics: const NeverScrollableScrollPhysics(),
+                                padding: EdgeInsets.zero,
+                                shrinkWrap: true,
                                 itemBuilder: (context, j) {
                                   int totalHoursForFinalSumResult = 0;
                                   int totalMinutesForFinalSumResult = 0;
+                                  List<HistoryElement>? historyElementList =
+                                      jobList[j].historyElement;
+
+                                  // historyElementList =
+                                  //     historyElementList?.reversed.toList();
                                   return Column(
                                     children: [
                                       const HeaderDataOfTable(),
                                       ListView.builder(
+                                        // itemCount:
+                                        //     jobList[j].historyElement!.length -
+                                        //         1,
+                                        itemCount:
+                                            historyElementList!.length - 1,
+                                        physics:
+                                            const NeverScrollableScrollPhysics(),
+                                        padding: EdgeInsets.zero,
+                                        shrinkWrap: true,
                                         itemBuilder: (context, k) {
+                                          // for (int m = 0;
+                                          //     m < historyElementList!.length;
+                                          //     m++) {
+                                          //   print(historyElementList[m].type);
+                                          // }
+
                                           String startTime = '';
                                           String endTime = '';
 
@@ -186,94 +210,56 @@ class _ReportScreenState extends State<ReportScreen> {
                                                         .getTimeFormat ==
                                                     '12h'
                                                 ? DateFormat('h:mm a').format(
-                                                    jobList[j]
-                                                            .historyElement
-                                                            ?.first
-                                                            .time ??
+                                                    historyElementList
+                                                            .first.time ??
                                                         DateTime.now())
                                                 : DateFormat.Hm().format(
-                                                    jobList[j]
-                                                            .historyElement
-                                                            ?.first
-                                                            .time ??
+                                                    historyElementList
+                                                            .first.time ??
                                                         DateTime.now());
 
                                             endTime = preferenceManager
                                                         .getTimeFormat ==
                                                     '12h'
                                                 ? DateFormat('h:mm a').format(
-                                                    jobList[j]
-                                                            .historyElement
-                                                            ?.last
-                                                            .time ??
+                                                    historyElementList
+                                                            .last.time ??
                                                         DateTime.now())
                                                 : DateFormat.Hm().format(
-                                                    jobList[j]
-                                                            .historyElement
-                                                            ?.last
-                                                            .time ??
+                                                    historyElementList
+                                                            .last.time ??
                                                         DateTime.now());
                                             DateTime startDateTime = DateTime(
-                                                jobList[j]
-                                                        .historyElement
-                                                        ?.first
-                                                        .time
-                                                        ?.year ??
+                                                historyElementList
+                                                        .first.time?.year ??
                                                     0,
-                                                jobList[j]
-                                                        .historyElement
-                                                        ?.first
-                                                        .time
-                                                        ?.month ??
+                                                historyElementList
+                                                        .first.time?.month ??
                                                     0,
-                                                jobList[j]
-                                                        .historyElement
-                                                        ?.first
-                                                        .time
-                                                        ?.day ??
+                                                historyElementList
+                                                        .first.time?.day ??
                                                     0,
-                                                jobList[j]
-                                                        .historyElement
-                                                        ?.first
-                                                        .time
-                                                        ?.hour ??
+                                                historyElementList
+                                                        .first.time?.hour ??
                                                     0,
-                                                jobList[j]
-                                                        .historyElement
-                                                        ?.first
-                                                        .time
-                                                        ?.minute ??
+                                                historyElementList
+                                                        .first.time?.minute ??
                                                     0);
                                             DateTime endDateTime = DateTime(
-                                                jobList[j]
-                                                        .historyElement
-                                                        ?.last
-                                                        .time
-                                                        ?.year ??
+                                                historyElementList
+                                                        .last.time?.year ??
                                                     0,
-                                                jobList[j]
-                                                        .historyElement
-                                                        ?.last
-                                                        .time
-                                                        ?.month ??
+                                                historyElementList
+                                                        .last.time?.month ??
                                                     0,
-                                                jobList[j]
-                                                        .historyElement
-                                                        ?.last
-                                                        .time
-                                                        ?.day ??
+                                                historyElementList
+                                                        .last.time?.day ??
                                                     0,
-                                                jobList[j]
-                                                        .historyElement
-                                                        ?.last
-                                                        .time
-                                                        ?.hour ??
+                                                historyElementList
+                                                        .last.time?.hour ??
                                                     0,
-                                                jobList[j]
-                                                        .historyElement
-                                                        ?.last
-                                                        .time
-                                                        ?.minute ??
+                                                historyElementList
+                                                        .last.time?.minute ??
                                                     0);
 
                                             Duration difference = endDateTime
@@ -291,94 +277,69 @@ class _ReportScreenState extends State<ReportScreen> {
                                                     minutes;
                                           } else {
                                             if (k + 1 <
-                                                jobList[j]
-                                                    .historyElement!
-                                                    .length) {
+                                                historyElementList.length) {
                                               startTime = preferenceManager
                                                           .getTimeFormat ==
                                                       '12h'
                                                   ? DateFormat('h:mm a').format(
-                                                      jobList[j]
-                                                              .historyElement?[
-                                                                  k]
+                                                      historyElementList[k]
                                                               .time ??
                                                           DateTime.now())
                                                   : DateFormat.Hm().format(
-                                                      jobList[j]
-                                                              .historyElement?[
-                                                                  k]
+                                                      historyElementList[k]
                                                               .time ??
                                                           DateTime.now());
                                               endTime = preferenceManager
                                                           .getTimeFormat ==
                                                       '12h'
                                                   ? DateFormat('h:mm a').format(
-                                                      jobList[j]
-                                                              .historyElement?[
-                                                                  k + 1]
+                                                      historyElementList[k + 1]
                                                               .time ??
                                                           DateTime.now())
                                                   : DateFormat.Hm().format(
-                                                      jobList[j]
-                                                              .historyElement?[
-                                                                  k + 1]
+                                                      historyElementList[k + 1]
                                                               .time ??
                                                           DateTime.now());
 
                                               DateTime startDateTime = DateTime(
-                                                  jobList[j]
-                                                          .historyElement?[k]
+                                                  historyElementList[k]
                                                           .time
                                                           ?.year ??
                                                       0,
-                                                  jobList[j]
-                                                          .historyElement?[k]
+                                                  historyElementList[k]
                                                           .time
                                                           ?.month ??
                                                       0,
-                                                  jobList[j]
-                                                          .historyElement?[k]
+                                                  historyElementList[k]
                                                           .time
                                                           ?.day ??
                                                       0,
-                                                  jobList[j]
-                                                          .historyElement?[k]
+                                                  historyElementList[k]
                                                           .time
                                                           ?.hour ??
                                                       0,
-                                                  jobList[j]
-                                                          .historyElement?[k]
+                                                  historyElementList[k]
                                                           .time
                                                           ?.minute ??
                                                       0);
                                               DateTime endDateTime = DateTime(
-                                                  jobList[j]
-                                                          .historyElement?[
-                                                              k + 1]
+                                                  historyElementList[k + 1]
                                                           .time
                                                           ?.year ??
                                                       0,
-                                                  jobList[j]
-                                                          .historyElement?[
-                                                              k + 1]
+                                                  historyElementList[k + 1]
                                                           .time
                                                           ?.month ??
                                                       0,
-                                                  jobList[j]
-                                                          .historyElement?[
-                                                              k + 1]
+                                                  historyElementList[k + 1]
                                                           .time
                                                           ?.day ??
                                                       0,
-                                                  jobList[j]
-                                                          .historyElement?[
-                                                              k + 1]
+                                                  historyElementList[k + 1]
                                                           .time
                                                           ?.hour ??
                                                       0,
-                                                  jobList[j]
-                                                          .historyElement?[
-                                                              k + 1]
+                                                  historyElementList[k + 1]
                                                           .time
                                                           ?.minute ??
                                                       0);
@@ -388,9 +349,7 @@ class _ReportScreenState extends State<ReportScreen> {
                                               hours = difference.inHours;
                                               minutes = difference.inMinutes
                                                   .remainder(60);
-                                              if (jobList[j]
-                                                      .historyElement?[k]
-                                                      .type ==
+                                              if (historyElementList[k].type ==
                                                   'Unpaid break') {
                                                 totalHoursForFinalSumResult =
                                                     totalHoursForFinalSumResult -
@@ -402,19 +361,6 @@ class _ReportScreenState extends State<ReportScreen> {
                                               }
                                             }
                                           }
-
-                                          // print(jobList[j]
-                                          //         .historyElement!
-                                          //         .length -
-                                          //     1);
-
-                                          // print('k: $k');
-                                          // print(
-                                          //     'Count k: $k : $totalMinutesForFinalSumResult');
-
-                                          // int difference =
-                                          //     int.parse(endTime).toInt() -
-                                          //         int.parse(startTime).toInt();
 
                                           return Column(
                                             children: [
@@ -428,46 +374,39 @@ class _ReportScreenState extends State<ReportScreen> {
                                                   consider:
                                                       '$hours:${minutes.toString().padLeft(2, '0')}',
                                                   editDeleteHistoryElement:
-                                                      jobList[j].historyElement,
+                                                      historyElementList,
                                                   indexKey: id,
                                                   // jobList: jobList,
                                                   jIndex: j,
                                                   iIndex: i,
                                                   kIndex: k,
                                                 ),
-                                              jobList[j]
-                                                          .historyElement?[k]
-                                                          .type ==
+                                              historyElementList[k].type ==
                                                       'Start job'
                                                   ? const SizedBox()
                                                   : TableMetaDataWidget(
-                                                      jobType: jobList[j]
-                                                              .historyElement?[
-                                                                  k]
-                                                              .type ??
-                                                          '',
+                                                      jobType:
+                                                          historyElementList[k]
+                                                                  .type ??
+                                                              '',
                                                       startTime: startTime,
                                                       endTime: endTime,
                                                       difference:
                                                           '$hours:${minutes.toString().padLeft(2, '0')}',
-                                                      consider: jobList[j]
-                                                                  .historyElement?[
+                                                      consider: historyElementList[
                                                                       k]
                                                                   .type ==
                                                               'Unpaid break'
                                                           ? '-$hours:${minutes.toString().padLeft(2, '0')}'
-                                                          : jobList[j]
-                                                                      .historyElement?[
+                                                          : historyElementList[
                                                                           k]
                                                                       .type ==
                                                                   'Paid break'
                                                               ? '0:00'
                                                               : '$hours:${minutes.toString().padLeft(2, '0')}',
                                                       editDeleteHistoryElement:
-                                                          jobList[j]
-                                                              .historyElement,
+                                                          historyElementList,
                                                       indexKey: id,
-                                                      // jobList: jobList,
                                                       jIndex: j,
                                                       iIndex: i,
                                                       kIndex: k,
@@ -487,27 +426,11 @@ class _ReportScreenState extends State<ReportScreen> {
                                             ],
                                           );
                                         },
-                                        itemCount:
-                                            jobList[j].historyElement!.length -
-                                                1,
-                                        physics:
-                                            const NeverScrollableScrollPhysics(),
-                                        padding: EdgeInsets.zero,
-                                        shrinkWrap: true,
                                       ),
-                                      // sumBlock(
-                                      //   totalHours: totalHoursForFinalSumResult,
-                                      //   totalMinutes:
-                                      //       totalMinutesForFinalSumResult,
-                                      // ),
                                       SizedBox(height: 15.h),
                                     ],
                                   );
                                 },
-                                itemCount: jobList.length,
-                                physics: const NeverScrollableScrollPhysics(),
-                                padding: EdgeInsets.zero,
-                                shrinkWrap: true,
                               ),
                             ],
                           );
