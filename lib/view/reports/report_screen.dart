@@ -433,6 +433,7 @@ class _ReportScreenState extends State<ReportScreen> {
                                                   // jobList: jobList,
                                                   jIndex: j,
                                                   iIndex: i,
+                                                  kIndex: k,
                                                 ),
                                               jobList[j]
                                                           .historyElement?[k]
@@ -469,6 +470,7 @@ class _ReportScreenState extends State<ReportScreen> {
                                                       // jobList: jobList,
                                                       jIndex: j,
                                                       iIndex: i,
+                                                      kIndex: k,
                                                     ),
                                               k + 1 ==
                                                       jobList[j]
@@ -785,6 +787,7 @@ class TableMetaDataWidget extends StatelessWidget {
   // final List<JobHistoryModel> jobList;
   final int jIndex;
   final int iIndex;
+  final int kIndex;
 
   const TableMetaDataWidget({
     Key? key,
@@ -798,6 +801,7 @@ class TableMetaDataWidget extends StatelessWidget {
     // required this.jobList,
     required this.jIndex,
     required this.iIndex,
+    required this.kIndex,
   }) : super(key: key);
 
   @override
@@ -911,6 +915,7 @@ class TableMetaDataWidget extends StatelessWidget {
                     // print(editDeleteHistoryElement);
                     // print('j index: $jIndex');
                     // print('i index: $iIndex');
+                    // print('k index: $iIndex');
                     Navigator.of(context).push(MaterialPageRoute(
                       builder: (context) {
                         return EditDeleteHistoryElement(
@@ -936,6 +941,7 @@ class TableMetaDataWidget extends StatelessWidget {
                     // print(editDeleteHistoryElement);
                     // print('j index: $jIndex');
                     // print('i index: $iIndex');
+                    // print('k index: $iIndex');
                     Navigator.of(context).push(MaterialPageRoute(
                       builder: (context) {
                         return EditDeleteHistoryElement(
@@ -993,7 +999,7 @@ class _EditDeleteHistoryElementState extends State<EditDeleteHistoryElement> {
   void initState() {
     super.initState();
     jobList = jobHistoryBox.get(widget.listKey);
-    // print(jobList.runtimeType);
+    // print(jobList.length);
   }
 
   @override

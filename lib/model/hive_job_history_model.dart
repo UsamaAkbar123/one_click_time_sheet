@@ -33,5 +33,7 @@ class HistoryElement {
   String? type;
   @HiveField(1)
   DateTime? time;
-  HistoryElement({this.time, this.type});
+  @HiveField(2)
+  String? elementId;
+  HistoryElement({this.time, this.type, this.elementId});
 }

@@ -16,6 +16,7 @@ import 'package:one_click_time_sheet/view/home/home_screen_components/refresh_ti
 import 'package:one_click_time_sheet/view/home/home_screen_components/start_end_job_box.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:uuid/uuid.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -298,8 +299,11 @@ class _HomeScreenState extends State<HomeScreen> {
                           startJobTime = DateTime.now();
                         }
                       });
-                      HistoryElement historyElement =
-                          HistoryElement(time: startJobTime, type: "Start job");
+                      HistoryElement historyElement = HistoryElement(
+                        time: startJobTime,
+                        type: "Start job",
+                        elementId: const Uuid().v4(),
+                      );
 
                       await currentWorkHistoryElement.add(historyElement);
                     },
@@ -383,8 +387,11 @@ class _HomeScreenState extends State<HomeScreen> {
                               endJob = DateTime.now();
                             }
                           });
-                          HistoryElement historyElement =
-                              HistoryElement(time: endJob, type: "End job");
+                          HistoryElement historyElement = HistoryElement(
+                            time: endJob,
+                            type: "End job",
+                            elementId: const Uuid().v4(),
+                          );
 
                           await currentWorkHistoryElement.add(historyElement);
 
@@ -509,7 +516,10 @@ class _HomeScreenState extends State<HomeScreen> {
                                   }
                                 });
                                 HistoryElement historyElement = HistoryElement(
-                                    time: paidBreak, type: "Paid break");
+                                  time: paidBreak,
+                                  type: "Paid break",
+                                  elementId: const Uuid().v4(),
+                                );
 
                                 await currentWorkHistoryElement
                                     .add(historyElement);
@@ -601,7 +611,10 @@ class _HomeScreenState extends State<HomeScreen> {
                                   }
                                 });
                                 HistoryElement historyElement = HistoryElement(
-                                    time: unPaidBreak, type: "Unpaid break");
+                                  time: unPaidBreak,
+                                  type: "Unpaid break",
+                                  elementId: const Uuid().v4(),
+                                );
 
                                 await currentWorkHistoryElement
                                     .add(historyElement);
