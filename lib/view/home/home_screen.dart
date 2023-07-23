@@ -725,12 +725,11 @@ class _HomeScreenState extends State<HomeScreen> {
                                     List<HistoryElement> historyList =
                                         jobList[j].historyElement ?? [];
 
-                                    historyList = historyList.reversed.toList();
-                                    // for (int i = 0;
-                                    //     i < historyList.length;
-                                    //     i++) {
-                                    //   print(historyList[i].type);
-                                    // }
+                                    // historyList = historyList.reversed.toList();
+                                    historyList.sort(
+                                      (a, b) => b.time!
+                                          .compareTo(a.time ?? DateTime.now()),
+                                    );
 
                                     return Padding(
                                       padding:

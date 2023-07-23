@@ -175,10 +175,14 @@ class _ReportScreenState extends State<ReportScreen> {
                                   int totalHoursForFinalSumResult = 0;
                                   int totalMinutesForFinalSumResult = 0;
                                   List<HistoryElement>? historyElementList =
-                                      jobList[j].historyElement;
+                                      jobList[j].historyElement ?? [];
 
                                   // historyElementList =
                                   //     historyElementList?.reversed.toList();
+                                  historyElementList.sort(
+                                    (a, b) => a.time!
+                                        .compareTo(b.time ?? DateTime.now()),
+                                  );
                                   return Column(
                                     children: [
                                       const HeaderDataOfTable(),
@@ -187,7 +191,7 @@ class _ReportScreenState extends State<ReportScreen> {
                                         //     jobList[j].historyElement!.length -
                                         //         1,
                                         itemCount:
-                                            historyElementList!.length - 1,
+                                            historyElementList.length - 1,
                                         physics:
                                             const NeverScrollableScrollPhysics(),
                                         padding: EdgeInsets.zero,
@@ -1054,7 +1058,7 @@ class _EditDeleteHistoryElementState extends State<EditDeleteHistoryElement> {
                     GestureDetector(
                       onTap: () {
                         //Navigator.of(context).pop();
-                        print(widget.listKey);
+
                         String elementId =
                             widget.historyElement?[index].elementId ?? '';
                         for (int i = 0; i < jobList.length; i++) {
