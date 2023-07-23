@@ -916,13 +916,23 @@ class EditDeleteHistoryElement extends StatefulWidget {
 class _EditDeleteHistoryElementState extends State<EditDeleteHistoryElement> {
   PreferenceManager preferenceManager = PreferenceManager();
   final Box jobHistoryBox = Hive.box('jobHistoryBox');
-  List<dynamic> jobList = [];
+  List<JobHistoryModel> jobList = [];
 
   @override
   void initState() {
     super.initState();
-    jobList = jobHistoryBox.get(widget.listKey);
-    // print(jobList.length);
+    final dynamicList = jobHistoryBox.get(widget.listKey);
+    for (int i = 0; i < dynamicList.length; i++) {
+      jobList.add(dynamicList[i] as JobHistoryModel);
+    }
+
+    // for (int i = 0; i < jobList.length; i++) {
+    //   List<HistoryElement> historyElement = jobList[i].historyElement ?? [];
+    //   if (historyElement.length == widget.historyElement!.length) {
+    //     // print(true);
+    //   }
+    // }
+    // print(jobList.runtimeType);
   }
 
   @override
@@ -936,6 +946,7 @@ class _EditDeleteHistoryElementState extends State<EditDeleteHistoryElement> {
         centerTitle: true,
       ),
       body: ListView.builder(
+        itemCount: widget.historyElement?.length ?? 0,
         itemBuilder: (context, index) {
           TextEditingController jobNameController =
               TextEditingController(text: widget.historyElement?[index].type);
@@ -1042,11 +1053,34 @@ class _EditDeleteHistoryElementState extends State<EditDeleteHistoryElement> {
                     /// Delete Button
                     GestureDetector(
                       onTap: () {
-                        Navigator.of(context).pop();
-                        // jobList[widget.iIndex][widget.jIndex]['historyElement']
-                        //     .removeAt(index)
-                        //     .put(widget.listKey, jobList);
-                        // widget.jobList[widget.jIndex].historyElement[index]
+                        //Navigator.of(context).pop();
+                        print(widget.listKey);
+                        String elementId =
+                            widget.historyElement?[index].elementId ?? '';
+                        for (int i = 0; i < jobList.length; i++) {
+                          List<HistoryElement> historyElement =
+                              jobList[i].historyElement ?? [];
+                          if (historyElement.length ==
+                              widget.historyElement!.length) {
+                            // print('object');
+                            // break;
+                            for (int j = 0;
+                                j < widget.historyElement!.length;
+                                j++) {
+                              if (historyElement[j].elementId == elementId) {
+                                jobList[i].historyElement?[j].type = 'ali';
+
+                                // jobHistoryBox.put(widget.listKey,
+                                //     jobList[i].historyElement?[j]);
+
+                                setState(() {});
+
+                                break;
+                              }
+                            }
+                            // print(true);
+                          }
+                        }
                       },
                       child: Container(
                         height: 28.h,
@@ -1071,7 +1105,6 @@ class _EditDeleteHistoryElementState extends State<EditDeleteHistoryElement> {
             ),
           );
         },
-        itemCount: widget.historyElement?.length ?? 0,
       ),
     );
   }

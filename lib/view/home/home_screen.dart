@@ -725,7 +725,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     List<HistoryElement> historyList =
                                         jobList[j].historyElement ?? [];
 
-                                    // historyList = historyList.reversed.toList();
+                                    historyList = historyList.reversed.toList();
                                     // for (int i = 0;
                                     //     i < historyList.length;
                                     //     i++) {
