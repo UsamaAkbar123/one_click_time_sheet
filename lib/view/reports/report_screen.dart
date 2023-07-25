@@ -8,6 +8,9 @@ import 'package:one_click_time_sheet/utills/constants/colors.dart';
 import 'package:one_click_time_sheet/utills/constants/text_styles.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:one_click_time_sheet/view/reports/reports_screen_components/custom_save_pdf_send_email_button.dart';
+import 'package:one_click_time_sheet/view/reports/reports_screen_components/header_date_of_table.dart';
+import 'package:one_click_time_sheet/view/reports/reports_screen_components/sum_block_widget.dart';
+import 'package:one_click_time_sheet/view/reports/reports_screen_components/table_meta_data_widget.dart';
 
 class ReportScreen extends StatefulWidget {
   const ReportScreen({Key? key}) : super(key: key);
@@ -89,80 +92,62 @@ class _ReportScreenState extends State<ReportScreen> {
             ListView(
               children: [
                 SizedBox(height: 20.h),
-                GestureDetector(
-                  onTap: () async {
-                    // final initialDate = DateTime.now();
-                    // final newData = await showDatePicker(
-                    //     context: context,
-                    //     initialDate: initialDate,
-                    //     firstDate: DateTime(DateTime.now().year - 5),
-                    //     lastDate: DateTime(DateTime.now().year + 5));
-                    // if (newData == null) return;
-                    // selectMonth(newData.month);
-                    // selectedMonthAndYear = '$selectedMonth ${newData.year}';
-                    // setState(
-                    //   () {
-                    //     selectedDate = newData;
-                    //   },
-                    // );
-                  },
-                  child: Container(
-                    height: 40.h,
-                    width: double.infinity,
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(5.r),
-                      border: Border.all(
-                        color: blackColor,
+                Container(
+                  height: 40.h,
+                  width: double.infinity,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(5.r),
+                    border: Border.all(
+                      color: blackColor,
+                    ),
+                  ),
+                  padding: EdgeInsets.symmetric(horizontal: 10.w),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            if (currentMonth != 1) {
+                              currentMonth--;
+                              selectMonth(currentMonth);
+                              selectedMonthAndYear =
+                                  '$selectedMonth ${currentDate.year}';
+                            }
+                          });
+                        },
+                        child: Icon(
+                          Icons.arrow_back_ios,
+                          color: blackColor,
+                          size: 18.h,
+                        ),
                       ),
-                    ),
-                    padding: EdgeInsets.symmetric(horizontal: 10.w),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              if (currentMonth != 1) {
-                                currentMonth--;
-                                selectMonth(currentMonth);
-                                selectedMonthAndYear =
-                                    '$selectedMonth ${currentDate.year}';
-                              }
-                            });
-                          },
-                          child: Icon(
-                            Icons.arrow_back_ios,
-                            color: blackColor,
-                            size: 18.h,
-                          ),
+                      Text(
+                        selectedMonthAndYear,
+                        style: CustomTextStyle.kBodyText1.copyWith(
+                          fontSize: 16.sp,
+                          fontWeight: FontWeight.bold,
                         ),
-                        Text(
-                          selectedMonthAndYear,
-                          style: CustomTextStyle.kBodyText1.copyWith(
-                            fontSize: 16.sp,
-                            fontWeight: FontWeight.bold,
-                          ),
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            if (currentMonth != 12) {
+                              currentMonth++;
+                              selectMonth(currentMonth);
+                              selectedMonthAndYear =
+                                  '$selectedMonth ${currentDate.year}';
+                            }
+                          });
+                        },
+                        child: Icon(
+                          Icons.arrow_forward_ios,
+                          color: blackColor,
+                          size: 18.h,
                         ),
-                        GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              if (currentMonth != 12) {
-                                currentMonth++;
-                                selectMonth(currentMonth);
-                                selectedMonthAndYear =
-                                    '$selectedMonth ${currentDate.year}';
-                              }
-                            });
-                          },
-                          child: Icon(
-                            Icons.arrow_forward_ios,
-                            color: blackColor,
-                            size: 18.h,
-                          ),
-                        ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
                 SizedBox(height: 12.h),
@@ -185,7 +170,8 @@ class _ReportScreenState extends State<ReportScreen> {
                               }).toList();
 
                               jobList.sort(
-                                  (a, b) => b.timestamp.compareTo(a.timestamp));
+                                (a, b) => b.timestamp.compareTo(a.timestamp),
+                              );
                               return jobList.isEmpty
                                   ? Center(
                                       child: i == 0
@@ -582,647 +568,6 @@ class _ReportScreenState extends State<ReportScreen> {
             ),
           ],
         ),
-      ),
-    );
-  }
-
-  Widget sumBlock({required int totalHours, required int totalMinutes}) {
-    return SizedBox(
-      height: 30.h,
-      width: double.infinity,
-      child: Row(
-        children: [
-          Container(
-            width: 50.w,
-            alignment: Alignment.center,
-            decoration: BoxDecoration(
-              color: whiteColor,
-              border: Border.all(
-                color: Colors.grey,
-              ),
-            ),
-            padding: EdgeInsets.only(left: 3.w),
-            child: Text('Sum', style: CustomTextStyle.kBodyText2),
-          ),
-          Container(
-            width: 50.w,
-            alignment: Alignment.center,
-            decoration: BoxDecoration(
-              color: whiteColor,
-              border: Border.all(
-                color: Colors.grey,
-              ),
-            ),
-            padding: EdgeInsets.symmetric(horizontal: 5.h),
-            child: Text(
-              '',
-              style: CustomTextStyle.kBodyText2,
-            ),
-          ),
-          Container(
-            width: 50.w,
-            alignment: Alignment.center,
-            decoration: BoxDecoration(
-              color: whiteColor,
-              border: Border.all(
-                color: Colors.grey,
-              ),
-            ),
-            padding: EdgeInsets.symmetric(horizontal: 5.h),
-            child: Text(
-              '',
-              style: CustomTextStyle.kBodyText2,
-            ),
-          ),
-          Expanded(
-            child: Container(
-              width: 50.w,
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                color: whiteColor,
-                border: Border.all(
-                  color: Colors.grey,
-                ),
-              ),
-              padding: EdgeInsets.symmetric(horizontal: 5.h),
-              child: Text(
-                '',
-                style: CustomTextStyle.kBodyText2,
-              ),
-            ),
-          ),
-          Expanded(
-            child: Container(
-              width: 50.w,
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                color: whiteColor,
-                border: Border.all(
-                  color: Colors.grey,
-                ),
-              ),
-              padding: EdgeInsets.symmetric(horizontal: 5.h),
-              child: Text(
-                '$totalHours:${totalMinutes.toString().padLeft(2, '0')}',
-                style: CustomTextStyle.kBodyText2,
-              ),
-            ),
-          ),
-          Container(
-            width: 50.w,
-            alignment: Alignment.center,
-            decoration: BoxDecoration(
-              border: Border.all(
-                color: Colors.grey,
-              ),
-            ),
-            padding: EdgeInsets.symmetric(horizontal: 5.h),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                const SizedBox(),
-                Container(color: Colors.grey, width: 1),
-                const SizedBox(),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class HeaderDataOfTable extends StatelessWidget {
-  const HeaderDataOfTable({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      height: 30.h,
-      width: double.infinity,
-      child: Row(
-        children: [
-          Container(
-            width: 50.w,
-            alignment: Alignment.center,
-            decoration: BoxDecoration(
-              color: whiteColor,
-              border: Border.all(
-                color: Colors.grey,
-              ),
-            ),
-            padding: EdgeInsets.symmetric(horizontal: 5.w),
-            child: Text(
-              // 'sr_no',
-              '',
-              style: CustomTextStyle.kBodyText2.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-          Container(
-            width: 50.w,
-            alignment: Alignment.center,
-            decoration: BoxDecoration(
-              color: whiteColor,
-              border: Border.all(
-                color: Colors.grey,
-              ),
-            ),
-            padding: EdgeInsets.symmetric(horizontal: 5.h),
-            child: Text(
-              'Start',
-              style: CustomTextStyle.kBodyText2.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-          Container(
-            width: 50.w,
-            alignment: Alignment.center,
-            decoration: BoxDecoration(
-              color: whiteColor,
-              border: Border.all(
-                color: Colors.grey,
-              ),
-            ),
-            padding: EdgeInsets.symmetric(horizontal: 5.h),
-            child: Text(
-              'End',
-              style: CustomTextStyle.kBodyText2.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-          Expanded(
-            child: Container(
-              width: 50.w,
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                color: whiteColor,
-                border: Border.all(
-                  color: Colors.grey,
-                ),
-              ),
-              padding: EdgeInsets.symmetric(horizontal: 5.h),
-              child: Text(
-                'Difference',
-                style: CustomTextStyle.kBodyText2.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-          ),
-          Expanded(
-            child: Container(
-              width: 50.w,
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                color: whiteColor,
-                border: Border.all(
-                  color: Colors.grey,
-                ),
-              ),
-              padding: EdgeInsets.symmetric(horizontal: 5.h),
-              child: Text(
-                'Considered',
-                style: CustomTextStyle.kBodyText2.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-          ),
-          Container(
-            width: 50.w,
-            alignment: Alignment.center,
-            decoration: BoxDecoration(
-              color: whiteColor,
-              border: Border.all(
-                color: Colors.grey,
-              ),
-            ),
-            padding: EdgeInsets.symmetric(horizontal: 5.h),
-            child: Text(
-              'Action',
-              style: CustomTextStyle.kBodyText2.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class TableMetaDataWidget extends StatelessWidget {
-  final String jobType;
-  final String startTime;
-  final String endTime;
-  final String difference;
-  final String consider;
-  final List<HistoryElement>? editDeleteHistoryElement;
-  final String indexKey;
-  // final List<JobHistoryModel> jobList;
-  final int jIndex;
-  final int iIndex;
-  final int kIndex;
-
-  const TableMetaDataWidget({
-    Key? key,
-    required this.jobType,
-    required this.startTime,
-    required this.endTime,
-    required this.difference,
-    required this.consider,
-    required this.editDeleteHistoryElement,
-    required this.indexKey,
-    // required this.jobList,
-    required this.jIndex,
-    required this.iIndex,
-    required this.kIndex,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      height: 30.h,
-      width: double.infinity,
-      child: Row(
-        children: [
-          /// Job type
-          Container(
-            width: 50.w,
-            alignment: Alignment.center,
-            decoration: BoxDecoration(
-              color: whiteColor,
-              border: Border.all(
-                color: Colors.grey,
-              ),
-            ),
-            padding: EdgeInsets.only(left: 3.w),
-            child: Text(
-              jobType,
-              style: CustomTextStyle.kBodyText2,
-            ),
-          ),
-
-          /// Start
-          Container(
-            width: 50.w,
-            alignment: Alignment.center,
-            decoration: BoxDecoration(
-              color: whiteColor,
-              border: Border.all(
-                color: Colors.grey,
-              ),
-            ),
-            padding: EdgeInsets.symmetric(horizontal: 5.h),
-            child: Text(startTime, style: CustomTextStyle.kBodyText2),
-          ),
-
-          /// End
-          Container(
-            width: 50.w,
-            alignment: Alignment.center,
-            decoration: BoxDecoration(
-              color: whiteColor,
-              border: Border.all(
-                color: Colors.grey,
-              ),
-            ),
-            padding: EdgeInsets.symmetric(horizontal: 5.h),
-            child: Text(
-              endTime,
-              style: CustomTextStyle.kBodyText2,
-            ),
-          ),
-
-          /// Difference
-          Expanded(
-            child: Container(
-              width: 50.w,
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                color: whiteColor,
-                border: Border.all(
-                  color: Colors.grey,
-                ),
-              ),
-              padding: EdgeInsets.symmetric(horizontal: 5.h),
-              child: Text(
-                difference,
-                style: CustomTextStyle.kBodyText2,
-              ),
-            ),
-          ),
-
-          /// Considered
-          Expanded(
-            child: Container(
-              width: 50.w,
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                color: whiteColor,
-                border: Border.all(
-                  color: Colors.grey,
-                ),
-              ),
-              padding: EdgeInsets.symmetric(horizontal: 5.h),
-              child: Text(
-                consider,
-                style: CustomTextStyle.kBodyText2,
-              ),
-            ),
-          ),
-
-          /// Action
-          Container(
-            width: 50.w,
-            alignment: Alignment.center,
-            decoration: BoxDecoration(
-              border: Border.all(
-                color: Colors.grey,
-              ),
-            ),
-            padding: EdgeInsets.symmetric(horizontal: 5.h),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                GestureDetector(
-                  onTap: () {
-                    // print(editDeleteHistoryElement);
-                    // print('j index: $jIndex');
-                    // print('i index: $iIndex');
-                    // print('k index: $iIndex');
-                    Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) {
-                        return EditDeleteHistoryElement(
-                          historyElement: editDeleteHistoryElement,
-                          listKey: indexKey,
-                          // jobList: jobList,
-                          iIndex: iIndex,
-                          jIndex: jIndex,
-                        );
-                      },
-                    ));
-                  },
-                  child: Icon(
-                    Icons.cancel_outlined,
-                    color: redColor,
-                    size: 14.h,
-                  ),
-                ),
-                Container(color: Colors.grey, width: 1),
-                GestureDetector(
-                  onTap: () {
-                    // print(jobList);
-                    // print(editDeleteHistoryElement);
-                    // print('j index: $jIndex');
-                    // print('i index: $iIndex');
-                    // print('k index: $iIndex');
-                    Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) {
-                        return EditDeleteHistoryElement(
-                          historyElement: editDeleteHistoryElement,
-                          listKey: indexKey,
-                          // jobList: jobList,
-                          iIndex: iIndex,
-                          jIndex: jIndex,
-                        );
-                      },
-                    ));
-                  },
-                  child: Icon(
-                    Icons.edit,
-                    color: lightGreenColor,
-                    size: 14.h,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class EditDeleteHistoryElement extends StatefulWidget {
-  final List<HistoryElement>? historyElement;
-  final String listKey;
-  // final List<JobHistoryModel> jobList;
-  final int iIndex;
-  final int jIndex;
-
-  const EditDeleteHistoryElement({
-    required this.historyElement,
-    required this.listKey,
-    // required this.jobList,
-    required this.iIndex,
-    required this.jIndex,
-    super.key,
-  });
-
-  @override
-  State<EditDeleteHistoryElement> createState() =>
-      _EditDeleteHistoryElementState();
-}
-
-class _EditDeleteHistoryElementState extends State<EditDeleteHistoryElement> {
-  PreferenceManager preferenceManager = PreferenceManager();
-  final Box jobHistoryBox = Hive.box('jobHistoryBox');
-  List<JobHistoryModel> jobList = [];
-
-  @override
-  void initState() {
-    super.initState();
-    final dynamicList = jobHistoryBox.get(widget.listKey);
-    for (int i = 0; i < dynamicList.length; i++) {
-      jobList.add(dynamicList[i] as JobHistoryModel);
-    }
-
-    // for (int i = 0; i < jobList.length; i++) {
-    //   List<HistoryElement> historyElement = jobList[i].historyElement ?? [];
-    //   if (historyElement.length == widget.historyElement!.length) {
-    //     // print(true);
-    //   }
-    // }
-    // print(jobList.runtimeType);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          'Edit & Delete',
-          style: CustomTextStyle.kHeading2,
-        ),
-        centerTitle: true,
-      ),
-      body: ListView.builder(
-        itemCount: widget.historyElement?.length ?? 0,
-        itemBuilder: (context, index) {
-          TextEditingController jobNameController =
-              TextEditingController(text: widget.historyElement?[index].type);
-          DateTime? jobTime = widget.historyElement?[index].time;
-
-          String showJobTime = preferenceManager.getTimeFormat == '12h'
-              ? DateFormat.jm().format(jobTime ?? DateTime.now())
-              : DateFormat.Hm().format(jobTime ?? DateTime.now());
-
-          String dateOfJob = DateFormat(preferenceManager.getDateFormat)
-              .format(jobTime ?? DateTime.now());
-
-          return Padding(
-            padding: EdgeInsets.symmetric(horizontal: 15.w),
-            child: Column(
-              children: [
-                SizedBox(height: 20.h),
-                Row(
-                  children: [
-                    Container(
-                      height: 28.h,
-                      width: 80.w,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(3.r),
-                        border: Border.all(
-                          color: blackColor.withOpacity(0.3),
-                        ),
-                      ),
-                      alignment: Alignment.center,
-                      child: TextField(
-                        key: UniqueKey(),
-                        textAlign: TextAlign.center,
-                        controller: jobNameController,
-                        decoration: InputDecoration(
-                          border: InputBorder.none,
-                          contentPadding: EdgeInsets.only(
-                            // left: 4.w,
-                            bottom: 16.h,
-                          ),
-                        ),
-                        style: TextStyle(fontSize: 12.sp),
-                      ),
-                    ),
-                    SizedBox(width: 5.w),
-                    Container(
-                      height: 28.h,
-                      width: 55.w,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(3.r),
-                        border: Border.all(
-                          color: blackColor.withOpacity(0.3),
-                        ),
-                      ),
-                      alignment: Alignment.center,
-                      child: Text(
-                        showJobTime,
-                        style: CustomTextStyle.kBodyText1
-                            .copyWith(fontSize: 12.sp),
-                      ),
-                    ),
-                    SizedBox(width: 5.w),
-                    Container(
-                      height: 28.h,
-                      width: 80.w,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(3.r),
-                        border: Border.all(
-                          color: blackColor.withOpacity(0.3),
-                        ),
-                      ),
-                      alignment: Alignment.center,
-                      child: Text(
-                        dateOfJob,
-                        style: CustomTextStyle.kBodyText1
-                            .copyWith(fontSize: 12.sp),
-                      ),
-                    ),
-                    SizedBox(width: 5.w),
-
-                    /// Save Button
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.of(context).pop();
-                      },
-                      child: Container(
-                        height: 28.h,
-                        width: 50.w,
-                        decoration: BoxDecoration(
-                          color: greenColor,
-                          borderRadius: BorderRadius.circular(6.r),
-                        ),
-                        alignment: Alignment.center,
-                        child: Text(
-                          'Save',
-                          style: CustomTextStyle.kBodyText1.copyWith(
-                              fontSize: 12.sp,
-                              color: whiteColor,
-                              fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                    ),
-                    SizedBox(width: 5.w),
-
-                    /// Delete Button
-                    GestureDetector(
-                      onTap: () {
-                        //Navigator.of(context).pop();
-
-                        String elementId =
-                            widget.historyElement?[index].elementId ?? '';
-                        for (int i = 0; i < jobList.length; i++) {
-                          List<HistoryElement> historyElement =
-                              jobList[i].historyElement ?? [];
-                          if (historyElement.length ==
-                              widget.historyElement!.length) {
-                            // print('object');
-                            // break;
-                            for (int j = 0;
-                                j < widget.historyElement!.length;
-                                j++) {
-                              if (historyElement[j].elementId == elementId) {
-                                jobList[i].historyElement?[j].type = 'ali';
-
-                                // jobHistoryBox.put(widget.listKey,
-                                //     jobList[i].historyElement?[j]);
-
-                                setState(() {});
-
-                                break;
-                              }
-                            }
-                            // print(true);
-                          }
-                        }
-                      },
-                      child: Container(
-                        height: 28.h,
-                        width: 50.w,
-                        decoration: BoxDecoration(
-                          color: redColor,
-                          borderRadius: BorderRadius.circular(6.r),
-                        ),
-                        alignment: Alignment.center,
-                        child: Text(
-                          'Delete',
-                          style: CustomTextStyle.kBodyText1.copyWith(
-                              fontSize: 12.sp,
-                              color: whiteColor,
-                              fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          );
-        },
       ),
     );
   }
