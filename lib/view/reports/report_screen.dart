@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:intl/intl.dart';
@@ -6,7 +7,7 @@ import 'package:one_click_time_sheet/managers/preference_manager.dart';
 import 'package:one_click_time_sheet/model/hive_job_history_model.dart';
 import 'package:one_click_time_sheet/utills/constants/colors.dart';
 import 'package:one_click_time_sheet/utills/constants/text_styles.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:one_click_time_sheet/view/reports/pdf_services/pdf_services.dart';
 import 'package:one_click_time_sheet/view/reports/reports_screen_components/custom_save_pdf_send_email_button.dart';
 import 'package:one_click_time_sheet/view/reports/reports_screen_components/header_date_of_table.dart';
 import 'package:one_click_time_sheet/view/reports/reports_screen_components/sum_block_widget.dart';
@@ -551,7 +552,10 @@ class _ReportScreenState extends State<ReportScreen> {
                       buttonText: AppLocalizations.of(context)
                               ?.reportsScreenSaveToPdf ??
                           '',
-                      onTab: () {},
+                      onTab: () async {
+                        final data = await PdfServices().createHelloWorld();
+                        PdfServices().savePdfFile('external_files', data);
+                      },
                       buttonColor: blueColor,
                     ),
                     SizedBox(width: 12.w),
