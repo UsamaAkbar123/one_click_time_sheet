@@ -21,3 +21,9 @@ class FinalReportModel {
 
   FinalReportModel({required this.reportModelList});
 }
+
+class ReportSumModel {
+  final String sum;
+
+  ReportSumModel({required this.sum});
+}

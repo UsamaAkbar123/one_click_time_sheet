@@ -34,6 +34,7 @@ class _ReportScreenState extends State<ReportScreen> {
   List<FinalReportModel> listOfFinalReportForPdf = [];
 
   List<ReportModel> reportModelListForPdf = [];
+  List<ReportSumModel> reportSumList = [];
 
   @override
   void initState() {
@@ -341,6 +342,12 @@ class _ReportScreenState extends State<ReportScreen> {
                                                         reportModelList:
                                                             reportModelListForPdf,
                                                       ));
+                                                      reportSumList.add(
+                                                        ReportSumModel(
+                                                          sum:
+                                                              '$totalHoursForFinalSumResult:${totalMinutesForFinalSumResult.toString().padLeft(2, '0')}',
+                                                        ),
+                                                      );
                                                       reportModelListForPdf =
                                                           [];
                                                     }
@@ -445,9 +452,12 @@ class _ReportScreenState extends State<ReportScreen> {
                             i++) {
                           print(listOfFinalReportForPdf[i].reportModelList);
                         }
-                        final data = await PdfServices()
-                            .createHelloWorld(listOfFinalReportForPdf);
-                        PdfServices().savePdfFile('external_files', data);
+                        final data = await PdfServices().createHelloWorld(
+                          reportList: listOfFinalReportForPdf,
+                          sumList: reportSumList,
+                        );
+                        PdfServices()
+                            .savePdfFile("$selectedMonthAndYear report", data);
                       },
                       buttonColor: blueColor,
                     ),

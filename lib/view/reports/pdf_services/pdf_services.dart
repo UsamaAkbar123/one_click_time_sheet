@@ -13,7 +13,9 @@ import '../../../model/report_model.dart';
 
 class PdfServices {
   /// example
-  Future<Uint8List> createHelloWorld(List<FinalReportModel> reportList) async {
+  Future<Uint8List> createHelloWorld(
+      {required List<FinalReportModel> reportList,
+      required List<ReportSumModel> sumList}) async {
     final pdf = pw.Document();
     final font =
         pw.Font.ttf(await rootBundle.load("assets/fonts/Lexend-Regular.ttf"));
@@ -22,10 +24,11 @@ class PdfServices {
     pdf.addPage(pw.MultiPage(
       build: (context) {
         return [
-          buildTitle('July 2023', font),
+          buildTitle('Monthly Report', font),
           pw.SizedBox(height: 20),
           for (int i = 0; i < reportList.length; i++)
-            buildReportTable(reportList[i]),
+            buildReportTable(reportList[i], sumList[i]),
+          // for (int i = 0; i < sumList.length; i++) buildSumWidget(sumList[i]),
         ];
       },
     ));
@@ -34,7 +37,8 @@ class PdfServices {
   }
 
   /// build report table
-  static pw.Widget buildReportTable(FinalReportModel finalReport) {
+  static pw.Widget buildReportTable(
+      FinalReportModel finalReport, ReportSumModel reportSumModel) {
     final headers = [
       ' ',
       'Start',
@@ -55,21 +59,50 @@ class PdfServices {
 
     return pw.Padding(
       padding: const EdgeInsets.all(10),
-      // ignore: deprecated_member_use
-      child: pw.Table.fromTextArray(
-        headers: headers,
-        data: data,
+      child: pw.Column(
+        children: [
+          // ignore: deprecated_member_use
+          pw.Table.fromTextArray(
+            headers: headers,
+            data: data,
+          ),
+          pw.SizedBox(height: 5),
+          buildSumWidget(reportSumModel),
+        ],
       ),
     );
   }
 
+  /// build sum widget
+  static pw.Widget buildSumWidget(ReportSumModel reportSumModel) {
+    return pw.Row(children: [
+      pw.Text(
+        'Sum',
+        style: TextStyle(
+          fontWeight: FontWeight.bold,
+          fontSize: 15,
+        ),
+      ),
+      pw.Spacer(),
+      pw.Text(
+        reportSumModel.sum,
+        style: TextStyle(
+          fontWeight: FontWeight.bold,
+          fontSize: 15,
+        ),
+      ),
+    ]);
+  }
+
   /// build title
   static pw.Widget buildTitle(String tittle, Font font) {
-    return pw.Text(
-      tittle,
-      style: pw.TextStyle(
-        font: font,
-        fontSize: 20,
+    return pw.Center(
+      child: pw.Text(
+        tittle,
+        style: pw.TextStyle(
+          font: font,
+          fontSize: 20,
+        ),
       ),
     );
   }
