@@ -9,9 +9,11 @@ import 'package:path_provider/path_provider.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:pdf/widgets.dart';
 
+import '../../../model/report_model.dart';
+
 class PdfServices {
   /// example
-  Future<Uint8List> createHelloWorld(List<JobHistoryModel> jobList) async {
+  Future<Uint8List> createHelloWorld(List<FinalReportModel> reportList) async {
     final pdf = pw.Document();
     final font =
         pw.Font.ttf(await rootBundle.load("assets/fonts/Lexend-Regular.ttf"));
@@ -22,7 +24,8 @@ class PdfServices {
         return [
           buildTitle('July 2023', font),
           pw.SizedBox(height: 20),
-          buildReportTable(jobList),
+          for (int i = 0; i < reportList.length; i++)
+            buildReportTable(reportList[i]),
         ];
       },
     ));
@@ -31,18 +34,32 @@ class PdfServices {
   }
 
   /// build report table
-  static pw.Widget buildReportTable(List<JobHistoryModel> jobList) {
+  static pw.Widget buildReportTable(FinalReportModel finalReport) {
     final headers = [
-      '',
+      ' ',
       'Start',
       'End',
       'Difference',
       'Considered',
     ];
-    // ignore: deprecated_member_use
-    return pw.Table.fromTextArray(
-      headers: headers,
-      data: [],
+
+    final data = finalReport.reportModelList.map((e) {
+      return [
+        e.jobTitle,
+        e.startTime,
+        e.endTime,
+        e.difference,
+        e.considered,
+      ];
+    }).toList();
+
+    return pw.Padding(
+      padding: const EdgeInsets.all(10),
+      // ignore: deprecated_member_use
+      child: pw.Table.fromTextArray(
+        headers: headers,
+        data: data,
+      ),
     );
   }
 

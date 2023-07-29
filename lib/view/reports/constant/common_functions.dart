@@ -2,6 +2,11 @@ import 'package:intl/intl.dart';
 import 'package:one_click_time_sheet/managers/preference_manager.dart';
 import 'package:one_click_time_sheet/model/hive_job_history_model.dart';
 
+/// get job title
+String getJobTitle(HistoryElement historyElement) {
+  return historyElement.type ?? '';
+}
+
 /// get start and end time of report job
 String getStartEndTimeOfReport(
     PreferenceManager preferenceManager, HistoryElement historyElement) {

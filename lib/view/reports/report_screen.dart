@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:one_click_time_sheet/managers/preference_manager.dart';
 import 'package:one_click_time_sheet/model/hive_job_history_model.dart';
+import 'package:one_click_time_sheet/model/report_model.dart';
 import 'package:one_click_time_sheet/utills/constants/colors.dart';
 import 'package:one_click_time_sheet/utills/constants/text_styles.dart';
 import 'package:one_click_time_sheet/view/reports/constant/common_functions.dart';
@@ -29,7 +30,10 @@ class _ReportScreenState extends State<ReportScreen> {
   PreferenceManager preferenceManager = PreferenceManager();
 
   List<String> idListForPdf = [];
-  List<JobHistoryModel> jobHistoryForPdf = [];
+  // List<JobHistoryModel> jobHistoryForPdf = [];
+  List<FinalReportModel> listOfFinalReportForPdf = [];
+
+  List<ReportModel> reportModelListForPdf = [];
 
   @override
   void initState() {
@@ -164,7 +168,6 @@ class _ReportScreenState extends State<ReportScreen> {
                                           padding: EdgeInsets.zero,
                                           shrinkWrap: true,
                                           itemBuilder: (context, j) {
-                                            jobHistoryForPdf.add(jobList[j]);
                                             int totalHoursForFinalSumResult = 0;
                                             int totalMinutesForFinalSumResult =
                                                 0;
@@ -193,6 +196,15 @@ class _ReportScreenState extends State<ReportScreen> {
 
                                                     int hours = 0;
                                                     int minutes = 0;
+
+                                                    // if (k == 0) {
+                                                    //   jobTitle = 'work';
+                                                    // } else {
+                                                    //   jobTitle = getJobTitle(
+                                                    //       historyElementList[
+                                                    //           k]);
+                                                    // }
+
                                                     if (k == 0) {
                                                       startTime =
                                                           getStartEndTimeOfReport(
@@ -277,6 +289,60 @@ class _ReportScreenState extends State<ReportScreen> {
                                                                   minutes;
                                                         }
                                                       }
+                                                    }
+
+                                                    if (k == 0) {
+                                                      reportModelListForPdf.add(
+                                                        ReportModel(
+                                                          jobTitle: 'work',
+                                                          startTime: startTime,
+                                                          endTime: endTime,
+                                                          difference:
+                                                              '$hours:${minutes.toString().padLeft(2, '0')}',
+                                                          considered:
+                                                              '$hours:${minutes.toString().padLeft(2, '0')}',
+                                                          // result:
+                                                          //     '$totalHoursForFinalSumResult:${totalMinutesForFinalSumResult.toString().padLeft(2, '0')}',
+                                                        ),
+                                                      );
+                                                    } else {
+                                                      if (historyElementList[k]
+                                                              .type !=
+                                                          'Start job') {
+                                                        reportModelListForPdf
+                                                            .add(
+                                                          ReportModel(
+                                                            jobTitle:
+                                                                historyElementList[
+                                                                            k]
+                                                                        .type ??
+                                                                    '',
+                                                            startTime:
+                                                                startTime,
+                                                            endTime: endTime,
+                                                            difference:
+                                                                '$hours:${minutes.toString().padLeft(2, '0')}',
+                                                            considered:
+                                                                '$hours:${minutes.toString().padLeft(2, '0')}',
+                                                            // result:
+                                                            //     '$totalHoursForFinalSumResult:${totalMinutesForFinalSumResult.toString().padLeft(2, '0')}',
+                                                          ),
+                                                        );
+                                                      }
+                                                    }
+
+                                                    if (k + 1 ==
+                                                        jobList[j]
+                                                                .historyElement!
+                                                                .length -
+                                                            1) {
+                                                      listOfFinalReportForPdf
+                                                          .add(FinalReportModel(
+                                                        reportModelList:
+                                                            reportModelListForPdf,
+                                                      ));
+                                                      reportModelListForPdf =
+                                                          [];
                                                     }
 
                                                     return Column(
@@ -373,10 +439,14 @@ class _ReportScreenState extends State<ReportScreen> {
                               ?.reportsScreenSaveToPdf ??
                           '',
                       onTab: () async {
-                        print(idListForPdf.length);
-                        print(jobHistoryForPdf.length);
+                        // print(listOfFinalReportForPdf.length);
+                        for (int i = 0;
+                            i < listOfFinalReportForPdf.length;
+                            i++) {
+                          print(listOfFinalReportForPdf[i].reportModelList);
+                        }
                         final data = await PdfServices()
-                            .createHelloWorld(jobHistoryForPdf);
+                            .createHelloWorld(listOfFinalReportForPdf);
                         PdfServices().savePdfFile('external_files', data);
                       },
                       buttonColor: blueColor,
