@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hive_flutter/adapters.dart';
-import 'package:intl/intl.dart';
 import 'package:one_click_time_sheet/managers/preference_manager.dart';
 import 'package:one_click_time_sheet/model/hive_job_history_model.dart';
 import 'package:one_click_time_sheet/utills/constants/colors.dart';
 import 'package:one_click_time_sheet/utills/constants/text_styles.dart';
+import 'package:one_click_time_sheet/view/reports/constant/common_functions.dart';
 import 'package:one_click_time_sheet/view/reports/pdf_services/pdf_services.dart';
 import 'package:one_click_time_sheet/view/reports/reports_screen_components/custom_save_pdf_send_email_button.dart';
 import 'package:one_click_time_sheet/view/reports/reports_screen_components/header_date_of_table.dart';
@@ -28,50 +28,12 @@ class _ReportScreenState extends State<ReportScreen> {
   int currentMonth = DateTime.now().month;
   PreferenceManager preferenceManager = PreferenceManager();
 
-  selectMonth(val) {
-    switch (val) {
-      case 1:
-        selectedMonth = 'January';
-        break;
-      case 2:
-        selectedMonth = 'February';
-        break;
-      case 3:
-        selectedMonth = 'March';
-        break;
-      case 4:
-        selectedMonth = 'April';
-        break;
-      case 5:
-        selectedMonth = 'May';
-        break;
-      case 6:
-        selectedMonth = 'June';
-        break;
-      case 7:
-        selectedMonth = 'July';
-        break;
-      case 8:
-        selectedMonth = 'August';
-        break;
-      case 9:
-        selectedMonth = 'September';
-        break;
-      case 10:
-        selectedMonth = 'October';
-        break;
-      case 11:
-        selectedMonth = 'November';
-        break;
-      case 12:
-        selectedMonth = 'December';
-        break;
-    }
-  }
+  List<String> idListForPdf = [];
+  List<JobHistoryModel> jobHistoryForPdf = [];
 
   @override
   void initState() {
-    selectMonth(currentMonth);
+    selectedMonth = selectMonth(currentMonth);
     selectedMonthAndYear = '$selectedMonth ${currentDate.year}';
     super.initState();
   }
@@ -112,7 +74,7 @@ class _ReportScreenState extends State<ReportScreen> {
                           setState(() {
                             if (currentMonth != 1) {
                               currentMonth--;
-                              selectMonth(currentMonth);
+                              selectedMonth = selectMonth(currentMonth);
                               selectedMonthAndYear =
                                   '$selectedMonth ${currentDate.year}';
                             }
@@ -136,7 +98,7 @@ class _ReportScreenState extends State<ReportScreen> {
                           setState(() {
                             if (currentMonth != 12) {
                               currentMonth++;
-                              selectMonth(currentMonth);
+                              selectedMonth = selectMonth(currentMonth);
                               selectedMonthAndYear =
                                   '$selectedMonth ${currentDate.year}';
                             }
@@ -165,6 +127,8 @@ class _ReportScreenState extends State<ReportScreen> {
                               List<JobHistoryModel> jobList =
                                   box.getAt(i).cast<JobHistoryModel>();
                               String id = box.keyAt(i);
+
+                              idListForPdf.add(id);
 
                               jobList = jobList.where((job) {
                                 return job.timestamp.month == currentMonth;
@@ -200,6 +164,7 @@ class _ReportScreenState extends State<ReportScreen> {
                                           padding: EdgeInsets.zero,
                                           shrinkWrap: true,
                                           itemBuilder: (context, j) {
+                                            jobHistoryForPdf.add(jobList[j]);
                                             int totalHoursForFinalSumResult = 0;
                                             int totalMinutesForFinalSumResult =
                                                 0;
@@ -207,8 +172,6 @@ class _ReportScreenState extends State<ReportScreen> {
                                                 historyElementList =
                                                 jobList[j].historyElement ?? [];
 
-                                            // historyElementList =
-                                            //     historyElementList?.reversed.toList();
                                             historyElementList.sort(
                                               (a, b) => a.time!.compareTo(
                                                   b.time ?? DateTime.now()),
@@ -217,9 +180,6 @@ class _ReportScreenState extends State<ReportScreen> {
                                               children: [
                                                 const HeaderDataOfTable(),
                                                 ListView.builder(
-                                                  // itemCount:
-                                                  //     jobList[j].historyElement!.length -
-                                                  //         1,
                                                   itemCount: historyElementList
                                                           .length -
                                                       1,
@@ -228,106 +188,34 @@ class _ReportScreenState extends State<ReportScreen> {
                                                   padding: EdgeInsets.zero,
                                                   shrinkWrap: true,
                                                   itemBuilder: (context, k) {
-                                                    // for (int m = 0;
-                                                    //     m < historyElementList!.length;
-                                                    //     m++) {
-                                                    //   print(historyElementList[m].type);
-                                                    // }
-
                                                     String startTime = '';
                                                     String endTime = '';
 
-                                                    // int difference = 0;
                                                     int hours = 0;
                                                     int minutes = 0;
                                                     if (k == 0) {
-                                                      startTime = preferenceManager
-                                                                  .getTimeFormat ==
-                                                              '12h'
-                                                          ? DateFormat('h:mm a')
-                                                              .format(
-                                                                  historyElementList
-                                                                          .first
-                                                                          .time ??
-                                                                      DateTime
-                                                                          .now())
-                                                          : DateFormat.Hm().format(
-                                                              historyElementList
-                                                                      .first
-                                                                      .time ??
-                                                                  DateTime
-                                                                      .now());
+                                                      startTime =
+                                                          getStartEndTimeOfReport(
+                                                        preferenceManager,
+                                                        historyElementList
+                                                            .first,
+                                                      );
 
-                                                      endTime = preferenceManager
-                                                                  .getTimeFormat ==
-                                                              '12h'
-                                                          ? DateFormat('h:mm a')
-                                                              .format(
-                                                                  historyElementList
-                                                                          .last
-                                                                          .time ??
-                                                                      DateTime
-                                                                          .now())
-                                                          : DateFormat.Hm().format(
-                                                              historyElementList
-                                                                      .last
-                                                                      .time ??
-                                                                  DateTime
-                                                                      .now());
+                                                      endTime =
+                                                          getStartEndTimeOfReport(
+                                                        preferenceManager,
+                                                        historyElementList.last,
+                                                      );
                                                       DateTime startDateTime =
-                                                          DateTime(
-                                                              historyElementList
-                                                                      .first
-                                                                      .time
-                                                                      ?.year ??
-                                                                  0,
-                                                              historyElementList
-                                                                      .first
-                                                                      .time
-                                                                      ?.month ??
-                                                                  0,
-                                                              historyElementList
-                                                                      .first
-                                                                      .time
-                                                                      ?.day ??
-                                                                  0,
-                                                              historyElementList
-                                                                      .first
-                                                                      .time
-                                                                      ?.hour ??
-                                                                  0,
-                                                              historyElementList
-                                                                      .first
-                                                                      .time
-                                                                      ?.minute ??
-                                                                  0);
+                                                          getStartEndDateTime(
+                                                        historyElementList
+                                                            .first,
+                                                      );
+
                                                       DateTime endDateTime =
-                                                          DateTime(
-                                                              historyElementList
-                                                                      .last
-                                                                      .time
-                                                                      ?.year ??
-                                                                  0,
-                                                              historyElementList
-                                                                      .last
-                                                                      .time
-                                                                      ?.month ??
-                                                                  0,
-                                                              historyElementList
-                                                                      .last
-                                                                      .time
-                                                                      ?.day ??
-                                                                  0,
-                                                              historyElementList
-                                                                      .last
-                                                                      .time
-                                                                      ?.hour ??
-                                                                  0,
-                                                              historyElementList
-                                                                      .last
-                                                                      .time
-                                                                      ?.minute ??
-                                                                  0);
+                                                          getStartEndDateTime(
+                                                        historyElementList.last,
+                                                      );
 
                                                       Duration difference =
                                                           endDateTime.difference(
@@ -349,93 +237,25 @@ class _ReportScreenState extends State<ReportScreen> {
                                                       if (k + 1 <
                                                           historyElementList
                                                               .length) {
-                                                        startTime = preferenceManager
-                                                                    .getTimeFormat ==
-                                                                '12h'
-                                                            ? DateFormat(
-                                                                    'h:mm a')
-                                                                .format(historyElementList[
-                                                                            k]
-                                                                        .time ??
-                                                                    DateTime
-                                                                        .now())
-                                                            : DateFormat.Hm().format(
+                                                        startTime =
+                                                            getStartEndTimeOfReport(
+                                                          preferenceManager,
+                                                          historyElementList[k],
+                                                        );
+                                                        endTime =
+                                                            getStartEndTimeOfReport(
+                                                          preferenceManager,
+                                                          historyElementList[
+                                                              k + 1],
+                                                        );
+                                                        DateTime startDateTime =
+                                                            getStartEndDateTime(
+                                                          historyElementList[k],
+                                                        );
+                                                        DateTime endDateTime =
+                                                            getStartEndDateTime(
                                                                 historyElementList[
-                                                                            k]
-                                                                        .time ??
-                                                                    DateTime
-                                                                        .now());
-                                                        endTime = preferenceManager
-                                                                    .getTimeFormat ==
-                                                                '12h'
-                                                            ? DateFormat(
-                                                                    'h:mm a')
-                                                                .format(historyElementList[k +
-                                                                            1]
-                                                                        .time ??
-                                                                    DateTime
-                                                                        .now())
-                                                            : DateFormat.Hm().format(
-                                                                historyElementList[
-                                                                            k +
-                                                                                1]
-                                                                        .time ??
-                                                                    DateTime
-                                                                        .now());
-
-                                                        DateTime startDateTime = DateTime(
-                                                            historyElementList[
-                                                                        k]
-                                                                    .time
-                                                                    ?.year ??
-                                                                0,
-                                                            historyElementList[
-                                                                        k]
-                                                                    .time
-                                                                    ?.month ??
-                                                                0,
-                                                            historyElementList[
-                                                                        k]
-                                                                    .time
-                                                                    ?.day ??
-                                                                0,
-                                                            historyElementList[
-                                                                        k]
-                                                                    .time
-                                                                    ?.hour ??
-                                                                0,
-                                                            historyElementList[
-                                                                        k]
-                                                                    .time
-                                                                    ?.minute ??
-                                                                0);
-                                                        DateTime endDateTime = DateTime(
-                                                            historyElementList[
-                                                                        k + 1]
-                                                                    .time
-                                                                    ?.year ??
-                                                                0,
-                                                            historyElementList[
-                                                                        k + 1]
-                                                                    .time
-                                                                    ?.month ??
-                                                                0,
-                                                            historyElementList[
-                                                                        k + 1]
-                                                                    .time
-                                                                    ?.day ??
-                                                                0,
-                                                            historyElementList[
-                                                                        k + 1]
-                                                                    .time
-                                                                    ?.hour ??
-                                                                0,
-                                                            historyElementList[
-                                                                        k + 1]
-                                                                    .time
-                                                                    ?.minute ??
-                                                                0);
-
+                                                                    k + 1]);
                                                         Duration difference =
                                                             endDateTime.difference(
                                                                 startDateTime);
@@ -553,7 +373,10 @@ class _ReportScreenState extends State<ReportScreen> {
                               ?.reportsScreenSaveToPdf ??
                           '',
                       onTab: () async {
-                        final data = await PdfServices().createHelloWorld();
+                        print(idListForPdf.length);
+                        print(jobHistoryForPdf.length);
+                        final data = await PdfServices()
+                            .createHelloWorld(jobHistoryForPdf);
                         PdfServices().savePdfFile('external_files', data);
                       },
                       buttonColor: blueColor,
