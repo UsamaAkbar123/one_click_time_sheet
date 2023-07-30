@@ -29,8 +29,6 @@ class _ReportScreenState extends State<ReportScreen> {
   int currentMonth = DateTime.now().month;
   PreferenceManager preferenceManager = PreferenceManager();
 
-  List<String> idListForPdf = [];
-  // List<JobHistoryModel> jobHistoryForPdf = [];
   List<FinalReportModel> listOfFinalReportForPdf = [];
 
   List<ReportModel> reportModelListForPdf = [];
@@ -133,8 +131,6 @@ class _ReportScreenState extends State<ReportScreen> {
                                   box.getAt(i).cast<JobHistoryModel>();
                               String id = box.keyAt(i);
 
-                              idListForPdf.add(id);
-
                               jobList = jobList.where((job) {
                                 return job.timestamp.month == currentMonth;
                               }).toList();
@@ -197,14 +193,6 @@ class _ReportScreenState extends State<ReportScreen> {
 
                                                     int hours = 0;
                                                     int minutes = 0;
-
-                                                    // if (k == 0) {
-                                                    //   jobTitle = 'work';
-                                                    // } else {
-                                                    //   jobTitle = getJobTitle(
-                                                    //       historyElementList[
-                                                    //           k]);
-                                                    // }
 
                                                     if (k == 0) {
                                                       startTime =
@@ -323,10 +311,16 @@ class _ReportScreenState extends State<ReportScreen> {
                                                             endTime: endTime,
                                                             difference:
                                                                 '$hours:${minutes.toString().padLeft(2, '0')}',
-                                                            considered:
-                                                                '$hours:${minutes.toString().padLeft(2, '0')}',
-                                                            // result:
-                                                            //     '$totalHoursForFinalSumResult:${totalMinutesForFinalSumResult.toString().padLeft(2, '0')}',
+                                                            considered: historyElementList[
+                                                                            k]
+                                                                        .type ==
+                                                                    'Unpaid break'
+                                                                ? '-$hours:${minutes.toString().padLeft(2, '0')}'
+                                                                : historyElementList[k]
+                                                                            .type ==
+                                                                        'Paid break'
+                                                                    ? '0:00'
+                                                                    : '$hours:${minutes.toString().padLeft(2, '0')}',
                                                           ),
                                                         );
                                                       }
@@ -339,6 +333,7 @@ class _ReportScreenState extends State<ReportScreen> {
                                                             1) {
                                                       listOfFinalReportForPdf
                                                           .add(FinalReportModel(
+                                                        id: id,
                                                         reportModelList:
                                                             reportModelListForPdf,
                                                       ));
@@ -450,9 +445,9 @@ class _ReportScreenState extends State<ReportScreen> {
                         for (int i = 0;
                             i < listOfFinalReportForPdf.length;
                             i++) {
-                          print(listOfFinalReportForPdf[i].reportModelList);
+                          // print(listOfFinalReportForPdf[i].reportModelList);
                         }
-                        final data = await PdfServices().createHelloWorld(
+                        final data = await PdfServices().createMonthlyReport(
                           reportList: listOfFinalReportForPdf,
                           sumList: reportSumList,
                         );

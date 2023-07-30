@@ -1,8 +1,8 @@
 import 'dart:io';
 
 // import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' as flutter;
 import 'package:flutter/services.dart';
-import 'package:one_click_time_sheet/model/hive_job_history_model.dart';
 import 'package:open_document/open_document.dart';
 import 'package:open_document/open_document_exception.dart';
 import 'package:path_provider/path_provider.dart';
@@ -13,9 +13,10 @@ import '../../../model/report_model.dart';
 
 class PdfServices {
   /// example
-  Future<Uint8List> createHelloWorld(
-      {required List<FinalReportModel> reportList,
-      required List<ReportSumModel> sumList}) async {
+  Future<Uint8List> createMonthlyReport({
+    required List<FinalReportModel> reportList,
+    required List<ReportSumModel> sumList,
+  }) async {
     final pdf = pw.Document();
     final font =
         pw.Font.ttf(await rootBundle.load("assets/fonts/Lexend-Regular.ttf"));
@@ -27,7 +28,7 @@ class PdfServices {
           buildTitle('Monthly Report', font),
           pw.SizedBox(height: 20),
           for (int i = 0; i < reportList.length; i++)
-            buildReportTable(reportList[i], sumList[i]),
+            buildReportTable(i, reportList[i], sumList[i]),
           // for (int i = 0; i < sumList.length; i++) buildSumWidget(sumList[i]),
         ];
       },
@@ -36,9 +37,20 @@ class PdfServices {
     return pdf.save();
   }
 
+  String jobId = '';
+
   /// build report table
-  static pw.Widget buildReportTable(
-      FinalReportModel finalReport, ReportSumModel reportSumModel) {
+  pw.Widget buildReportTable(
+    int iIndex,
+    FinalReportModel finalReport,
+    ReportSumModel reportSumModel,
+  ) {
+    if (iIndex == 0 || jobId != finalReport.id) {
+      jobId = finalReport.id;
+    } else {
+      jobId = '';
+    }
+
     final headers = [
       ' ',
       'Start',
@@ -61,6 +73,20 @@ class PdfServices {
       padding: const EdgeInsets.all(10),
       child: pw.Column(
         children: [
+          // if (iIndex == 0) pw.Text(finalReport.id),
+          jobId == finalReport.id
+              ? pw.Align(
+                  alignment: Alignment.centerLeft,
+                  child: pw.Text(
+                    jobId,
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                )
+              : pw.SizedBox(),
+          pw.SizedBox(height: 8),
           // ignore: deprecated_member_use
           pw.Table.fromTextArray(
             headers: headers,
@@ -115,7 +141,7 @@ class PdfServices {
     try {
       await OpenDocument.openDocument(filePath: filePath);
     } on OpenDocumentException catch (e) {
-      // debugPrint("ERROR: ${e.errorMessage}");
+      flutter.debugPrint("ERROR: ${e.errorMessage}");
       filePath = 'Failed to get platform version.';
     }
   }

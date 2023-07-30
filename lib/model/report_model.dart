@@ -17,9 +17,10 @@ class ReportModel {
 }
 
 class FinalReportModel {
+  final String id;
   final List<ReportModel> reportModelList;
 
-  FinalReportModel({required this.reportModelList});
+  FinalReportModel({required this.id, required this.reportModelList});
 }
 
 class ReportSumModel {
