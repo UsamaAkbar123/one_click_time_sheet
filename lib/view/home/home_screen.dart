@@ -137,6 +137,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                 workPlanList.add(workPlan);
                               }
                             }
+                            // Sort the workplan list based on the start time in ascending order.
+                            workPlanList.sort((a, b) => a.startWorkPlanTime
+                                .compareTo(b.startWorkPlanTime));
                           }
                         }
                       }
@@ -159,6 +162,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                   SizedBox(width: 10.w),
                                   Expanded(
                                     child: ListView.separated(
+                                      itemCount: workPlanList.length < 2
+                                          ? workPlanList.length
+                                          : 2,
                                       shrinkWrap: true,
                                       scrollDirection: Axis.horizontal,
                                       itemBuilder: (context, index) {
@@ -197,9 +203,6 @@ class _HomeScreenState extends State<HomeScreen> {
                                           ),
                                         );
                                       },
-                                      itemCount: workPlanList.length < 2
-                                          ? workPlanList.length
-                                          : 2,
                                     ),
                                   ),
                                   //const Spacer(),
@@ -699,6 +702,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           itemBuilder: (context, i) {
                             List<JobHistoryModel> jobList =
                                 box.getAt(i).cast<JobHistoryModel>();
+
                             jobList.sort(
                                 (a, b) => b.timestamp.compareTo(a.timestamp));
                             String dataKey = box.keyAt(i);
