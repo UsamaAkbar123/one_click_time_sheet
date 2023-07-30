@@ -34,6 +34,7 @@ class _ReportScreenState extends State<ReportScreen> {
 
   List<ReportModel> reportModelListForPdf = [];
   List<ReportSumModel> reportSumList = [];
+  bool isJobListEmpty = true;
 
   @override
   void initState() {
@@ -144,6 +145,12 @@ class _ReportScreenState extends State<ReportScreen> {
                               jobList.sort(
                                 (a, b) => b.timestamp.compareTo(a.timestamp),
                               );
+                              if (jobList.isEmpty) {
+                                isJobListEmpty = true;
+                              } else {
+                                isJobListEmpty = false;
+                              }
+
                               return jobList.isEmpty
                                   ? Center(
                                       child: i == 0
@@ -435,46 +442,50 @@ class _ReportScreenState extends State<ReportScreen> {
                 SizedBox(height: 45.h),
               ],
             ),
-            Padding(
-              padding: EdgeInsets.only(bottom: 20.0.h),
-              child: Align(
-                alignment: Alignment.bottomRight,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    CustomSavePdfSendEmailButton(
-                      buttonText: AppLocalizations.of(context)
-                              ?.reportsScreenSaveToPdf ??
-                          '',
-                      onTab: () async {
-                        // print(listOfFinalReportForPdf.length);
-                        for (int i = 0;
-                            i < listOfFinalReportForPdf.length;
-                            i++) {
-                          // print(listOfFinalReportForPdf[i].reportModelList);
-                        }
-                        final data = await PdfServices().createMonthlyReport(
-                          monthYearReportName: "$selectedMonthAndYear Report",
-                          reportList: listOfFinalReportForPdf,
-                          sumList: reportSumList,
-                        );
-                        PdfServices()
-                            .savePdfFile("$selectedMonthAndYear report", data);
-                      },
-                      buttonColor: blueColor,
+            isJobListEmpty
+                ? Padding(
+                    padding: EdgeInsets.only(bottom: 20.0.h),
+                    child: Align(
+                      alignment: Alignment.bottomRight,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          CustomSavePdfSendEmailButton(
+                            buttonText: AppLocalizations.of(context)
+                                    ?.reportsScreenSaveToPdf ??
+                                '',
+                            onTab: () async {
+                              // print(listOfFinalReportForPdf.length);
+                              for (int i = 0;
+                                  i < listOfFinalReportForPdf.length;
+                                  i++) {
+                                // print(listOfFinalReportForPdf[i].reportModelList);
+                              }
+                              final data =
+                                  await PdfServices().createMonthlyReport(
+                                monthYearReportName:
+                                    "$selectedMonthAndYear Report",
+                                reportList: listOfFinalReportForPdf,
+                                sumList: reportSumList,
+                              );
+                              PdfServices().savePdfFile(
+                                  "$selectedMonthAndYear report", data);
+                            },
+                            buttonColor: blueColor,
+                          ),
+                          SizedBox(width: 12.w),
+                          CustomSavePdfSendEmailButton(
+                            buttonText: AppLocalizations.of(context)
+                                    ?.reportsScreenSendEmail ??
+                                '',
+                            onTab: () {},
+                            buttonColor: greenColor,
+                          ),
+                        ],
+                      ),
                     ),
-                    SizedBox(width: 12.w),
-                    CustomSavePdfSendEmailButton(
-                      buttonText: AppLocalizations.of(context)
-                              ?.reportsScreenSendEmail ??
-                          '',
-                      onTab: () {},
-                      buttonColor: greenColor,
-                    ),
-                  ],
-                ),
-              ),
-            ),
+                  )
+                : const SizedBox(),
           ],
         ),
       ),
