@@ -42,6 +42,11 @@ class _AddWorkPlanBoxState extends State<AddWorkPlanBox> {
   PreferenceManager preferenceManager = PreferenceManager();
   final Box box = Hive.box('workPlan');
 
+  /// initial values of time picker if user are in edit or empty space click
+  /// then the time will show according to user click
+  TimeOfDay startInitialTime = TimeOfDay.now();
+  TimeOfDay endInitialTime = TimeOfDay.now();
+
   setStartTimeForFrontAndBackend({
     TimeOfDay? pickedTime,
     DateTime? editDateTime,
@@ -57,7 +62,7 @@ class _AddWorkPlanBoxState extends State<AddWorkPlanBox> {
     });
 
     startTimeForBackEnd = workPlanDateForBackend;
-
+    startInitialTime = TimeOfDay.fromDateTime(startTimeForBackEnd);
     if (preferenceManager.getTimeFormat == '24h') {
       startTimeForFrontEnd = DateFormat.Hm().format(workPlanDateForBackend);
     } else {
@@ -80,6 +85,9 @@ class _AddWorkPlanBoxState extends State<AddWorkPlanBox> {
     });
 
     endTimeForBackEnd = workPlanDateForBackend;
+
+    /// set select time for showTimePicker
+    endInitialTime = TimeOfDay.fromDateTime(endTimeForBackEnd);
     if (preferenceManager.getTimeFormat == '24h') {
       endTimeForFrontEnd = DateFormat.Hm().format(workPlanDateForBackend);
     } else {
@@ -111,6 +119,10 @@ class _AddWorkPlanBoxState extends State<AddWorkPlanBox> {
       workPlanDateForBackend = widget.startTime ?? DateTime.now();
       startTimeForBackEnd = widget.startTime ?? DateTime.now();
       endTimeForBackEnd = widget.endTime ?? DateTime.now();
+
+      /// set select time for showTimePicker
+      startInitialTime = TimeOfDay.fromDateTime(startTimeForBackEnd);
+      endInitialTime = TimeOfDay.fromDateTime(endTimeForBackEnd);
     }
     if (widget.isEditMode == true) {
       nameController.text = widget.workPlanName ?? '';
@@ -135,9 +147,15 @@ class _AddWorkPlanBoxState extends State<AddWorkPlanBox> {
       workPlanDateForBackend = widget.startTime ?? DateTime.now();
       startTimeForBackEnd = widget.startTime ?? DateTime.now();
       endTimeForBackEnd = widget.endTime ?? DateTime.now();
+
+      /// set select time for showTimePicker
+      startInitialTime = TimeOfDay.fromDateTime(startTimeForBackEnd);
+      endInitialTime = TimeOfDay.fromDateTime(endTimeForBackEnd);
     }
     super.initState();
   }
+
+  // TimeOfDay selectedTime = TimeOfDay.now();
 
   @override
   Widget build(BuildContext context) {
@@ -206,7 +224,8 @@ class _AddWorkPlanBoxState extends State<AddWorkPlanBox> {
                 );
                 workPlanDateForBackend = dateTime;
                 setState(() {});
-                if (widget.isEditMode == true || widget.isEmptySpaceClick == true) {
+                if (widget.isEditMode == true ||
+                    widget.isEmptySpaceClick == true) {
                   setEndTimeForFrontAndBackend(editDateTime: widget.endTime);
 
                   /// start time
@@ -235,7 +254,7 @@ class _AddWorkPlanBoxState extends State<AddWorkPlanBox> {
           GestureDetector(
             onTap: () async {
               TimeOfDay? pickedTime = await showTimePicker(
-                initialTime: TimeOfDay.now(),
+                initialTime: startInitialTime,
                 context: context,
                 builder: (context, child) {
                   return MediaQuery(
@@ -271,7 +290,7 @@ class _AddWorkPlanBoxState extends State<AddWorkPlanBox> {
           GestureDetector(
             onTap: () async {
               TimeOfDay? pickedTime = await showTimePicker(
-                initialTime: TimeOfDay.now(),
+                initialTime: endInitialTime,
                 context: context,
                 builder: (context, child) {
                   return MediaQuery(
