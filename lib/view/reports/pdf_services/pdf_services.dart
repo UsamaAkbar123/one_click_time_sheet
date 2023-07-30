@@ -14,6 +14,7 @@ import '../../../model/report_model.dart';
 class PdfServices {
   /// example
   Future<Uint8List> createMonthlyReport({
+    required String monthYearReportName,
     required List<FinalReportModel> reportList,
     required List<ReportSumModel> sumList,
   }) async {
@@ -25,7 +26,7 @@ class PdfServices {
     pdf.addPage(pw.MultiPage(
       build: (context) {
         return [
-          buildTitle('Monthly Report', font),
+          buildTitle(monthYearReportName, font),
           pw.SizedBox(height: 20),
           for (int i = 0; i < reportList.length; i++)
             buildReportTable(i, reportList[i], sumList[i]),

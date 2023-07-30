@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hive_flutter/adapters.dart';
+import 'package:intl/intl.dart';
 import 'package:one_click_time_sheet/managers/preference_manager.dart';
 import 'package:one_click_time_sheet/model/hive_job_history_model.dart';
 import 'package:one_click_time_sheet/model/report_model.dart';
@@ -130,6 +131,11 @@ class _ReportScreenState extends State<ReportScreen> {
                               List<JobHistoryModel> jobList =
                                   box.getAt(i).cast<JobHistoryModel>();
                               String id = box.keyAt(i);
+
+                              DateTime dateTime =
+                                  DateFormat('EEEE, dd, M, yyyy').parse(id);
+                              id = DateFormat(preferenceManager.getDateFormat)
+                                  .format(dateTime);
 
                               jobList = jobList.where((job) {
                                 return job.timestamp.month == currentMonth;
@@ -448,6 +454,7 @@ class _ReportScreenState extends State<ReportScreen> {
                           // print(listOfFinalReportForPdf[i].reportModelList);
                         }
                         final data = await PdfServices().createMonthlyReport(
+                          monthYearReportName: "$selectedMonthAndYear Report",
                           reportList: listOfFinalReportForPdf,
                           sumList: reportSumList,
                         );
