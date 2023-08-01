@@ -37,8 +37,11 @@ class _EditDeleteHistoryElementState extends State<EditDeleteHistoryElement> {
   void initState() {
     super.initState();
     final dynamicList = jobHistoryBox.get(widget.listKey);
-    for (int i = 0; i < dynamicList.length; i++) {
-      jobList.add(dynamicList[i] as JobHistoryModel);
+    // print(dynamicList);
+    if (dynamicList.isNotEmpty) {
+      for (int i = 0; i < dynamicList.length; i++) {
+        jobList.add(dynamicList[i] as JobHistoryModel);
+      }
     }
 
     // for (int i = 0; i < jobList.length; i++) {
@@ -144,7 +147,30 @@ class _EditDeleteHistoryElementState extends State<EditDeleteHistoryElement> {
                     /// Save Button
                     GestureDetector(
                       onTap: () {
-                        Navigator.of(context).pop();
+                        // Navigator.of(context).pop();
+                        String elementId =
+                            widget.historyElement?[index].elementId ?? '';
+                        for (int i = 0; i < jobList.length; i++) {
+                          List<HistoryElement> historyElement =
+                              jobList[i].historyElement ?? [];
+                          if (historyElement.length ==
+                              widget.historyElement!.length) {
+                            for (int j = 0;
+                                j < widget.historyElement!.length;
+                                j++) {
+                              if (historyElement[j].elementId == elementId) {
+                                jobList[i].historyElement?[j].type =
+                                    'paid break';
+
+                                jobHistoryBox.put(widget.listKey, jobList);
+
+                                setState(() {});
+
+                                break;
+                              }
+                            }
+                          }
+                        }
                       },
                       child: Container(
                         height: 28.h,
@@ -177,23 +203,19 @@ class _EditDeleteHistoryElementState extends State<EditDeleteHistoryElement> {
                               jobList[i].historyElement ?? [];
                           if (historyElement.length ==
                               widget.historyElement!.length) {
-                            // print('object');
-                            // break;
                             for (int j = 0;
                                 j < widget.historyElement!.length;
                                 j++) {
                               if (historyElement[j].elementId == elementId) {
-                                jobList[i].historyElement?[j].type = 'ali';
+                                jobList[i].historyElement?.removeAt(j);
 
-                                // jobHistoryBox.put(widget.listKey,
-                                //     jobList[i].historyElement?[j]);
+                                jobHistoryBox.put(widget.listKey, jobList);
 
                                 setState(() {});
 
                                 break;
                               }
                             }
-                            // print(true);
                           }
                         }
                       },

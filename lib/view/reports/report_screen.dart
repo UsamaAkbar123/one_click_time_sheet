@@ -132,6 +132,7 @@ class _ReportScreenState extends State<ReportScreen> {
                               List<JobHistoryModel> jobList =
                                   box.getAt(i).cast<JobHistoryModel>();
                               String id = box.keyAt(i);
+                              String originalId = id;
 
                               DateTime dateTime =
                                   DateFormat('EEEE, dd, M, yyyy').parse(id);
@@ -374,7 +375,8 @@ class _ReportScreenState extends State<ReportScreen> {
                                                                 '$hours:${minutes.toString().padLeft(2, '0')}',
                                                             editDeleteHistoryElement:
                                                                 historyElementList,
-                                                            indexKey: id,
+                                                            indexKey:
+                                                                originalId,
                                                             // jobList: jobList,
                                                             jIndex: j,
                                                             iIndex: i,
@@ -405,7 +407,8 @@ class _ReportScreenState extends State<ReportScreen> {
                                                                         : '$hours:${minutes.toString().padLeft(2, '0')}',
                                                                 editDeleteHistoryElement:
                                                                     historyElementList,
-                                                                indexKey: id,
+                                                                indexKey:
+                                                                    originalId,
                                                                 jIndex: j,
                                                                 iIndex: i,
                                                                 kIndex: k,
