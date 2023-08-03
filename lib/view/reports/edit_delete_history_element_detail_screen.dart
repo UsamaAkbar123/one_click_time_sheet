@@ -139,8 +139,9 @@ class _EditDeleteHistoryElementState extends State<EditDeleteHistoryElement> {
                               pickedTime.hour,
                               pickedTime.minute,
                             );
-
-                            // print(jobTime);
+                            // jobList[i].historyElement?[j].time = jobTime;
+                            // print('i index==? $iIndex');
+                            // print('j index==? $jIndex');
                           }
                         },
                         child: Container(
@@ -225,6 +226,15 @@ class _EditDeleteHistoryElementState extends State<EditDeleteHistoryElement> {
                                     await jobHistoryBox
                                         .put(widget.listKey, jobList)
                                         .then((value) {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(SnackBar(
+                                        content: const Text(
+                                          'Job History Element Updated',
+                                        ),
+                                        backgroundColor: greenColor,
+                                        showCloseIcon: true,
+                                        closeIconColor: whiteColor,
+                                      ));
                                       jobTitle = '';
                                     });
                                   }
@@ -236,6 +246,16 @@ class _EditDeleteHistoryElementState extends State<EditDeleteHistoryElement> {
                                     await jobHistoryBox
                                         .put(widget.listKey, jobList)
                                         .then((value) {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(SnackBar(
+                                        content: const Text(
+                                          'Job History Element Updated',
+                                        ),
+                                        backgroundColor: greenColor,
+                                        showCloseIcon: true,
+                                        closeIconColor: whiteColor,
+                                      ));
+
                                       jobTime = null;
                                     });
                                   }
@@ -286,9 +306,50 @@ class _EditDeleteHistoryElementState extends State<EditDeleteHistoryElement> {
                                   j < widget.historyElement!.length;
                                   j++) {
                                 if (historyElement[j].elementId == elementId) {
-                                  jobList[i].historyElement?.removeAt(j);
+                                  showDialog(
+                                    context: context,
+                                    builder: (context) {
+                                      return AlertDialog(
+                                        title: const Text('Alert'),
+                                        content: const Text(
+                                            'Are you sure to delete the job history?'),
+                                        actions: [
+                                          TextButton(
+                                            onPressed: () {
+                                              Navigator.of(context).pop();
+                                            },
+                                            child: const Text('cancel'),
+                                          ),
+                                          TextButton(
+                                            onPressed: () {
+                                              jobList[i]
+                                                  .historyElement
+                                                  ?.removeAt(j);
 
-                                  jobHistoryBox.put(widget.listKey, jobList);
+                                              jobHistoryBox
+                                                  .put(widget.listKey, jobList)
+                                                  .then((value) {
+                                                ScaffoldMessenger.of(context)
+                                                    .showSnackBar(
+                                                  SnackBar(
+                                                    content: const Text(
+                                                      'Job History Element Deleted',
+                                                    ),
+                                                    backgroundColor: redColor,
+                                                    showCloseIcon: true,
+                                                    closeIconColor: whiteColor,
+                                                  ),
+                                                );
+                                                Navigator.of(context).pop();
+                                              });
+                                              setState(() {});
+                                            },
+                                            child: const Text('ok'),
+                                          ),
+                                        ],
+                                      );
+                                    },
+                                  );
 
                                   setState(() {});
 
