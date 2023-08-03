@@ -32,6 +32,10 @@ class _EditDeleteHistoryElementState extends State<EditDeleteHistoryElement> {
   PreferenceManager preferenceManager = PreferenceManager();
   final Box jobHistoryBox = Hive.box('jobHistoryBox');
   List<JobHistoryModel> jobList = [];
+  TextEditingController jobNameController = TextEditingController();
+  String jobTitle = '';
+  DateTime? jobTime;
+  DateTime? jobDate;
 
   @override
   void initState() {
@@ -43,19 +47,12 @@ class _EditDeleteHistoryElementState extends State<EditDeleteHistoryElement> {
         jobList.add(dynamicList[i] as JobHistoryModel);
       }
     }
-
-    // for (int i = 0; i < jobList.length; i++) {
-    //   List<HistoryElement> historyElement = jobList[i].historyElement ?? [];
-    //   if (historyElement.length == widget.historyElement!.length) {
-    //     // print(true);
-    //   }
-    // }
-    // print(jobList.runtimeType);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: Text(
           'Edit & Delete',
@@ -66,179 +63,262 @@ class _EditDeleteHistoryElementState extends State<EditDeleteHistoryElement> {
       body: ListView.builder(
         itemCount: widget.historyElement?.length ?? 0,
         itemBuilder: (context, index) {
-          TextEditingController jobNameController =
+          jobNameController =
               TextEditingController(text: widget.historyElement?[index].type);
-          DateTime? jobTime = widget.historyElement?[index].time;
+          // DateTime? jobTime = widget.historyElement?[index].time;
 
-          String showJobTime = preferenceManager.getTimeFormat == '12h'
-              ? DateFormat.jm().format(jobTime ?? DateTime.now())
-              : DateFormat.Hm().format(jobTime ?? DateTime.now());
+          // String showJobTime = preferenceManager.getTimeFormat == '12h'
+          //     ? DateFormat.jm().format(jobTime ?? DateTime.now())
+          //     : DateFormat.Hm().format(jobTime ?? DateTime.now());
 
-          String dateOfJob = DateFormat(preferenceManager.getDateFormat)
-              .format(jobTime ?? DateTime.now());
+          // String dateOfJob = DateFormat(preferenceManager.getDateFormat)
+          //     .format(jobTime ?? DateTime.now());
 
-          return Padding(
-            padding: EdgeInsets.symmetric(horizontal: 15.w),
-            child: Column(
-              children: [
-                SizedBox(height: 20.h),
-                Row(
-                  children: [
-                    Container(
-                      height: 28.h,
-                      width: 80.w,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(3.r),
-                        border: Border.all(
-                          color: blackColor.withOpacity(0.3),
-                        ),
-                      ),
-                      alignment: Alignment.center,
-                      child: TextField(
-                        key: UniqueKey(),
-                        textAlign: TextAlign.center,
-                        controller: jobNameController,
-                        decoration: InputDecoration(
-                          border: InputBorder.none,
-                          contentPadding: EdgeInsets.only(
-                            // left: 4.w,
-                            bottom: 16.h,
+          return SizedBox(
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 15.w),
+              child: Column(
+                children: [
+                  SizedBox(height: 20.h),
+                  Row(
+                    children: [
+                      Container(
+                        height: 28.h,
+                        width: 80.w,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(3.r),
+                          border: Border.all(
+                            color: blackColor.withOpacity(0.3),
                           ),
                         ),
-                        style: TextStyle(fontSize: 12.sp),
-                      ),
-                    ),
-                    SizedBox(width: 5.w),
-                    Container(
-                      height: 28.h,
-                      width: 55.w,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(3.r),
-                        border: Border.all(
-                          color: blackColor.withOpacity(0.3),
+                        alignment: Alignment.center,
+                        child: TextField(
+                          // key: UniqueKey(),
+                          textAlign: TextAlign.center,
+                          controller: jobNameController,
+                          decoration: InputDecoration(
+                            border: InputBorder.none,
+                            contentPadding: EdgeInsets.only(
+                              // left: 4.w,
+                              bottom: 16.h,
+                            ),
+                          ),
+                          style: TextStyle(fontSize: 12.sp),
+                          onChanged: (value) {
+                            jobTitle = value;
+                            // print(jobTitle);
+                          },
                         ),
                       ),
-                      alignment: Alignment.center,
-                      child: Text(
-                        showJobTime,
-                        style: CustomTextStyle.kBodyText1
-                            .copyWith(fontSize: 12.sp),
-                      ),
-                    ),
-                    SizedBox(width: 5.w),
-                    Container(
-                      height: 28.h,
-                      width: 80.w,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(3.r),
-                        border: Border.all(
-                          color: blackColor.withOpacity(0.3),
+                      SizedBox(width: 5.w),
+                      GestureDetector(
+                        onTap: () async {
+                          TimeOfDay? pickedTime = await showTimePicker(
+                            initialTime: TimeOfDay.fromDateTime(
+                                widget.historyElement?[index].time ??
+                                    DateTime.now()),
+                            context: context,
+                            builder: (context, child) {
+                              return MediaQuery(
+                                data: MediaQuery.of(context).copyWith(
+                                  alwaysUse24HourFormat:
+                                      preferenceManager.getTimeFormat == '24h',
+                                ),
+                                child: child ?? const SizedBox(),
+                              );
+                            }, //context of current state
+                          );
+                          if (pickedTime != null) {
+                            DateTime dateTime =
+                                widget.historyElement?[index].time ??
+                                    DateTime.now();
+                            jobTime = DateTime(
+                              dateTime.year,
+                              dateTime.month,
+                              dateTime.day,
+                              pickedTime.hour,
+                              pickedTime.minute,
+                            );
+
+                            // print(jobTime);
+                          }
+                        },
+                        child: Container(
+                          height: 28.h,
+                          width: 55.w,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(3.r),
+                            border: Border.all(
+                              color: blackColor.withOpacity(0.3),
+                            ),
+                          ),
+                          alignment: Alignment.center,
+                          child: Text(
+                            preferenceManager.getTimeFormat == '12h'
+                                ? DateFormat.jm().format(
+                                    widget.historyElement?[index].time ??
+                                        DateTime.now())
+                                : DateFormat.Hm().format(
+                                    widget.historyElement?[index].time ??
+                                        DateTime.now()),
+                            style: CustomTextStyle.kBodyText1
+                                .copyWith(fontSize: 12.sp),
+                          ),
                         ),
                       ),
-                      alignment: Alignment.center,
-                      child: Text(
-                        dateOfJob,
-                        style: CustomTextStyle.kBodyText1
-                            .copyWith(fontSize: 12.sp),
+                      SizedBox(width: 5.w),
+                      GestureDetector(
+                        onTap: () async {
+                          // DateTime? dateTime = await showDatePicker(
+                          //   context: context,
+                          //   initialDate: widget.historyElement?[index].time ??
+                          //       DateTime.now(),
+                          //   firstDate: widget.historyElement?[index].time ??
+                          //       DateTime.now(),
+                          //   lastDate: DateTime(2030, 12, 31),
+                          // );
+                          // if (dateTime != null) {
+                          //   jobDate = dateTime;
+                          //   print(jobDate);
+                          // }
+                        },
+                        child: Container(
+                          height: 28.h,
+                          width: 80.w,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(3.r),
+                            border: Border.all(
+                              color: blackColor.withOpacity(0.3),
+                            ),
+                          ),
+                          alignment: Alignment.center,
+                          child: Text(
+                            DateFormat(preferenceManager.getDateFormat).format(
+                                widget.historyElement?[index].time ??
+                                    DateTime.now()),
+                            style: CustomTextStyle.kBodyText1
+                                .copyWith(fontSize: 12.sp),
+                          ),
+                        ),
                       ),
-                    ),
-                    SizedBox(width: 5.w),
+                      SizedBox(width: 5.w),
 
-                    /// Save Button
-                    GestureDetector(
-                      onTap: () {
-                        // Navigator.of(context).pop();
-                        String elementId =
-                            widget.historyElement?[index].elementId ?? '';
-                        for (int i = 0; i < jobList.length; i++) {
-                          List<HistoryElement> historyElement =
-                              jobList[i].historyElement ?? [];
-                          if (historyElement.length ==
-                              widget.historyElement!.length) {
-                            for (int j = 0;
-                                j < widget.historyElement!.length;
-                                j++) {
-                              if (historyElement[j].elementId == elementId) {
-                                jobList[i].historyElement?[j].type =
-                                    'paid break';
+                      /// Save Button
+                      GestureDetector(
+                        onTap: () async {
+                          // Navigator.of(context).pop();
+                          String elementId =
+                              widget.historyElement?[index].elementId ?? '';
+                          for (int i = 0; i < jobList.length; i++) {
+                            List<HistoryElement> historyElement =
+                                jobList[i].historyElement ?? [];
+                            if (historyElement.length ==
+                                widget.historyElement!.length) {
+                              for (int j = 0;
+                                  j < widget.historyElement!.length;
+                                  j++) {
+                                if (historyElement[j].elementId == elementId) {
+                                  if (jobTitle != '') {
+                                    jobList[i].historyElement?[j].type =
+                                        jobTitle;
 
-                                jobHistoryBox.put(widget.listKey, jobList);
+                                    await jobHistoryBox
+                                        .put(widget.listKey, jobList)
+                                        .then((value) {
+                                      jobTitle = '';
+                                    });
+                                  }
 
-                                setState(() {});
+                                  if (jobTime != null) {
+                                    jobList[i].historyElement?[j].time =
+                                        jobTime;
 
-                                break;
+                                    await jobHistoryBox
+                                        .put(widget.listKey, jobList)
+                                        .then((value) {
+                                      jobTime = null;
+                                    });
+                                  }
+
+                                  // print(jobTitle);
+                                  // print(jobTime);
+
+                                  setState(() {});
+
+                                  break;
+                                }
                               }
                             }
                           }
-                        }
-                      },
-                      child: Container(
-                        height: 28.h,
-                        width: 50.w,
-                        decoration: BoxDecoration(
-                          color: greenColor,
-                          borderRadius: BorderRadius.circular(6.r),
-                        ),
-                        alignment: Alignment.center,
-                        child: Text(
-                          'Save',
-                          style: CustomTextStyle.kBodyText1.copyWith(
-                              fontSize: 12.sp,
-                              color: whiteColor,
-                              fontWeight: FontWeight.bold),
+                        },
+                        child: Container(
+                          height: 28.h,
+                          width: 50.w,
+                          decoration: BoxDecoration(
+                            color: greenColor,
+                            borderRadius: BorderRadius.circular(6.r),
+                          ),
+                          alignment: Alignment.center,
+                          child: Text(
+                            'Save',
+                            style: CustomTextStyle.kBodyText1.copyWith(
+                                fontSize: 12.sp,
+                                color: whiteColor,
+                                fontWeight: FontWeight.bold),
+                          ),
                         ),
                       ),
-                    ),
-                    SizedBox(width: 5.w),
+                      SizedBox(width: 5.w),
 
-                    /// Delete Button
-                    GestureDetector(
-                      onTap: () {
-                        //Navigator.of(context).pop();
+                      /// Delete Button
+                      GestureDetector(
+                        onTap: () {
+                          //Navigator.of(context).pop();
 
-                        String elementId =
-                            widget.historyElement?[index].elementId ?? '';
-                        for (int i = 0; i < jobList.length; i++) {
-                          List<HistoryElement> historyElement =
-                              jobList[i].historyElement ?? [];
-                          if (historyElement.length ==
-                              widget.historyElement!.length) {
-                            for (int j = 0;
-                                j < widget.historyElement!.length;
-                                j++) {
-                              if (historyElement[j].elementId == elementId) {
-                                jobList[i].historyElement?.removeAt(j);
+                          String elementId =
+                              widget.historyElement?[index].elementId ?? '';
+                          for (int i = 0; i < jobList.length; i++) {
+                            List<HistoryElement> historyElement =
+                                jobList[i].historyElement ?? [];
+                            if (historyElement.length ==
+                                widget.historyElement!.length) {
+                              for (int j = 0;
+                                  j < widget.historyElement!.length;
+                                  j++) {
+                                if (historyElement[j].elementId == elementId) {
+                                  jobList[i].historyElement?.removeAt(j);
 
-                                jobHistoryBox.put(widget.listKey, jobList);
+                                  jobHistoryBox.put(widget.listKey, jobList);
 
-                                setState(() {});
+                                  setState(() {});
 
-                                break;
+                                  break;
+                                }
                               }
                             }
                           }
-                        }
-                      },
-                      child: Container(
-                        height: 28.h,
-                        width: 50.w,
-                        decoration: BoxDecoration(
-                          color: redColor,
-                          borderRadius: BorderRadius.circular(6.r),
-                        ),
-                        alignment: Alignment.center,
-                        child: Text(
-                          'Delete',
-                          style: CustomTextStyle.kBodyText1.copyWith(
-                              fontSize: 12.sp,
-                              color: whiteColor,
-                              fontWeight: FontWeight.bold),
+                        },
+                        child: Container(
+                          height: 28.h,
+                          width: 50.w,
+                          decoration: BoxDecoration(
+                            color: redColor,
+                            borderRadius: BorderRadius.circular(6.r),
+                          ),
+                          alignment: Alignment.center,
+                          child: Text(
+                            'Delete',
+                            style: CustomTextStyle.kBodyText1.copyWith(
+                                fontSize: 12.sp,
+                                color: whiteColor,
+                                fontWeight: FontWeight.bold),
+                          ),
                         ),
                       ),
-                    ),
-                  ],
-                ),
-              ],
+                    ],
+                  ),
+                ],
+              ),
             ),
           );
         },
