@@ -377,10 +377,6 @@ class _ReportScreenState extends State<ReportScreen> {
                                                                 historyElementList,
                                                             indexKey:
                                                                 originalId,
-                                                            // jobList: jobList,
-                                                            jIndex: j,
-                                                            iIndex: i,
-                                                            kIndex: k,
                                                           ),
                                                         historyElementList[k]
                                                                     .type ==
@@ -409,9 +405,6 @@ class _ReportScreenState extends State<ReportScreen> {
                                                                     historyElementList,
                                                                 indexKey:
                                                                     originalId,
-                                                                jIndex: j,
-                                                                iIndex: i,
-                                                                kIndex: k,
                                                               ),
                                                         k + 1 ==
                                                                 jobList[j]

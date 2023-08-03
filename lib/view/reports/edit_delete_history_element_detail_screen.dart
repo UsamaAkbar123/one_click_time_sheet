@@ -10,16 +10,10 @@ import 'package:one_click_time_sheet/utills/constants/text_styles.dart';
 class EditDeleteHistoryElement extends StatefulWidget {
   final List<HistoryElement>? historyElement;
   final String listKey;
-  // final List<JobHistoryModel> jobList;
-  final int iIndex;
-  final int jIndex;
 
   const EditDeleteHistoryElement({
     required this.historyElement,
     required this.listKey,
-    // required this.jobList,
-    required this.iIndex,
-    required this.jIndex,
     super.key,
   });
 
@@ -36,12 +30,13 @@ class _EditDeleteHistoryElementState extends State<EditDeleteHistoryElement> {
   String jobTitle = '';
   DateTime? jobTime;
   DateTime? jobDate;
+  int selectedIndex = -1;
 
   @override
   void initState() {
     super.initState();
     final dynamicList = jobHistoryBox.get(widget.listKey);
-    // print(dynamicList);
+
     if (dynamicList.isNotEmpty) {
       for (int i = 0; i < dynamicList.length; i++) {
         jobList.add(dynamicList[i] as JobHistoryModel);
@@ -63,16 +58,10 @@ class _EditDeleteHistoryElementState extends State<EditDeleteHistoryElement> {
       body: ListView.builder(
         itemCount: widget.historyElement?.length ?? 0,
         itemBuilder: (context, index) {
-          jobNameController =
-              TextEditingController(text: widget.historyElement?[index].type);
-          // DateTime? jobTime = widget.historyElement?[index].time;
-
-          // String showJobTime = preferenceManager.getTimeFormat == '12h'
-          //     ? DateFormat.jm().format(jobTime ?? DateTime.now())
-          //     : DateFormat.Hm().format(jobTime ?? DateTime.now());
-
-          // String dateOfJob = DateFormat(preferenceManager.getDateFormat)
-          //     .format(jobTime ?? DateTime.now());
+          jobNameController = TextEditingController(
+              text: selectedIndex == index && jobTitle != ''
+                  ? jobTitle
+                  : widget.historyElement?[index].type);
 
           return SizedBox(
             child: Padding(
@@ -106,6 +95,7 @@ class _EditDeleteHistoryElementState extends State<EditDeleteHistoryElement> {
                           style: TextStyle(fontSize: 12.sp),
                           onChanged: (value) {
                             jobTitle = value;
+                            selectedIndex = index;
                             // print(jobTitle);
                           },
                         ),
@@ -113,6 +103,7 @@ class _EditDeleteHistoryElementState extends State<EditDeleteHistoryElement> {
                       SizedBox(width: 5.w),
                       GestureDetector(
                         onTap: () async {
+                          selectedIndex = index;
                           TimeOfDay? pickedTime = await showTimePicker(
                             initialTime: TimeOfDay.fromDateTime(
                                 widget.historyElement?[index].time ??
@@ -139,9 +130,8 @@ class _EditDeleteHistoryElementState extends State<EditDeleteHistoryElement> {
                               pickedTime.hour,
                               pickedTime.minute,
                             );
-                            // jobList[i].historyElement?[j].time = jobTime;
-                            // print('i index==? $iIndex');
-                            // print('j index==? $jIndex');
+
+                            setState(() {});
                           }
                         },
                         child: Container(
@@ -157,8 +147,10 @@ class _EditDeleteHistoryElementState extends State<EditDeleteHistoryElement> {
                           child: Text(
                             preferenceManager.getTimeFormat == '12h'
                                 ? DateFormat.jm().format(
-                                    widget.historyElement?[index].time ??
-                                        DateTime.now())
+                                    selectedIndex == index && jobTime != null
+                                        ? jobTime ?? DateTime.now()
+                                        : widget.historyElement?[index].time ??
+                                            DateTime.now())
                                 : DateFormat.Hm().format(
                                     widget.historyElement?[index].time ??
                                         DateTime.now()),
@@ -168,38 +160,22 @@ class _EditDeleteHistoryElementState extends State<EditDeleteHistoryElement> {
                         ),
                       ),
                       SizedBox(width: 5.w),
-                      GestureDetector(
-                        onTap: () async {
-                          // DateTime? dateTime = await showDatePicker(
-                          //   context: context,
-                          //   initialDate: widget.historyElement?[index].time ??
-                          //       DateTime.now(),
-                          //   firstDate: widget.historyElement?[index].time ??
-                          //       DateTime.now(),
-                          //   lastDate: DateTime(2030, 12, 31),
-                          // );
-                          // if (dateTime != null) {
-                          //   jobDate = dateTime;
-                          //   print(jobDate);
-                          // }
-                        },
-                        child: Container(
-                          height: 28.h,
-                          width: 80.w,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(3.r),
-                            border: Border.all(
-                              color: blackColor.withOpacity(0.3),
-                            ),
+                      Container(
+                        height: 28.h,
+                        width: 80.w,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(3.r),
+                          border: Border.all(
+                            color: blackColor.withOpacity(0.3),
                           ),
-                          alignment: Alignment.center,
-                          child: Text(
-                            DateFormat(preferenceManager.getDateFormat).format(
-                                widget.historyElement?[index].time ??
-                                    DateTime.now()),
-                            style: CustomTextStyle.kBodyText1
-                                .copyWith(fontSize: 12.sp),
-                          ),
+                        ),
+                        alignment: Alignment.center,
+                        child: Text(
+                          DateFormat(preferenceManager.getDateFormat).format(
+                              widget.historyElement?[index].time ??
+                                  DateTime.now()),
+                          style: CustomTextStyle.kBodyText1
+                              .copyWith(fontSize: 12.sp),
                         ),
                       ),
                       SizedBox(width: 5.w),
@@ -207,7 +183,6 @@ class _EditDeleteHistoryElementState extends State<EditDeleteHistoryElement> {
                       /// Save Button
                       GestureDetector(
                         onTap: () async {
-                          // Navigator.of(context).pop();
                           String elementId =
                               widget.historyElement?[index].elementId ?? '';
                           for (int i = 0; i < jobList.length; i++) {
@@ -260,9 +235,6 @@ class _EditDeleteHistoryElementState extends State<EditDeleteHistoryElement> {
                                     });
                                   }
 
-                                  // print(jobTitle);
-                                  // print(jobTime);
-
                                   setState(() {});
 
                                   break;
@@ -293,8 +265,6 @@ class _EditDeleteHistoryElementState extends State<EditDeleteHistoryElement> {
                       /// Delete Button
                       GestureDetector(
                         onTap: () {
-                          //Navigator.of(context).pop();
-
                           String elementId =
                               widget.historyElement?[index].elementId ?? '';
                           for (int i = 0; i < jobList.length; i++) {

@@ -13,10 +13,6 @@ class TableMetaDataWidget extends StatelessWidget {
   final String consider;
   final List<HistoryElement>? editDeleteHistoryElement;
   final String indexKey;
-  // final List<JobHistoryModel> jobList;
-  final int jIndex;
-  final int iIndex;
-  final int kIndex;
 
   const TableMetaDataWidget({
     Key? key,
@@ -27,10 +23,6 @@ class TableMetaDataWidget extends StatelessWidget {
     required this.consider,
     required this.editDeleteHistoryElement,
     required this.indexKey,
-    // required this.jobList,
-    required this.jIndex,
-    required this.iIndex,
-    required this.kIndex,
   }) : super(key: key);
 
   @override
@@ -141,18 +133,11 @@ class TableMetaDataWidget extends StatelessWidget {
               children: [
                 GestureDetector(
                   onTap: () {
-                    // print(editDeleteHistoryElement);
-                    // print('j index: $jIndex');
-                    // print('i index: $iIndex');
-                    // print('k index: $iIndex');
                     Navigator.of(context).push(MaterialPageRoute(
                       builder: (context) {
                         return EditDeleteHistoryElement(
                           historyElement: editDeleteHistoryElement,
                           listKey: indexKey,
-                          // jobList: jobList,
-                          iIndex: iIndex,
-                          jIndex: jIndex,
                         );
                       },
                     ));
@@ -166,19 +151,11 @@ class TableMetaDataWidget extends StatelessWidget {
                 Container(color: Colors.grey, width: 1),
                 GestureDetector(
                   onTap: () {
-                    // print(jobList);
-                    // print(editDeleteHistoryElement);
-                    // print('j index: $jIndex');
-                    // print('i index: $iIndex');
-                    // print('k index: $iIndex');
                     Navigator.of(context).push(MaterialPageRoute(
                       builder: (context) {
                         return EditDeleteHistoryElement(
                           historyElement: editDeleteHistoryElement,
                           listKey: indexKey,
-                          // jobList: jobList,
-                          iIndex: iIndex,
-                          jIndex: jIndex,
                         );
                       },
                     ));
