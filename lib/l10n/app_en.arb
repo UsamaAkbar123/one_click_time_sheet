@@ -19,7 +19,7 @@
   "settingScreenTimeFormat": "Time Format",
   "settingScreenStartJobNotification": "Start Job Notification",
   "settingScreenEndJobNotification": "End Job Notification",
-  "settingScreenSaveChangesButtonText": "save changes",
+  "settingScreenSaveChangesButtonText": "Save Settings",
   "settingScreenRestoreDatabaseButtonText": "Restore Database",
   "settingScreenBackupDatabaseButtonText": "Backup Database",
 

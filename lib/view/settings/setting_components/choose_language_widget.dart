@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:one_click_time_sheet/managers/preference_manager.dart';
+import 'package:one_click_time_sheet/provider/localization_provider.dart';
 import 'package:one_click_time_sheet/utills/constants/colors.dart';
 import 'package:one_click_time_sheet/utills/constants/text_styles.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:provider/provider.dart';
+
 class ChooseLanguageWidget extends StatefulWidget {
   final ValueChanged<String> onLanguageSelect;
 
@@ -17,15 +20,29 @@ class ChooseLanguageWidget extends StatefulWidget {
 }
 
 class _ChooseLanguageWidgetState extends State<ChooseLanguageWidget> {
-  List languagesList = ['English', 'Egyption'];
+  List languagesList = ['English', 'Spanish'];
   String selectedLanguage = '';
   PreferenceManager preferenceManager = PreferenceManager();
 
+  void changeLocal({
+    required BuildContext context,
+    required String language,
+  }) {
+    switch (language) {
+      case 'English':
+        context.read<LocalizationProvider>().setLocal = 'en';
+        break;
+      case 'Spanish':
+        context.read<LocalizationProvider>().setLocal = 'es';
+        break;
+    }
+  }
+
   @override
   void initState() {
-    if(preferenceManager.getLanguage == ''){
+    if (preferenceManager.getLanguage == '') {
       selectedLanguage = languagesList[0];
-    }else{
+    } else {
       selectedLanguage = preferenceManager.getLanguage;
     }
 
@@ -86,6 +103,7 @@ class _ChooseLanguageWidgetState extends State<ChooseLanguageWidget> {
                   selectedLanguage = val.toString();
                   preferenceManager.setLanguage = selectedLanguage;
                   widget.onLanguageSelect(selectedLanguage);
+                  changeLocal(context: context, language: selectedLanguage);
                 });
               },
             ),

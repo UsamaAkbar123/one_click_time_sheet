@@ -89,7 +89,16 @@ class _SettingScreenState extends State<SettingScreen> {
                 endJobNotification = value;
               },
             ),
-            SizedBox(height: 30.h),
+            SizedBox(height: 10.h),
+            Text(
+              'custom text for testing',
+              style: CustomTextStyle.kBodyText1.copyWith(
+                color: blackColor,
+                fontSize: 14.sp,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            SizedBox(height: 10.h),
             CustomButton(
               buttonHeight: 45.h,
               buttonWidth: double.infinity,
@@ -171,6 +180,15 @@ class _SettingScreenState extends State<SettingScreen> {
                   ),
                 ),
               ],
+            ),
+            SizedBox(height: 10.h),
+            Text(
+              'custom text for testing',
+              style: CustomTextStyle.kBodyText1.copyWith(
+                color: blackColor,
+                fontSize: 14.sp,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ],
         ),

@@ -12,6 +12,7 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
+    // changeLocal(context: context, language: PreferenceManager().getLanguage);
     super.initState();
     Timer(const Duration(seconds: 1), () {
       Navigator.of(context).pushReplacementNamed(
