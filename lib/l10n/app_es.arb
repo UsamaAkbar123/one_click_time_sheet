@@ -1,4 +1,34 @@
 {
+    
+   "homeScreenTitle": "Hogar",
+   "@homeScreenTitle": {
+    "description": "The conventional newborn programmer greeting"
+   },
+   "homeScreenPlan": "Plan:",
+   "homeScreenRefreshTime": "tiempo de actualización",
+   "homeScreenStartJob": "Iniciar trabajo",
+   "homeScreenEndJob": "Terminar trabajo",
+   "homeScreenPaidBreak": "descanso",
+   "homeScreenUnPaidBreak": "no pagado",
+   "homeScreenLastHistory": "Última historia:",
+
+   "workPlanScreenTitle": "El plan de trabajo",
+
+   "reportsScreenTitle": "Informes",
+   "reportsScreenSaveToPdf": "guardar pdf",
+   "reportsScreenSendEmail": "enviar correo",
+
+   "settingScreenTitle": "Ajustes",
+   "settingScreenSelectLanguage": "Idioma",
+   "settingScreenFirstDayOfWeek": "Primer dia de la semana",
+   "settingScreenDateFormat": "Formato de",
+   "settingScreenTimeFormat": "Formato de base",
+   "settingScreenStartJobNotification": "Iniciar notificación",
+   "settingScreenEndJobNotification": "Notificación de fin de trabajo",
+   "settingScreenSaveChangesButtonText": "Guardar ajustes",
+   "settingScreenRestoreDatabaseButtonText": "Restaurar base",
+   "settingScreenBackupDatabaseButtonText": "Base de",
+
    "bottomNavBarHomeTabText": "Hogar",
    "bottomNavBarReportTabText": "Informes",
    "bottomNavBarWorkPlanTabText": "El plan",

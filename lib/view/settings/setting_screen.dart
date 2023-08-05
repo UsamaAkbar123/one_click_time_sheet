@@ -44,7 +44,7 @@ class _SettingScreenState extends State<SettingScreen> {
       key: _scaffoldKey,
       appBar: AppBar(
         title: Text(
-          'Settings',
+          AppLocalizations.of(context)?.settingScreenTitle ?? '',
           style: CustomTextStyle.kHeading2,
         ),
         centerTitle: true,
