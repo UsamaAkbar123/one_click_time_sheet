@@ -59,17 +59,19 @@ class HistoryElementAdapter extends TypeAdapter<HistoryElement> {
     return HistoryElement(
       time: fields[1] as DateTime?,
       type: fields[0] as String?,
-    );
+    )..elementId = fields[2] as String?;
   }
 
   @override
   void write(BinaryWriter writer, HistoryElement obj) {
     writer
-      ..writeByte(2)
+      ..writeByte(3)
       ..writeByte(0)
       ..write(obj.type)
       ..writeByte(1)
-      ..write(obj.time);
+      ..write(obj.time)
+      ..writeByte(2)
+      ..write(obj.elementId);
   }
 
   @override

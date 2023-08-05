@@ -7,6 +7,7 @@ import 'package:one_click_time_sheet/view/reports/report_screen.dart';
 import 'package:one_click_time_sheet/view/settings/setting_screen.dart';
 import 'package:one_click_time_sheet/view/splash/splash_screen.dart';
 import 'package:one_click_time_sheet/view/work_plan/work_plan_screen.dart';
+
 class CustomRouter {
   static Route<dynamic> allRoutes(RouteSettings settings) {
     switch (settings.name) {
@@ -21,7 +22,10 @@ class CustomRouter {
       case reportScreenRoute:
         return MaterialPageRoute(builder: (_) => const ReportScreen());
       case bottomNavBarScreenRoute:
-        return MaterialPageRoute(builder: (_) => const BottomNavBar());
+        final arg = settings.arguments as int?;
+        return MaterialPageRoute(
+          builder: (_) => BottomNavBar(bottomNavIndexForReportDetail: arg),
+        );
       default:
         return MaterialPageRoute(builder: (_) => const NotFoundPage());
     }
