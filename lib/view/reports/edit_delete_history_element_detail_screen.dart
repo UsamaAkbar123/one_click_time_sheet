@@ -43,6 +43,8 @@ class _EditDeleteHistoryElementState extends State<EditDeleteHistoryElement> {
         jobList.add(dynamicList[i] as JobHistoryModel);
       }
     }
+
+    // print(jobList.length);
   }
 
   @override
@@ -309,24 +311,55 @@ class _EditDeleteHistoryElementState extends State<EditDeleteHistoryElement> {
                                                     .historyElement
                                                     ?.removeAt(j);
 
-                                                jobHistoryBox
-                                                    .put(
-                                                        widget.listKey, jobList)
-                                                    .then((value) {
-                                                  ScaffoldMessenger.of(context)
-                                                      .showSnackBar(
-                                                    SnackBar(
-                                                      content: const Text(
-                                                        'Job History Element Deleted',
+                                                if (jobList[i]
+                                                    .historyElement!
+                                                    .isEmpty) {
+                                                  jobList.removeAt(i);
+
+                                                  jobHistoryBox
+                                                      .put(widget.listKey,
+                                                          jobList)
+                                                      .then((value) {
+                                                    ScaffoldMessenger.of(
+                                                            context)
+                                                        .showSnackBar(
+                                                      SnackBar(
+                                                        content: const Text(
+                                                          'Job History Element Deleted',
+                                                        ),
+                                                        backgroundColor:
+                                                            redColor,
+                                                        showCloseIcon: true,
+                                                        closeIconColor:
+                                                            whiteColor,
                                                       ),
-                                                      backgroundColor: redColor,
-                                                      showCloseIcon: true,
-                                                      closeIconColor:
-                                                          whiteColor,
-                                                    ),
-                                                  );
-                                                  Navigator.of(context).pop();
-                                                });
+                                                    );
+                                                    Navigator.of(context).pop();
+                                                  });
+                                                } else {
+                                                  jobHistoryBox
+                                                      .put(widget.listKey,
+                                                          jobList)
+                                                      .then((value) {
+                                                    ScaffoldMessenger.of(
+                                                            context)
+                                                        .showSnackBar(
+                                                      SnackBar(
+                                                        content: const Text(
+                                                          'Job History Element Deleted',
+                                                        ),
+                                                        backgroundColor:
+                                                            redColor,
+                                                        showCloseIcon: true,
+                                                        closeIconColor:
+                                                            whiteColor,
+                                                      ),
+                                                    );
+                                                    Navigator.of(context).pop();
+                                                  });
+                                                }
+                                                // Navigator.of(context).pop();
+
                                                 setState(() {});
                                               },
                                               child: const Text('ok'),
