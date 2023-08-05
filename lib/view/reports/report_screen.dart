@@ -34,7 +34,7 @@ class _ReportScreenState extends State<ReportScreen> {
 
   List<ReportModel> reportModelListForPdf = [];
   List<ReportSumModel> reportSumList = [];
-  bool isJobListEmpty = true;
+  bool isJobListEmpty = false;
 
   @override
   void initState() {
@@ -76,6 +76,9 @@ class _ReportScreenState extends State<ReportScreen> {
                     children: [
                       GestureDetector(
                         onTap: () {
+                          listOfFinalReportForPdf = [];
+                          reportModelListForPdf = [];
+                          reportSumList = [];
                           setState(() {
                             if (currentMonth != 1) {
                               currentMonth--;
@@ -100,6 +103,9 @@ class _ReportScreenState extends State<ReportScreen> {
                       ),
                       GestureDetector(
                         onTap: () {
+                          listOfFinalReportForPdf = [];
+                          reportModelListForPdf = [];
+                          reportSumList = [];
                           setState(() {
                             if (currentMonth != 12) {
                               currentMonth++;
@@ -146,11 +152,14 @@ class _ReportScreenState extends State<ReportScreen> {
                               jobList.sort(
                                 (a, b) => b.timestamp.compareTo(a.timestamp),
                               );
-                              if (jobList.isEmpty) {
-                                isJobListEmpty = true;
-                              } else {
-                                isJobListEmpty = false;
-                              }
+                              Future.delayed(const Duration(), () {
+                                if (jobList.isEmpty) {
+                                  isJobListEmpty = false;
+                                } else {
+                                  isJobListEmpty = true;
+                                }
+                                // setState(() {});
+                              });
 
                               return jobList.isEmpty
                                   ? Center(
@@ -377,6 +386,7 @@ class _ReportScreenState extends State<ReportScreen> {
                                                                 historyElementList,
                                                             indexKey:
                                                                 originalId,
+                                                            iIndex: i,
                                                           ),
                                                         historyElementList[k]
                                                                     .type ==
@@ -405,6 +415,7 @@ class _ReportScreenState extends State<ReportScreen> {
                                                                     historyElementList,
                                                                 indexKey:
                                                                     originalId,
+                                                                iIndex: i,
                                                               ),
                                                         k + 1 ==
                                                                 jobList[j]
@@ -438,7 +449,7 @@ class _ReportScreenState extends State<ReportScreen> {
                 SizedBox(height: 45.h),
               ],
             ),
-            isJobListEmpty
+            !isJobListEmpty
                 ? Padding(
                     padding: EdgeInsets.only(bottom: 20.0.h),
                     child: Align(

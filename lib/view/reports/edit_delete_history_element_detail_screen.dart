@@ -11,10 +11,12 @@ import 'package:one_click_time_sheet/utills/constants/text_styles.dart';
 class EditDeleteHistoryElement extends StatefulWidget {
   final List<HistoryElement>? historyElement;
   final String listKey;
+  final int iIndex;
 
   const EditDeleteHistoryElement({
     required this.historyElement,
     required this.listKey,
+    required this.iIndex,
     super.key,
   });
 
@@ -306,7 +308,7 @@ class _EditDeleteHistoryElementState extends State<EditDeleteHistoryElement> {
                                               child: const Text('cancel'),
                                             ),
                                             TextButton(
-                                              onPressed: () {
+                                              onPressed: () async {
                                                 jobList[i]
                                                     .historyElement
                                                     ?.removeAt(j);
@@ -315,27 +317,38 @@ class _EditDeleteHistoryElementState extends State<EditDeleteHistoryElement> {
                                                     .historyElement!
                                                     .isEmpty) {
                                                   jobList.removeAt(i);
-
-                                                  jobHistoryBox
-                                                      .put(widget.listKey,
-                                                          jobList)
-                                                      .then((value) {
-                                                    ScaffoldMessenger.of(
-                                                            context)
-                                                        .showSnackBar(
-                                                      SnackBar(
-                                                        content: const Text(
-                                                          'Job History Element Deleted',
-                                                        ),
-                                                        backgroundColor:
-                                                            redColor,
-                                                        showCloseIcon: true,
-                                                        closeIconColor:
-                                                            whiteColor,
-                                                      ),
+                                                  if (jobList.isEmpty) {
+                                                    await jobHistoryBox
+                                                        .deleteAt(
+                                                      widget.iIndex,
                                                     );
-                                                    Navigator.of(context).pop();
-                                                  });
+                                                    if (mounted) {
+                                                      Navigator.of(context)
+                                                          .pop();
+                                                    }
+                                                  } else {
+                                                    jobHistoryBox
+                                                        .put(widget.listKey,
+                                                            jobList)
+                                                        .then((value) {
+                                                      ScaffoldMessenger.of(
+                                                              context)
+                                                          .showSnackBar(
+                                                        SnackBar(
+                                                          content: const Text(
+                                                            'Job History Element Deleted',
+                                                          ),
+                                                          backgroundColor:
+                                                              redColor,
+                                                          showCloseIcon: true,
+                                                          closeIconColor:
+                                                              whiteColor,
+                                                        ),
+                                                      );
+                                                      Navigator.of(context)
+                                                          .pop();
+                                                    });
+                                                  }
                                                 } else {
                                                   jobHistoryBox
                                                       .put(widget.listKey,
