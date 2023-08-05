@@ -22,7 +22,7 @@ class CustomRouter {
       case reportScreenRoute:
         return MaterialPageRoute(builder: (_) => const ReportScreen());
       case bottomNavBarScreenRoute:
-        final arg = settings.arguments as int;
+        final arg = settings.arguments as int?;
         return MaterialPageRoute(
           builder: (_) => BottomNavBar(bottomNavIndexForReportDetail: arg),
         );

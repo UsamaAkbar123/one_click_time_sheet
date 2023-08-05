@@ -16,7 +16,7 @@ class _SplashScreenState extends State<SplashScreen> {
     Timer(const Duration(seconds: 1), () {
       Navigator.of(context).pushReplacementNamed(
         bottomNavBarScreenRoute,
-        arguments: -1,
+        // arguments: -1,
       );
     });
   }

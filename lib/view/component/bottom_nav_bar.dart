@@ -6,9 +6,10 @@ import 'package:one_click_time_sheet/utills/constants/colors.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+// ignore: must_be_immutable
 class BottomNavBar extends StatefulWidget {
-  final int? bottomNavIndexForReportDetail;
-  const BottomNavBar({
+  int? bottomNavIndexForReportDetail;
+  BottomNavBar({
     Key? key,
     this.bottomNavIndexForReportDetail,
   }) : super(key: key);
@@ -24,10 +25,11 @@ class _BottomNavBarState extends State<BottomNavBar> {
       create: (context) => BottomNavigationProvider(),
       child: Consumer<BottomNavigationProvider>(
         builder: (context, provider, child) {
-          if (widget.bottomNavIndexForReportDetail == 1 &&
+          if (widget.bottomNavIndexForReportDetail != null &&
               PreferenceManager().getIsFirstLaunch == false) {
             provider.setCurrentTabForDetailsReportPage =
                 widget.bottomNavIndexForReportDetail ?? 1;
+            widget.bottomNavIndexForReportDetail = null;
           }
           return Scaffold(
             body: provider.currentScreen,
