@@ -16,6 +16,7 @@ import 'package:one_click_time_sheet/view/home/home_screen_components/refresh_ti
 import 'package:one_click_time_sheet/view/home/home_screen_components/start_end_job_box.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:uuid/uuid.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -136,6 +137,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                 workPlanList.add(workPlan);
                               }
                             }
+                            // Sort the workplan list based on the start time in ascending order.
+                            workPlanList.sort((a, b) => a.startWorkPlanTime
+                                .compareTo(b.startWorkPlanTime));
                           }
                         }
                       }
@@ -158,6 +162,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                   SizedBox(width: 10.w),
                                   Expanded(
                                     child: ListView.separated(
+                                      itemCount: workPlanList.length < 2
+                                          ? workPlanList.length
+                                          : 2,
                                       shrinkWrap: true,
                                       scrollDirection: Axis.horizontal,
                                       itemBuilder: (context, index) {
@@ -196,9 +203,6 @@ class _HomeScreenState extends State<HomeScreen> {
                                           ),
                                         );
                                       },
-                                      itemCount: workPlanList.length < 2
-                                          ? workPlanList.length
-                                          : 2,
                                     ),
                                   ),
                                   //const Spacer(),
@@ -298,8 +302,11 @@ class _HomeScreenState extends State<HomeScreen> {
                           startJobTime = DateTime.now();
                         }
                       });
-                      HistoryElement historyElement =
-                          HistoryElement(time: startJobTime, type: "Start job");
+                      HistoryElement historyElement = HistoryElement(
+                        time: startJobTime,
+                        type: "Start job",
+                        elementId: const Uuid().v4(),
+                      );
 
                       await currentWorkHistoryElement.add(historyElement);
                     },
@@ -383,8 +390,11 @@ class _HomeScreenState extends State<HomeScreen> {
                               endJob = DateTime.now();
                             }
                           });
-                          HistoryElement historyElement =
-                              HistoryElement(time: endJob, type: "End job");
+                          HistoryElement historyElement = HistoryElement(
+                            time: endJob,
+                            type: "End job",
+                            elementId: const Uuid().v4(),
+                          );
 
                           await currentWorkHistoryElement.add(historyElement);
 
@@ -509,7 +519,10 @@ class _HomeScreenState extends State<HomeScreen> {
                                   }
                                 });
                                 HistoryElement historyElement = HistoryElement(
-                                    time: paidBreak, type: "Paid break");
+                                  time: paidBreak,
+                                  type: "Paid break",
+                                  elementId: const Uuid().v4(),
+                                );
 
                                 await currentWorkHistoryElement
                                     .add(historyElement);
@@ -601,7 +614,10 @@ class _HomeScreenState extends State<HomeScreen> {
                                   }
                                 });
                                 HistoryElement historyElement = HistoryElement(
-                                    time: unPaidBreak, type: "Unpaid break");
+                                  time: unPaidBreak,
+                                  type: "Unpaid break",
+                                  elementId: const Uuid().v4(),
+                                );
 
                                 await currentWorkHistoryElement
                                     .add(historyElement);
@@ -686,6 +702,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           itemBuilder: (context, i) {
                             List<JobHistoryModel> jobList =
                                 box.getAt(i).cast<JobHistoryModel>();
+
                             jobList.sort(
                                 (a, b) => b.timestamp.compareTo(a.timestamp));
                             String dataKey = box.keyAt(i);
@@ -704,11 +721,19 @@ class _HomeScreenState extends State<HomeScreen> {
                                       fontWeight: FontWeight.w600),
                                 ),
                                 ListView.builder(
+                                  itemCount: jobList.length,
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  padding: EdgeInsets.zero,
+                                  shrinkWrap: true,
                                   itemBuilder: (context, j) {
                                     List<HistoryElement> historyList =
                                         jobList[j].historyElement ?? [];
 
-                                    historyList = historyList.reversed.toList();
+                                    // historyList = historyList.reversed.toList();
+                                    historyList.sort(
+                                      (a, b) => b.time!
+                                          .compareTo(a.time ?? DateTime.now()),
+                                    );
 
                                     return Padding(
                                       padding:
@@ -740,10 +765,6 @@ class _HomeScreenState extends State<HomeScreen> {
                                       ),
                                     );
                                   },
-                                  itemCount: jobList.length,
-                                  physics: const NeverScrollableScrollPhysics(),
-                                  padding: EdgeInsets.zero,
-                                  shrinkWrap: true,
                                 )
                               ],
                             );
