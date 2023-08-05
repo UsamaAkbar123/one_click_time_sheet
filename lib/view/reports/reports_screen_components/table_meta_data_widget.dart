@@ -151,7 +151,7 @@ class TableMetaDataWidget extends StatelessWidget {
                 Container(color: Colors.grey, width: 1),
                 GestureDetector(
                   onTap: () {
-                    Navigator.of(context).push(MaterialPageRoute(
+                    Navigator.of(context).pushReplacement(MaterialPageRoute(
                       builder: (context) {
                         return EditDeleteHistoryElement(
                           historyElement: editDeleteHistoryElement,

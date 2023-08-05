@@ -14,7 +14,10 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     super.initState();
     Timer(const Duration(seconds: 1), () {
-      Navigator.of(context).pushReplacementNamed(bottomNavBarScreenRoute);
+      Navigator.of(context).pushReplacementNamed(
+        bottomNavBarScreenRoute,
+        arguments: -1,
+      );
     });
   }
 

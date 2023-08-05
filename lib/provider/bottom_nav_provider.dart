@@ -5,11 +5,10 @@ import 'package:one_click_time_sheet/view/reports/report_screen.dart';
 import 'package:one_click_time_sheet/view/settings/setting_screen.dart';
 import 'package:one_click_time_sheet/view/work_plan/work_plan_screen.dart';
 
-class BottomNavigationProvider extends ChangeNotifier{
+class BottomNavigationProvider extends ChangeNotifier {
+  int _currentTab = PreferenceManager().getIsFirstLaunch ? 3 : 0;
 
-  int _currentTab = PreferenceManager().getIsFirstLaunch ? 3:0;
-
-  List<Widget> screens = const[
+  List<Widget> screens = const [
     HomeScreen(),
     ReportScreen(),
     WorkPlanScreen(),
@@ -18,14 +17,14 @@ class BottomNavigationProvider extends ChangeNotifier{
 
   get currentTab => _currentTab;
 
-  set setCurrentTab(int tab){
-
+  set setCurrentTab(int tab) {
     _currentTab = tab;
     notifyListeners();
   }
 
+  set setCurrentTabForDetailsReportPage(int tab) {
+    _currentTab = tab;
+  }
+
   get currentScreen => screens[_currentTab];
-
-
-
 }
