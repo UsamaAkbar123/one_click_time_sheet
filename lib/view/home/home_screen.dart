@@ -414,6 +414,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             // historyElement: jobHistory,
                             historyElement: currentHistoryElementJobList,
                             timestamp: DateTime.now(),
+                            uuid: const Uuid().v4()
                           );
 
                           List<JobHistoryModel> jobHistoryList = [];
