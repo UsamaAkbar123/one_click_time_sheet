@@ -35,6 +35,7 @@ class _ReportScreenState extends State<ReportScreen> {
   List<ReportModel> reportModelListForPdf = [];
   List<ReportSumModel> reportSumList = [];
   bool isJobListEmpty = false;
+  Duration totalJobTime = const Duration();
 
   @override
   void initState() {
@@ -244,6 +245,10 @@ class _ReportScreenState extends State<ReportScreen> {
                                                       Duration difference =
                                                           endDateTime.difference(
                                                               startDateTime);
+
+                                                      totalJobTime = endDateTime
+                                                          .difference(
+                                                              startDateTime);
                                                       hours =
                                                           difference.inHours;
                                                       minutes = difference
@@ -283,11 +288,13 @@ class _ReportScreenState extends State<ReportScreen> {
                                                         Duration difference =
                                                             endDateTime.difference(
                                                                 startDateTime);
+
                                                         hours =
                                                             difference.inHours;
                                                         minutes = difference
                                                             .inMinutes
                                                             .remainder(60);
+
                                                         if (historyElementList[
                                                                         k]
                                                                     .type ==
@@ -296,13 +303,40 @@ class _ReportScreenState extends State<ReportScreen> {
                                                                         k]
                                                                     .type ==
                                                                 'unpaid break') {
+                                                          // Define break duration
+                                                          Duration breakTime =
+                                                              Duration(
+                                                            hours: hours,
+                                                            minutes: minutes,
+                                                          );
+                                                          Duration netJobTime =
+                                                              totalJobTime -
+                                                                  breakTime;
+
+                                                          print(
+                                                              "$id ===> hours ${netJobTime.inHours} ==> minutes ${netJobTime.inMinutes.remainder(60)}");
+
+                                                          int hoursTem =
+                                                              netJobTime
+                                                                  .inHours;
+                                                          int minutesTem =
+                                                              netJobTime
+                                                                  .inMinutes
+                                                                  .remainder(
+                                                                      60);
+
                                                           totalHoursForFinalSumResult =
-                                                              totalHoursForFinalSumResult -
-                                                                  hours;
+                                                              hoursTem;
 
                                                           totalMinutesForFinalSumResult =
-                                                              totalMinutesForFinalSumResult -
-                                                                  minutes;
+                                                              minutesTem;
+                                                          // totalHoursForFinalSumResult =
+                                                          //     totalHoursForFinalSumResult -
+                                                          //         hoursTem;
+
+                                                          // totalMinutesForFinalSumResult =
+                                                          //     totalMinutesForFinalSumResult -
+                                                          //         minutesTem;
                                                         }
                                                       }
                                                     }
