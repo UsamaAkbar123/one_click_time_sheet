@@ -13,6 +13,20 @@
    "homeScreenLastHistory": "Última historia:",
 
    "workPlanScreenTitle": "El plan de trabajo",
+   "addWorkPlanDialogTitle": "Trabajar",
+   "addWorkPlanDialogWorkPlanName": "nombre del plan",
+   "addWorkPlanDialogWorkPlanSelectDate": "seleccione fecha",
+   "addWorkPlanDialogWorkPlanSelectStartTime": "seleccione la hora",
+   "addWorkPlanDialogWorkPlanSelectEndTime": "hora de finalización",
+   "workPlanScreenSaveButton": "ahorrar",
+   "workPlanScreenCancelButton": "Cancelar",
+   "addWorkPlanValidatorMessage": "Seleccione la fecha o la hora de",
+
+  "workPlanDetailBoxTitle": "Detalles de la cita",
+  "workPlanDetailBoxSubject": "Sujeta",
+  "workPlanDetailBoxStartTime": "Hora inicio",
+  "workPlanDetailBoxEndTime": "Hora finalización",
+  "workPlanDetailBoxCloseButton": "cerca",
 
    "reportsScreenTitle": "Informes",
    "reportsScreenSaveToPdf": "guardar pdf",

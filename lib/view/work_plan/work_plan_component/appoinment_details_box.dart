@@ -7,6 +7,7 @@ import 'package:one_click_time_sheet/utills/constants/colors.dart';
 import 'package:one_click_time_sheet/view/work_plan/work_plan_component/alert_box_for_workplan_adding.dart';
 import 'package:one_click_time_sheet/view/work_plan/work_plan_component/appointment_text_widget.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class AppointmentDetailsBox extends StatefulWidget {
   final CalendarTapDetails? calendarTapDetail;
@@ -85,21 +86,23 @@ class _AppointmentDetailsBoxState extends State<AppointmentDetailsBox> {
                 ),
               ],
             ),
-      title: const Align(
+      title: Align(
         alignment: Alignment.centerLeft,
-        child: Text('Appointment Details'),
+        child: Text(AppLocalizations.of(context)?.workPlanDetailBoxTitle ?? ''),
       ),
       content: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
           AppointmentTextWidget(
-            title: 'Subject: ',
+            title:
+                '${AppLocalizations.of(context)?.workPlanDetailBoxSubject ?? ''}: ',
             value: widget.calendarTapDetail?.appointments?.first.subject,
             valueTextColor: blueColor,
           ),
           AppointmentTextWidget(
-            title: 'Start Time: ',
+            title:
+                '${AppLocalizations.of(context)?.workPlanDetailBoxStartTime ?? ''}: ',
             value: preferenceManager.getTimeFormat == '12h'
                 ? DateFormat.jm().format(
                     widget.calendarTapDetail?.appointments?.first.startTime)
@@ -108,7 +111,8 @@ class _AppointmentDetailsBoxState extends State<AppointmentDetailsBox> {
             valueTextColor: greenColor,
           ),
           AppointmentTextWidget(
-            title: 'End Time: ',
+            title:
+                '${AppLocalizations.of(context)?.workPlanDetailBoxEndTime ?? ''}: ',
             value: preferenceManager.getTimeFormat == '12h'
                 ? DateFormat.jm().format(
                     widget.calendarTapDetail?.appointments?.first.endTime)
@@ -123,7 +127,8 @@ class _AppointmentDetailsBoxState extends State<AppointmentDetailsBox> {
           onPressed: () {
             Navigator.of(context).pop();
           },
-          child: const Text('Close'),
+          child: Text(
+              AppLocalizations.of(context)?.workPlanDetailBoxCloseButton ?? ''),
         ),
       ],
     );

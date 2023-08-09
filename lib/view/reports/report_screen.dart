@@ -289,9 +289,13 @@ class _ReportScreenState extends State<ReportScreen> {
                                                             .inMinutes
                                                             .remainder(60);
                                                         if (historyElementList[
-                                                                    k]
-                                                                .type ==
-                                                            'Unpaid break') {
+                                                                        k]
+                                                                    .type ==
+                                                                'Unpaid break' ||
+                                                            historyElementList[
+                                                                        k]
+                                                                    .type ==
+                                                                'unpaid break') {
                                                           totalHoursForFinalSumResult =
                                                               totalHoursForFinalSumResult -
                                                                   hours;
