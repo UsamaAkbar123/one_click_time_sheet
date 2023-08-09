@@ -313,8 +313,20 @@ class _ReportScreenState extends State<ReportScreen> {
                                                               totalJobTime -
                                                                   breakTime;
 
-                                                          print(
-                                                              "$id ===> hours ${netJobTime.inHours} ==> minutes ${netJobTime.inMinutes.remainder(60)}");
+                                                          Duration
+                                                              netDeductionTime =
+                                                              totalJobTime -
+                                                                  netJobTime;
+
+                                                          totalJobTime =
+                                                              totalJobTime -
+                                                                  netDeductionTime;
+
+                                                          // print(
+                                                          //     "$id ===> hours ${netJobTime.inHours} ==> minutes ${netJobTime.inMinutes.remainder(60)}");
+
+                                                          // print(
+                                                          //     "$id ===> hours ${totalJobTime.inHours} ==> minutes ${totalJobTime.inMinutes.remainder(60)}");
 
                                                           int hoursTem =
                                                               netJobTime
