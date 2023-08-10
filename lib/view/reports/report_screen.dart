@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -14,6 +16,7 @@ import 'package:one_click_time_sheet/view/reports/reports_screen_components/cust
 import 'package:one_click_time_sheet/view/reports/reports_screen_components/header_date_of_table.dart';
 import 'package:one_click_time_sheet/view/reports/reports_screen_components/sum_block_widget.dart';
 import 'package:one_click_time_sheet/view/reports/reports_screen_components/table_meta_data_widget.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ReportScreen extends StatefulWidget {
   const ReportScreen({Key? key}) : super(key: key);
@@ -541,7 +544,14 @@ class _ReportScreenState extends State<ReportScreen> {
                             buttonText: AppLocalizations.of(context)
                                     ?.reportsScreenSendEmail ??
                                 '',
-                            onTab: () {},
+                            onTab: () async {
+                              final Uri url = Uri.parse(
+                                  'https://mail.google.com'); // URL for Gmail
+                              if (await launchUrl(url)) {
+                              } else {
+                                throw Exception('Could not launch $url');
+                              }
+                            },
                             buttonColor: greenColor,
                           ),
                         ],
@@ -553,5 +563,14 @@ class _ReportScreenState extends State<ReportScreen> {
         ),
       ),
     );
+  }
+
+  Future<bool> launchUrl(Uri uri) async {
+    if (await canLaunch(uri.toString())) {
+      await launch(uri.toString());
+      return true;
+    } else {
+      return false;
+    }
   }
 }
