@@ -3,15 +3,16 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:one_click_time_sheet/model/hive_job_history_model.dart';
+import 'package:one_click_time_sheet/model/work_plan_model.dart';
 import 'package:one_click_time_sheet/utills/constants/colors.dart';
 import 'package:one_click_time_sheet/view/component/loading_widget.dart';
 
 class DataBackup{
   final Box jobHistoryBox = Hive.box('jobHistoryBox');
+  final Box box = Hive.box('workPlan');
   User? user = FirebaseAuth.instance.currentUser;
  Future<void> dataRestoreFromFirebase(context) async{
       try{
-        print(user?.uid);
         loadingDialogue(context: context);
         final DocumentReference document = FirebaseFirestore.instance.collection('backup').doc(user?.uid);
         final DocumentSnapshot snapshot = await document.get();
@@ -53,7 +54,7 @@ class DataBackup{
             Navigator.pop(context);
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: const Text("data has been restored successfully"),
+                content: const Text("Job history data has been restored successfully"),
                 // Replace with the appropriate colors for your application
                 backgroundColor: greenColor,
                 showCloseIcon: true,
@@ -138,7 +139,7 @@ class DataBackup{
            Navigator.of(context).pop();
            ScaffoldMessenger.of(context).showSnackBar(
              SnackBar(
-               content:  const Text("data is successfully stored"),
+               content:  const Text("job history data is successfully stored"),
                backgroundColor: greenColor,
                showCloseIcon: true,
                closeIconColor: whiteColor,
@@ -180,6 +181,101 @@ class DataBackup{
        ),
      );
    }
+  }
+
+
+  Future<void> restoreDataWorkPlan(BuildContext context) async {
+
+    try {
+      loadingDialogue(context: context);
+      final workPlanBox = Hive.box('workPlan');
+      final CollectionReference workPlanCollection = FirebaseFirestore.instance.collection('workPlanBackup');
+      final DocumentReference document = workPlanCollection.doc(user?.uid);
+      final DocumentSnapshot snapshot = await document.get();
+      if (!snapshot.exists) {
+        Navigator.of(context).pop();
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: const Text("No data to restore"),
+            backgroundColor: greenColor,
+            showCloseIcon: true,
+            closeIconColor: whiteColor,
+          ),
+        );
+        return;
+      }
+
+      Map<String, dynamic> dataMap = snapshot.data() as Map<String, dynamic>;
+      dataMap.forEach((key, value) {
+        WorkPlanModel workPlanFromFirebase = WorkPlanModel.fromFirebaseJson(value as Map<String, dynamic>);
+        WorkPlanModel? existingWorkPlan = workPlanBox.get(key);
+        if (existingWorkPlan == null || workPlanFromFirebase.toJson().toString() != existingWorkPlan.toJson().toString()) {
+          workPlanBox.put(key, workPlanFromFirebase);
+        }
+      });
+      Navigator.of(context).pop();
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text("Work plan data has been restored successfully"),
+          backgroundColor: greenColor,
+          showCloseIcon: true,
+          closeIconColor: whiteColor,
+        ),
+      );
+
+    } catch (e) {
+      Navigator.of(context).pop();
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(e.toString()),
+          backgroundColor: redColor,
+          showCloseIcon: true,
+          closeIconColor: whiteColor,
+        ),
+      );
+    }
+  }
+
+
+
+  Future<void> backupDataWorkPlan(context) async{
+   loadingDialogue(context: context);
+    try{
+        final workPlanBox = await Hive.openBox('workPlan');
+        final CollectionReference workPlanCollection = FirebaseFirestore.instance.collection('workPlanBackup');
+        final DocumentReference document = workPlanCollection.doc(user?.uid);
+        final DocumentSnapshot snapshot = await document.get();
+        Map<String, dynamic> existingData = snapshot.exists ? snapshot.data() as Map<String, dynamic> : {};
+        for (int i = 0; i < workPlanBox.length; i++) {
+          String dataKey = workPlanBox.keyAt(i);
+         WorkPlanModel workPlans = workPlanBox.getAt(i);
+          if (!existingData.containsKey(dataKey)) {
+            existingData[dataKey] = workPlans.toJson();
+          }
+        }
+        await document.set(existingData).then((value) {
+          Navigator.of(context).pop();
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: const Text("Work plan data has been stored successfully"),
+              backgroundColor: greenColor,
+              showCloseIcon: true,
+              closeIconColor: whiteColor,
+            ),
+          );
+        });
+    }
+    catch(e){
+      Navigator.of(context).pop();
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content:  Text(e.toString()),
+          backgroundColor: redColor,
+          showCloseIcon: true,
+          closeIconColor: whiteColor,
+        ),
+      );
+    }
   }
 
 

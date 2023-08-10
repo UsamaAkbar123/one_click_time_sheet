@@ -13,15 +13,19 @@ class UserManager {
      await _auth.createUserWithEmailAndPassword(
       email: email,
       password: "123456",
-    ).then((value) {
+    ).then((value) async{
        Navigator.pop(context);
-       DataBackup().backupDataToFirebase(context);
+       await DataBackup().backupDataWorkPlan(context).then((value) {
+         DataBackup().backupDataToFirebase(context);
+       });
      }).catchError((e) async{
        if (e is FirebaseAuthException && e.code == 'email-already-in-use') {
          Navigator.pop(context);
          print("Email already in use, logging in instead");
-         await loginWithEmail(email, context).then((value) {
-           DataBackup().backupDataToFirebase(context);
+         await loginWithEmail(email, context).then((value) async{
+           await DataBackup().backupDataWorkPlan(context).then((value) {
+             DataBackup().backupDataToFirebase(context);
+           });
          });
        }
        else{
@@ -44,9 +48,11 @@ class UserManager {
      await _auth.signInWithEmailAndPassword(
       email: email,
       password: "123456",
-    ).then((value) {
+    ).then((value) async{
      Navigator.pop(context);
-     DataBackup().dataRestoreFromFirebase(context);
+     await DataBackup().dataRestoreFromFirebase(context).then((value) {
+       DataBackup().restoreDataWorkPlan(context);
+     });
      }).catchError((e) {
        Navigator.pop(context);
        ScaffoldMessenger.of(context).showSnackBar(

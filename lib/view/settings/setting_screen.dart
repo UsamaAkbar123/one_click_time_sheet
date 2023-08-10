@@ -170,7 +170,9 @@ class _SettingScreenState extends State<SettingScreen> {
                         });
                       }
                       else{
-                        await DataBackup().dataRestoreFromFirebase(context);
+                        await DataBackup().dataRestoreFromFirebase(context).then((value) {
+                          DataBackup().restoreDataWorkPlan(context);
+                        });
                       }
                     },
                     buttonText: AppLocalizations.of(context)
@@ -192,8 +194,9 @@ class _SettingScreenState extends State<SettingScreen> {
                         });
                       }
                       else{
-                        print("else");
-                        DataBackup().backupDataToFirebase(context);
+                        await DataBackup().backupDataWorkPlan(context).then((value) {
+                           DataBackup().backupDataToFirebase(context);
+                        });
                       }
                     },
                     buttonText: AppLocalizations.of(context)
