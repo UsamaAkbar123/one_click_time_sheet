@@ -477,6 +477,12 @@ class _ReportScreenState extends State<ReportScreen> {
                                                                     totalHoursForFinalSumResult,
                                                                 totalMinutes:
                                                                     totalMinutesForFinalSumResult,
+                                                                listId:
+                                                                    originalId,
+                                                                historyElement:
+                                                                    historyElementList,
+                                                                context:
+                                                                    context,
                                                               )
                                                             : const SizedBox()
                                                       ],
