@@ -486,6 +486,8 @@ class _ReportScreenState extends State<ReportScreen> {
                                                                     historyElementList,
                                                                 context:
                                                                     context,
+                                                                iIndex: i,
+                                                                jIndex: j,
                                                               )
                                                             : const SizedBox()
                                                       ],

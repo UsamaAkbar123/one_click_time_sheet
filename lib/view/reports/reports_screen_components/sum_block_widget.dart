@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:hive/hive.dart';
+
 import 'package:intl/intl.dart';
 import 'package:one_click_time_sheet/managers/preference_manager.dart';
 import 'package:one_click_time_sheet/model/hive_job_history_model.dart';
 import 'package:one_click_time_sheet/utills/constants/colors.dart';
 import 'package:one_click_time_sheet/utills/constants/text_styles.dart';
+import 'package:one_click_time_sheet/view/reports/constant/common_functions.dart';
 import 'package:one_click_time_sheet/view/reports/reports_screen_components/custom_save_pdf_send_email_button.dart';
+import 'package:uuid/uuid.dart';
 
 Widget sumBlock({
   required int totalHours,
@@ -13,6 +17,8 @@ Widget sumBlock({
   required String listId,
   required List<HistoryElement> historyElement,
   required BuildContext context,
+  required int iIndex,
+  required int jIndex,
 }) {
   return SizedBox(
     height: 30.h,
@@ -38,6 +44,8 @@ Widget sumBlock({
                 return AddNewHistoryElementOfJob(
                   listId: listId,
                   historyElement: historyElement,
+                  iIndex: iIndex,
+                  jIndex: jIndex,
                 );
               },
             ));
@@ -145,9 +153,13 @@ Widget sumBlock({
 class AddNewHistoryElementOfJob extends StatefulWidget {
   final String listId;
   final List<HistoryElement> historyElement;
+  final int iIndex;
+  final int jIndex;
   const AddNewHistoryElementOfJob({
     required this.listId,
     required this.historyElement,
+    required this.iIndex,
+    required this.jIndex,
     super.key,
   });
 
@@ -162,20 +174,47 @@ class _AddNewHistoryElementOfJobState extends State<AddNewHistoryElementOfJob> {
     'paid break',
   ];
   String selectedJobType = '';
-  String selectTimeForJob = 'select job time';
+
   TimeOfDay startInitialTime = TimeOfDay.now();
   PreferenceManager preferenceManager = PreferenceManager();
 
+  final Box jobHistoryBox = Hive.box('jobHistoryBox');
+  List<JobHistoryModel> jobList = [];
+
+  late JobHistoryModel finalObjectOfList;
+  late DateTime startTime;
+  late DateTime endTime;
+  String selectTimeForJobFrontEnd = 'select job time';
+  DateTime selectTimeForJobBackEnd = DateTime.now();
   @override
   void initState() {
     selectedJobType = jobTypeList[0];
+
+    final dynamicList = jobHistoryBox.get(widget.listId);
+
+    if (dynamicList.isNotEmpty) {
+      for (int i = 0; i < dynamicList.length; i++) {
+        jobList.add(dynamicList[i] as JobHistoryModel);
+      }
+    }
+
+    finalObjectOfList = jobList[widget.jIndex];
+
+    startTime = getStartEndDateTime(finalObjectOfList.historyElement!.first);
+    endTime = getStartEndDateTime(finalObjectOfList.historyElement!.last);
+
+    // if (preferenceManager.getTimeFormat == '24h') {
+    //   selectTimeForJob = DateFormat.Hm().format(startTime);
+    // } else {
+    //   selectTimeForJob = DateFormat.jm().format(jobDate);
+    // }
+
+    print(DateFormat.Hm().format(startTime));
+    print(DateFormat.Hm().format(endTime));
     super.initState();
   }
 
-  setStartTimeForFrontAndBackend({
-    TimeOfDay? pickedTime,
-    DateTime? editDateTime,
-  }) {
+  setStartTimeForFrontAndBackend({TimeOfDay? pickedTime}) {
     setState(() {
       DateTime jobDate = DateTime(
         widget.historyElement[0].time?.year ?? 0,
@@ -185,10 +224,12 @@ class _AddNewHistoryElementOfJobState extends State<AddNewHistoryElementOfJob> {
         pickedTime?.minute ?? 0,
       );
 
+      selectTimeForJobBackEnd = jobDate;
+
       if (preferenceManager.getTimeFormat == '24h') {
-        selectTimeForJob = DateFormat.Hm().format(jobDate);
+        selectTimeForJobFrontEnd = DateFormat.Hm().format(jobDate);
       } else {
-        selectTimeForJob = DateFormat.jm().format(jobDate);
+        selectTimeForJobFrontEnd = DateFormat.jm().format(jobDate);
       }
     });
   }
@@ -310,7 +351,7 @@ class _AddNewHistoryElementOfJobState extends State<AddNewHistoryElementOfJob> {
                   ),
                 ),
                 alignment: Alignment.centerLeft,
-                child: Text(selectTimeForJob),
+                child: Text(selectTimeForJobFrontEnd),
               ),
             ),
             SizedBox(height: 20.h),
@@ -319,7 +360,64 @@ class _AddNewHistoryElementOfJobState extends State<AddNewHistoryElementOfJob> {
               children: [
                 CustomSavePdfSendEmailButton(
                   buttonText: 'save',
-                  onTab: () {},
+                  onTab: () {
+                    if (selectTimeForJobFrontEnd == 'select job time') {
+                      print('kkkkkkkk');
+                    }
+
+                    if (isBetween(
+                      selectTimeForJobBackEnd,
+                      startTime,
+                      endTime,
+                    )) {
+                      if (finalObjectOfList.historyElement!.length == 2) {
+                        HistoryElement insertElement = HistoryElement(
+                          type: selectedJobType,
+                          time: selectTimeForJobBackEnd,
+                          elementId: const Uuid().v4(),
+                        );
+
+                        finalObjectOfList.historyElement!
+                            .insert(1, insertElement);
+                        finalObjectOfList.historyElement!
+                            .insert(1, finalObjectOfList.historyElement![1]);
+                      } else {
+                        int insertionCount = 0;
+                        for (int i = 1;
+                            i < finalObjectOfList.historyElement!.length - 1;
+                            i++) {
+                          if (selectTimeForJobBackEnd.isAfter(
+                              finalObjectOfList.historyElement![i].time!)) {
+                            HistoryElement insertElement = HistoryElement(
+                              type: selectedJobType,
+                              time: selectTimeForJobBackEnd,
+                              elementId: const Uuid().v4(),
+                            );
+                            finalObjectOfList.historyElement!
+                                .insert(i + 1 + insertionCount, insertElement);
+                            insertionCount++;
+                          }
+
+                          // Move the remaining list values one index increment
+                          for (int j = i + insertionCount + 1;
+                              j < finalObjectOfList.historyElement!.length - 1;
+                              j++) {
+                            finalObjectOfList.historyElement!.insert(
+                                j, finalObjectOfList.historyElement![j + 1]);
+
+                            // jobList[widget.jIndex].historyElement =
+                            //     finalObjectOfList.historyElement;
+                            // finalObjectOfList.historyElement![j] =
+                            //     finalObjectOfList.historyElement![j + 1];
+                          }
+                        }
+
+                        // jobHistoryBox.put(widget.listId, jobList).then((value) {
+                        //   print('Date inserted');
+                        // });
+                      }
+                    }
+                  },
                   buttonColor: greenColor,
                 ),
                 SizedBox(width: 10.w),
@@ -336,5 +434,9 @@ class _AddNewHistoryElementOfJobState extends State<AddNewHistoryElementOfJob> {
         ),
       ),
     );
+  }
+
+  bool isBetween(DateTime dateToCheck, DateTime startDate, DateTime endDate) {
+    return dateToCheck.isAfter(startDate) && dateToCheck.isBefore(endDate);
   }
 }
