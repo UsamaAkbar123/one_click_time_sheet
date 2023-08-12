@@ -1,11 +1,15 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:hive/hive.dart';
+import 'package:one_click_time_sheet/firebase_service/data_backup.dart';
 import 'package:one_click_time_sheet/managers/preference_manager.dart';
 import 'package:one_click_time_sheet/provider/bottom_nav_provider.dart';
 import 'package:one_click_time_sheet/utills/constants/colors.dart';
 import 'package:one_click_time_sheet/utills/constants/text_styles.dart';
 import 'package:one_click_time_sheet/view/component/custom_button.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:one_click_time_sheet/view/settings/setting_components/alert_to_email.dart';
 import 'package:one_click_time_sheet/view/settings/setting_components/choose_date_format_widget.dart';
 import 'package:one_click_time_sheet/view/settings/setting_components/choose_first_day_of_week_widget.dart';
 import 'package:one_click_time_sheet/view/settings/setting_components/choose_language_widget.dart';
@@ -31,6 +35,8 @@ class _SettingScreenState extends State<SettingScreen> {
   String? endJobNotification;
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  final Box jobHistoryBox = Hive.box('jobHistoryBox');
+
 
   @override
   void initState() {
@@ -161,7 +167,19 @@ class _SettingScreenState extends State<SettingScreen> {
                     buttonHeight: 45.h,
                     buttonWidth: double.infinity,
                     buttonColor: blueColor,
-                    onButtonTab: () {},
+                    onButtonTab: () async{
+                      User? user = FirebaseAuth.instance.currentUser;
+                      if(user?.uid == null){
+                        showDialog(context: context, builder: (context){
+                          return  const AlertBoxForAskingEmail(isSignupFunction: false);
+                        });
+                      }
+                      else{
+                        await DataBackup().dataRestoreFromFirebase(context).then((value) {
+                          DataBackup().restoreDataWorkPlan(context);
+                        });
+                      }
+                    },
                     buttonText: AppLocalizations.of(context)
                             ?.settingScreenRestoreDatabaseButtonText ??
                         '',
@@ -173,7 +191,19 @@ class _SettingScreenState extends State<SettingScreen> {
                     buttonHeight: 45.h,
                     buttonWidth: double.infinity,
                     buttonColor: greenColor,
-                    onButtonTab: () {},
+                    onButtonTab: () async{
+                      User? user = FirebaseAuth.instance.currentUser;
+                      if(user?.uid == null){
+                        showDialog(context: context, builder: (context){
+                          return  const AlertBoxForAskingEmail(isSignupFunction: true);
+                        });
+                      }
+                      else{
+                        await DataBackup().backupDataWorkPlan(context).then((value) {
+                           DataBackup().backupDataToFirebase(context);
+                        });
+                      }
+                    },
                     buttonText: AppLocalizations.of(context)
                             ?.settingScreenBackupDatabaseButtonText ??
                         '',

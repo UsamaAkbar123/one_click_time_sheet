@@ -25,7 +25,25 @@ class WorkPlanModel {
     required this.endWorkPlanTime,
     required this.workPlanDate,
   });
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'workPlanName': workPlanName,
+      'startWorkPlanTime': startWorkPlanTime.toIso8601String(),
+      'endWorkPlanTime': endWorkPlanTime.toIso8601String(),
+      'workPlanDate': workPlanDate.toIso8601String(),
+    };
+  }
 
+  static WorkPlanModel fromFirebaseJson(Map<String, dynamic> json) {
+    return WorkPlanModel(
+      id: json['id'],
+      workPlanName: json['workPlanName'],
+      startWorkPlanTime: DateTime.parse(json['startWorkPlanTime']),
+      endWorkPlanTime: DateTime.parse(json['endWorkPlanTime']),
+      workPlanDate: DateTime.parse(json['workPlanDate']),
+    );
+  }
   // factory WorkPlanModel.fromJson(Map<String, dynamic> json) {
   //   return WorkPlanModel(
   //     id: json['id'] as String,

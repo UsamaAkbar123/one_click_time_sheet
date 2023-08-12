@@ -10,7 +10,7 @@ import 'package:one_click_time_sheet/utills/theme/theme.dart';
 import 'package:provider/provider.dart';
 import 'managers/preference_manager.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-
+import 'package:firebase_core/firebase_core.dart';
 import 'model/hive_job_history_model.dart';
 
 void main() async {
@@ -18,6 +18,7 @@ void main() async {
   await PreferenceManager().init();
   final localizationProvider = LocalizationProvider();
   await localizationProvider.setLocalBasedOnLanguagePreferenceValue();
+  await Firebase.initializeApp();
   await Hive.initFlutter();
   Hive.registerAdapter(JobHistoryModelAdapter());
   Hive.registerAdapter(HistoryElementAdapter());

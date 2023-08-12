@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "113298113147",
+    "project_id": "one-sheet-5d649",
+    "storage_bucket": "one-sheet-5d649.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:113298113147:android:ca01e9ee7f33d19afdd8de",
+        "android_client_info": {
+          "package_name": "com.example.one_click_time_sheet"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "113298113147-gc7ad31ad8mag5a604aamducoje9lm1p.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBv6Ihx658h2-GnlRIE8R4V3h39KmKv7aY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "113298113147-gc7ad31ad8mag5a604aamducoje9lm1p.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
