@@ -362,7 +362,12 @@ class _AddNewHistoryElementOfJobState extends State<AddNewHistoryElementOfJob> {
                   buttonText: 'save',
                   onTab: () {
                     if (selectTimeForJobFrontEnd == 'select job time') {
-                      print('kkkkkkkk');
+                      ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: const Text('select the job time'),
+                    backgroundColor: redColor,
+                  ),
+                );
                     }
 
                     if (isBetween(
@@ -412,10 +417,27 @@ class _AddNewHistoryElementOfJobState extends State<AddNewHistoryElementOfJob> {
                           }
                         }
 
+                        ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: const Text('job is added successfully'),
+                    backgroundColor: redColor,
+                  ),
+                );
+
+Navigator.of(context).pop();
+
+
                         // jobHistoryBox.put(widget.listId, jobList).then((value) {
                         //   print('Date inserted');
                         // });
                       }
+                    }else{
+                      ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: const Text('select job time should be in between start and end time'),
+                    backgroundColor: redColor,
+                  ),
+                );
                     }
                   },
                   buttonColor: greenColor,
