@@ -7,6 +7,7 @@ import 'package:one_click_time_sheet/model/work_plan_model.dart';
 import 'package:one_click_time_sheet/utills/constants/colors.dart';
 import 'package:one_click_time_sheet/utills/constants/text_styles.dart';
 import 'package:uuid/uuid.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class AddWorkPlanBox extends StatefulWidget {
   final bool? isEditMode;
@@ -32,12 +33,12 @@ class AddWorkPlanBox extends StatefulWidget {
 
 class _AddWorkPlanBoxState extends State<AddWorkPlanBox> {
   final formKey = GlobalKey<FormState>();
-  final nameController = TextEditingController(text: 'work');
-  String workPlanDateForFrontEnd = 'select date';
+  late final TextEditingController nameController;
+  String workPlanDateForFrontEnd = '';
   DateTime workPlanDateForBackend = DateTime.now();
-  String startTimeForFrontEnd = 'select start time';
+  String startTimeForFrontEnd = '';
   DateTime startTimeForBackEnd = DateTime.now();
-  String endTimeForFrontEnd = 'select end time';
+  String endTimeForFrontEnd = '';
   DateTime endTimeForBackEnd = DateTime.now();
   PreferenceManager preferenceManager = PreferenceManager();
   final Box box = Hive.box('workPlan');
@@ -93,6 +94,22 @@ class _AddWorkPlanBoxState extends State<AddWorkPlanBox> {
     } else {
       endTimeForFrontEnd = DateFormat.jm().format(workPlanDateForBackend);
     }
+  }
+
+  @override
+  void didChangeDependencies() {
+    workPlanDateForFrontEnd =
+        AppLocalizations.of(context)?.addWorkPlanDialogWorkPlanSelectDate ?? '';
+    startTimeForFrontEnd = AppLocalizations.of(context)
+            ?.addWorkPlanDialogWorkPlanSelectStartTime ??
+        '';
+    endTimeForFrontEnd =
+        AppLocalizations.of(context)?.addWorkPlanDialogWorkPlanSelectEndTime ??
+            '';
+
+    nameController = TextEditingController(
+        text: AppLocalizations.of(context)?.addWorkPlanDialogTitle ?? '');
+    super.didChangeDependencies();
   }
 
   @override
@@ -169,7 +186,7 @@ class _AddWorkPlanBoxState extends State<AddWorkPlanBox> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Work',
+            AppLocalizations.of(context)?.workPlanScreenTitle ?? '',
             style: CustomTextStyle.kHeading2.copyWith(
               fontSize: 14.sp,
             ),
@@ -196,7 +213,9 @@ class _AddWorkPlanBoxState extends State<AddWorkPlanBox> {
                     borderSide: BorderSide(color: greenColor),
                   ),
                   label: Text(
-                    'work plan name',
+                    AppLocalizations.of(context)
+                            ?.addWorkPlanDialogWorkPlanName ??
+                        '',
                     style: CustomTextStyle.kBodyText2,
                   )),
               validator: (value) {
@@ -328,13 +347,20 @@ class _AddWorkPlanBoxState extends State<AddWorkPlanBox> {
         TextButton(
           onPressed: () async {
             if (formKey.currentState!.validate()) {
-              if (workPlanDateForFrontEnd == 'select date' ||
-                  startTimeForFrontEnd == 'select start time' ||
-                  endTimeForFrontEnd == 'select end time') {
+              if (workPlanDateForFrontEnd ==
+                      AppLocalizations.of(context)
+                          ?.addWorkPlanDialogWorkPlanSelectDate ||
+                  startTimeForFrontEnd ==
+                      AppLocalizations.of(context)
+                          ?.addWorkPlanDialogWorkPlanSelectStartTime ||
+                  endTimeForFrontEnd ==
+                      AppLocalizations.of(context)
+                          ?.addWorkPlanDialogWorkPlanSelectEndTime) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
-                    content:
-                        const Text('Select Date or Start Time or End Time'),
+                    content: Text(AppLocalizations.of(context)
+                            ?.addWorkPlanValidatorMessage ??
+                        ''),
                     backgroundColor: redColor,
                   ),
                 );
@@ -355,9 +381,15 @@ class _AddWorkPlanBoxState extends State<AddWorkPlanBox> {
                   if (box.containsKey(workPlanModel.id)) {
                     box.put(widget.id, workPlanModel).then((value) {
                       nameController.clear();
-                      startTimeForFrontEnd = 'select start time';
-                      endTimeForFrontEnd = 'select end time';
-                      workPlanDateForFrontEnd = 'select date';
+                      startTimeForFrontEnd = AppLocalizations.of(context)
+                              ?.addWorkPlanDialogWorkPlanSelectEndTime ??
+                          '';
+                      endTimeForFrontEnd = AppLocalizations.of(context)
+                              ?.addWorkPlanDialogWorkPlanSelectEndTime ??
+                          '';
+                      workPlanDateForFrontEnd = AppLocalizations.of(context)
+                              ?.addWorkPlanDialogWorkPlanSelectDate ??
+                          '';
                       Navigator.of(context).pop();
                     });
                   }
@@ -409,13 +441,15 @@ class _AddWorkPlanBoxState extends State<AddWorkPlanBox> {
               }
             }
           },
-          child: const Text("save"),
+          child: Text(
+              AppLocalizations.of(context)?.workPlanScreenSaveButton ?? ''),
         ),
         TextButton(
           onPressed: () {
             Navigator.of(context).pop();
           },
-          child: const Text("cancel"),
+          child: Text(
+              AppLocalizations.of(context)?.workPlanScreenCancelButton ?? ''),
         ),
       ],
     );

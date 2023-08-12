@@ -1,18 +1,14 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hive/hive.dart';
 import 'package:one_click_time_sheet/firebase_service/data_backup.dart';
-import 'package:one_click_time_sheet/firebase_service/user_manager.dart';
 import 'package:one_click_time_sheet/managers/preference_manager.dart';
-import 'package:one_click_time_sheet/model/hive_job_history_model.dart';
 import 'package:one_click_time_sheet/provider/bottom_nav_provider.dart';
 import 'package:one_click_time_sheet/utills/constants/colors.dart';
 import 'package:one_click_time_sheet/utills/constants/text_styles.dart';
 import 'package:one_click_time_sheet/view/component/custom_button.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:one_click_time_sheet/view/component/loading_widget.dart';
 import 'package:one_click_time_sheet/view/settings/setting_components/alert_to_email.dart';
 import 'package:one_click_time_sheet/view/settings/setting_components/choose_date_format_widget.dart';
 import 'package:one_click_time_sheet/view/settings/setting_components/choose_first_day_of_week_widget.dart';
@@ -54,7 +50,7 @@ class _SettingScreenState extends State<SettingScreen> {
       key: _scaffoldKey,
       appBar: AppBar(
         title: Text(
-          'Settings',
+          AppLocalizations.of(context)?.settingScreenTitle ?? '',
           style: CustomTextStyle.kHeading2,
         ),
         centerTitle: true,
@@ -99,7 +95,16 @@ class _SettingScreenState extends State<SettingScreen> {
                 endJobNotification = value;
               },
             ),
-            SizedBox(height: 30.h),
+            SizedBox(height: 10.h),
+            Text(
+              'custom text for testing',
+              style: CustomTextStyle.kBodyText1.copyWith(
+                color: blackColor,
+                fontSize: 14.sp,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            SizedBox(height: 10.h),
             CustomButton(
               buttonHeight: 45.h,
               buttonWidth: double.infinity,
@@ -205,6 +210,15 @@ class _SettingScreenState extends State<SettingScreen> {
                   ),
                 ),
               ],
+            ),
+            SizedBox(height: 10.h),
+            Text(
+              'custom text for testing',
+              style: CustomTextStyle.kBodyText1.copyWith(
+                color: blackColor,
+                fontSize: 14.sp,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ],
         ),

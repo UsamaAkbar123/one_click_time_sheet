@@ -7,7 +7,7 @@ class JobHistoryModel {
   final String id;
 
   @HiveField(1)
-  final List<HistoryElement>? historyElement;
+  List<HistoryElement>? historyElement;
 
   @HiveField(2)
   final DateTime timestamp;

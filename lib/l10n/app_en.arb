@@ -1,5 +1,5 @@
 {
-  "homeScreenTitle": "Title",
+  "homeScreenTitle": "Home",
   "@homeScreenTitle": {
     "description": "The conventional newborn programmer greeting"
   },
@@ -19,12 +19,26 @@
   "settingScreenTimeFormat": "Time Format",
   "settingScreenStartJobNotification": "Start Job Notification",
   "settingScreenEndJobNotification": "End Job Notification",
-  "settingScreenSaveChangesButtonText": "save changes",
+  "settingScreenSaveChangesButtonText": "Save Settings",
   "settingScreenRestoreDatabaseButtonText": "Restore Database",
   "settingScreenBackupDatabaseButtonText": "Backup Database",
 
 
   "workPlanScreenTitle": "WorkPlan",
+  "addWorkPlanDialogTitle": "Work",
+  "addWorkPlanDialogWorkPlanName": "work plan name",
+  "addWorkPlanDialogWorkPlanSelectDate": "select date",
+  "addWorkPlanDialogWorkPlanSelectStartTime": "select start time",
+  "addWorkPlanDialogWorkPlanSelectEndTime": "select end time",
+  "workPlanScreenSaveButton": "save",
+  "workPlanScreenCancelButton": "cancel",
+  "addWorkPlanValidatorMessage": "Select Date or Start Time or End Time",
+  "workPlanDetailBoxTitle": "Appointment Details",
+  "workPlanDetailBoxSubject": "Subject",
+  "workPlanDetailBoxStartTime": "Start Time",
+  "workPlanDetailBoxEndTime": "End Time",
+  "workPlanDetailBoxCloseButton": "close",
+
 
   "reportsScreenTitle": "Reports",
   "reportsScreenSaveToPdf": "save to pdf",

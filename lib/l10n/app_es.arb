@@ -1,0 +1,50 @@
+{
+    
+   "homeScreenTitle": "Hogar",
+   "@homeScreenTitle": {
+    "description": "The conventional newborn programmer greeting"
+   },
+   "homeScreenPlan": "Plan:",
+   "homeScreenRefreshTime": "tiempo de actualización",
+   "homeScreenStartJob": "Iniciar trabajo",
+   "homeScreenEndJob": "Terminar trabajo",
+   "homeScreenPaidBreak": "descanso",
+   "homeScreenUnPaidBreak": "no pagado",
+   "homeScreenLastHistory": "Última historia:",
+
+   "workPlanScreenTitle": "El plan de trabajo",
+   "addWorkPlanDialogTitle": "Trabajar",
+   "addWorkPlanDialogWorkPlanName": "nombre del plan",
+   "addWorkPlanDialogWorkPlanSelectDate": "seleccione fecha",
+   "addWorkPlanDialogWorkPlanSelectStartTime": "seleccione la hora",
+   "addWorkPlanDialogWorkPlanSelectEndTime": "hora de finalización",
+   "workPlanScreenSaveButton": "ahorrar",
+   "workPlanScreenCancelButton": "Cancelar",
+   "addWorkPlanValidatorMessage": "Seleccione la fecha o la hora de",
+
+  "workPlanDetailBoxTitle": "Detalles de la cita",
+  "workPlanDetailBoxSubject": "Sujeta",
+  "workPlanDetailBoxStartTime": "Hora inicio",
+  "workPlanDetailBoxEndTime": "Hora finalización",
+  "workPlanDetailBoxCloseButton": "cerca",
+
+   "reportsScreenTitle": "Informes",
+   "reportsScreenSaveToPdf": "guardar pdf",
+   "reportsScreenSendEmail": "enviar correo",
+
+   "settingScreenTitle": "Ajustes",
+   "settingScreenSelectLanguage": "Idioma",
+   "settingScreenFirstDayOfWeek": "Primer dia de la semana",
+   "settingScreenDateFormat": "Formato de",
+   "settingScreenTimeFormat": "Formato de base",
+   "settingScreenStartJobNotification": "Iniciar notificación",
+   "settingScreenEndJobNotification": "Notificación de fin de trabajo",
+   "settingScreenSaveChangesButtonText": "Guardar ajustes",
+   "settingScreenRestoreDatabaseButtonText": "Restaurar base",
+   "settingScreenBackupDatabaseButtonText": "Base de",
+
+   "bottomNavBarHomeTabText": "Hogar",
+   "bottomNavBarReportTabText": "Informes",
+   "bottomNavBarWorkPlanTabText": "El plan",
+   "bottomNavBarSettingTabText": "Ajustes"
+}

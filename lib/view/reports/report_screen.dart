@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -14,6 +16,7 @@ import 'package:one_click_time_sheet/view/reports/reports_screen_components/cust
 import 'package:one_click_time_sheet/view/reports/reports_screen_components/header_date_of_table.dart';
 import 'package:one_click_time_sheet/view/reports/reports_screen_components/sum_block_widget.dart';
 import 'package:one_click_time_sheet/view/reports/reports_screen_components/table_meta_data_widget.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ReportScreen extends StatefulWidget {
   const ReportScreen({Key? key}) : super(key: key);
@@ -35,6 +38,7 @@ class _ReportScreenState extends State<ReportScreen> {
   List<ReportModel> reportModelListForPdf = [];
   List<ReportSumModel> reportSumList = [];
   bool isJobListEmpty = false;
+  Duration totalJobTime = const Duration();
 
   @override
   void initState() {
@@ -244,6 +248,10 @@ class _ReportScreenState extends State<ReportScreen> {
                                                       Duration difference =
                                                           endDateTime.difference(
                                                               startDateTime);
+
+                                                      totalJobTime = endDateTime
+                                                          .difference(
+                                                              startDateTime);
                                                       hours =
                                                           difference.inHours;
                                                       minutes = difference
@@ -283,22 +291,67 @@ class _ReportScreenState extends State<ReportScreen> {
                                                         Duration difference =
                                                             endDateTime.difference(
                                                                 startDateTime);
+
                                                         hours =
                                                             difference.inHours;
                                                         minutes = difference
                                                             .inMinutes
                                                             .remainder(60);
+
                                                         if (historyElementList[
-                                                                    k]
-                                                                .type ==
-                                                            'Unpaid break') {
+                                                                        k]
+                                                                    .type ==
+                                                                'Unpaid break' ||
+                                                            historyElementList[
+                                                                        k]
+                                                                    .type ==
+                                                                'unpaid break') {
+                                                          // Define break duration
+                                                          Duration breakTime =
+                                                              Duration(
+                                                            hours: hours,
+                                                            minutes: minutes,
+                                                          );
+                                                          Duration netJobTime =
+                                                              totalJobTime -
+                                                                  breakTime;
+
+                                                          Duration
+                                                              netDeductionTime =
+                                                              totalJobTime -
+                                                                  netJobTime;
+
+                                                          totalJobTime =
+                                                              totalJobTime -
+                                                                  netDeductionTime;
+
+                                                          // print(
+                                                          //     "$id ===> hours ${netJobTime.inHours} ==> minutes ${netJobTime.inMinutes.remainder(60)}");
+
+                                                          // print(
+                                                          //     "$id ===> hours ${totalJobTime.inHours} ==> minutes ${totalJobTime.inMinutes.remainder(60)}");
+
+                                                          int hoursTem =
+                                                              netJobTime
+                                                                  .inHours;
+                                                          int minutesTem =
+                                                              netJobTime
+                                                                  .inMinutes
+                                                                  .remainder(
+                                                                      60);
+
                                                           totalHoursForFinalSumResult =
-                                                              totalHoursForFinalSumResult -
-                                                                  hours;
+                                                              hoursTem;
 
                                                           totalMinutesForFinalSumResult =
-                                                              totalMinutesForFinalSumResult -
-                                                                  minutes;
+                                                              minutesTem;
+                                                          // totalHoursForFinalSumResult =
+                                                          //     totalHoursForFinalSumResult -
+                                                          //         hoursTem;
+
+                                                          // totalMinutesForFinalSumResult =
+                                                          //     totalMinutesForFinalSumResult -
+                                                          //         minutesTem;
                                                         }
                                                       }
                                                     }
@@ -427,6 +480,14 @@ class _ReportScreenState extends State<ReportScreen> {
                                                                     totalHoursForFinalSumResult,
                                                                 totalMinutes:
                                                                     totalMinutesForFinalSumResult,
+                                                                listId:
+                                                                    originalId,
+                                                                historyElement:
+                                                                    historyElementList,
+                                                                context:
+                                                                    context,
+                                                                iIndex: i,
+                                                                jIndex: j,
                                                               )
                                                             : const SizedBox()
                                                       ],
@@ -485,7 +546,14 @@ class _ReportScreenState extends State<ReportScreen> {
                             buttonText: AppLocalizations.of(context)
                                     ?.reportsScreenSendEmail ??
                                 '',
-                            onTab: () {},
+                            onTab: () async {
+                              final Uri url = Uri.parse(
+                                  'https://mail.google.com'); // URL for Gmail
+                              if (await launchUrl(url)) {
+                              } else {
+                                throw Exception('Could not launch $url');
+                              }
+                            },
                             buttonColor: greenColor,
                           ),
                         ],
@@ -497,5 +565,14 @@ class _ReportScreenState extends State<ReportScreen> {
         ),
       ),
     );
+  }
+
+  Future<bool> launchUrl(Uri uri) async {
+    if (await canLaunch(uri.toString())) {
+      await launch(uri.toString());
+      return true;
+    } else {
+      return false;
+    }
   }
 }
