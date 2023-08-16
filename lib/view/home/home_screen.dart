@@ -65,6 +65,8 @@ class _HomeScreenState extends State<HomeScreen> {
         return redColor;
       case "Paid break":
         return lightGreenColor;
+        case "paid break":
+        return lightGreenColor;
       default:
         return orangeColor;
     }
