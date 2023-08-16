@@ -377,94 +377,98 @@ class _AddNewHistoryElementOfJobState extends State<AddNewHistoryElementOfJob> {
                             backgroundColor: redColor,
                           ),
                         );
-                      }
+                      } else {
+                        if (isBetween(
+                          selectTimeForJobBackEnd,
+                          startTime,
+                          endTime,
+                        )) {
+                          if (finalObjectOfList.historyElement!.length == 2) {
+                            HistoryElement insertElement = HistoryElement(
+                              type: selectedJobType,
+                              time: selectTimeForJobBackEnd,
+                              elementId: const Uuid().v4(),
+                            );
 
-                      if (isBetween(
-                        selectTimeForJobBackEnd,
-                        startTime,
-                        endTime,
-                      )) {
-                        if (finalObjectOfList.historyElement!.length == 2) {
-                          HistoryElement insertElement = HistoryElement(
-                            type: selectedJobType,
-                            time: selectTimeForJobBackEnd,
-                            elementId: const Uuid().v4(),
-                          );
+                            finalObjectOfList.historyElement!
+                                .insert(1, insertElement);
+                            // finalObjectOfList.historyElement!
+                            //     .insert(2, finalObjectOfList.historyElement![1]);
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content:
+                                    const Text('job is added successfully'),
+                                backgroundColor: greenColor,
+                              ),
+                            );
 
-                          finalObjectOfList.historyElement!
-                              .insert(1, insertElement);
-                          // finalObjectOfList.historyElement!
-                          //     .insert(2, finalObjectOfList.historyElement![1]);
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: const Text('job is added successfully'),
-                              backgroundColor: greenColor,
-                            ),
-                          );
-
-                          Navigator.of(context).pushReplacementNamed(
-                            bottomNavBarScreenRoute,
-                            arguments: 1,
-                          );
-                          // Navigator.of(context).pop();
-                        } else {
-                          int insertionCount = 0;
-                          for (int i = 1;
-                              i < finalObjectOfList.historyElement!.length - 1;
-                              i++) {
-                            if (selectTimeForJobBackEnd.isAfter(
-                                finalObjectOfList.historyElement![i].time!)) {
-                              HistoryElement insertElement = HistoryElement(
-                                type: selectedJobType,
-                                time: selectTimeForJobBackEnd,
-                                elementId: const Uuid().v4(),
-                              );
-                              finalObjectOfList.historyElement!.insert(
-                                  i + 1 + insertionCount, insertElement);
-                              insertionCount++;
-                            }
-
-                            // Move the remaining list values one index increment
-                            for (int j = i + insertionCount + 1;
-                                j <
+                            Navigator.of(context).pushReplacementNamed(
+                              bottomNavBarScreenRoute,
+                              arguments: 1,
+                            );
+                            // Navigator.of(context).pop();
+                          } else {
+                            int insertionCount = 0;
+                            for (int i = 1;
+                                i <
                                     finalObjectOfList.historyElement!.length -
                                         1;
-                                j++) {
-                              finalObjectOfList.historyElement!.insert(
-                                  j, finalObjectOfList.historyElement![j + 1]);
+                                i++) {
+                              if (selectTimeForJobBackEnd.isAfter(
+                                  finalObjectOfList.historyElement![i].time!)) {
+                                HistoryElement insertElement = HistoryElement(
+                                  type: selectedJobType,
+                                  time: selectTimeForJobBackEnd,
+                                  elementId: const Uuid().v4(),
+                                );
+                                finalObjectOfList.historyElement!.insert(
+                                    i + 1 + insertionCount, insertElement);
+                                insertionCount++;
+                              }
 
-                              // jobList[widget.jIndex].historyElement =
-                              //     finalObjectOfList.historyElement;
-                              // finalObjectOfList.historyElement![j] =
-                              //     finalObjectOfList.historyElement![j + 1];
+                              // Move the remaining list values one index increment
+                              for (int j = i + insertionCount + 1;
+                                  j <
+                                      finalObjectOfList.historyElement!.length -
+                                          1;
+                                  j++) {
+                                finalObjectOfList.historyElement!.insert(j,
+                                    finalObjectOfList.historyElement![j + 1]);
+
+                                // jobList[widget.jIndex].historyElement =
+                                //     finalObjectOfList.historyElement;
+                                // finalObjectOfList.historyElement![j] =
+                                //     finalObjectOfList.historyElement![j + 1];
+                              }
                             }
-                          }
 
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content:
+                                    const Text('job is added successfully'),
+                                backgroundColor: greenColor,
+                              ),
+                            );
+
+                            Navigator.of(context).pushReplacementNamed(
+                              bottomNavBarScreenRoute,
+                              arguments: 1,
+                            );
+                            // Navigator.of(context).pop();
+
+                            // jobHistoryBox.put(widget.listId, jobList).then((value) {
+                            //   print('Date inserted');
+                            // });
+                          }
+                        } else {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
-                              content: const Text('job is added successfully'),
-                              backgroundColor: greenColor,
+                              content: const Text(
+                                  'select job time should be in between start and end time'),
+                              backgroundColor: redColor,
                             ),
                           );
-
-                          Navigator.of(context).pushReplacementNamed(
-                            bottomNavBarScreenRoute,
-                            arguments: 1,
-                          );
-                          // Navigator.of(context).pop();
-
-                          // jobHistoryBox.put(widget.listId, jobList).then((value) {
-                          //   print('Date inserted');
-                          // });
                         }
-                      } else {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: const Text(
-                                'select job time should be in between start and end time'),
-                            backgroundColor: redColor,
-                          ),
-                        );
                       }
                     },
                     buttonColor: greenColor,
