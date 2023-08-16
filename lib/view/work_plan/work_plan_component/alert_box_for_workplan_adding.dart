@@ -98,22 +98,6 @@ class _AddWorkPlanBoxState extends State<AddWorkPlanBox> {
 
   @override
   void didChangeDependencies() {
-    workPlanDateForFrontEnd =
-        AppLocalizations.of(context)?.addWorkPlanDialogWorkPlanSelectDate ?? '';
-    startTimeForFrontEnd = AppLocalizations.of(context)
-            ?.addWorkPlanDialogWorkPlanSelectStartTime ??
-        '';
-    endTimeForFrontEnd =
-        AppLocalizations.of(context)?.addWorkPlanDialogWorkPlanSelectEndTime ??
-            '';
-
-    nameController = TextEditingController(
-        text: AppLocalizations.of(context)?.addWorkPlanDialogTitle ?? '');
-    super.didChangeDependencies();
-  }
-
-  @override
-  void initState() {
     if (widget.isEmptySpaceClick == true) {
       if (preferenceManager.getTimeFormat == '24h') {
         startTimeForFrontEnd =
@@ -133,6 +117,8 @@ class _AddWorkPlanBoxState extends State<AddWorkPlanBox> {
           DateFormat(preferenceManager.getDateFormat).format(
         widget.startTime ?? DateTime.now(),
       );
+      nameController = TextEditingController(
+          text: AppLocalizations.of(context)?.addWorkPlanDialogTitle ?? '');
       workPlanDateForBackend = widget.startTime ?? DateTime.now();
       startTimeForBackEnd = widget.startTime ?? DateTime.now();
       endTimeForBackEnd = widget.endTime ?? DateTime.now();
@@ -140,8 +126,9 @@ class _AddWorkPlanBoxState extends State<AddWorkPlanBox> {
       /// set select time for showTimePicker
       startInitialTime = TimeOfDay.fromDateTime(startTimeForBackEnd);
       endInitialTime = TimeOfDay.fromDateTime(endTimeForBackEnd);
-    }
-    if (widget.isEditMode == true) {
+    } else if (widget.isEditMode == true) {
+      nameController = TextEditingController(
+          text: AppLocalizations.of(context)?.addWorkPlanDialogTitle ?? '');
       nameController.text = widget.workPlanName ?? '';
       if (preferenceManager.getTimeFormat == '24h') {
         startTimeForFrontEnd =
@@ -168,9 +155,83 @@ class _AddWorkPlanBoxState extends State<AddWorkPlanBox> {
       /// set select time for showTimePicker
       startInitialTime = TimeOfDay.fromDateTime(startTimeForBackEnd);
       endInitialTime = TimeOfDay.fromDateTime(endTimeForBackEnd);
+    } else {
+      workPlanDateForFrontEnd =
+          AppLocalizations.of(context)?.addWorkPlanDialogWorkPlanSelectDate ??
+              '';
+      startTimeForFrontEnd = AppLocalizations.of(context)
+              ?.addWorkPlanDialogWorkPlanSelectStartTime ??
+          '';
+      endTimeForFrontEnd = AppLocalizations.of(context)
+              ?.addWorkPlanDialogWorkPlanSelectEndTime ??
+          '';
+
+      nameController = TextEditingController(
+          text: AppLocalizations.of(context)?.addWorkPlanDialogTitle ?? '');
     }
-    super.initState();
+
+    super.didChangeDependencies();
   }
+
+  // @override
+  // void initState() {
+  //   // if (widget.isEmptySpaceClick == true) {
+  //   //   if (preferenceManager.getTimeFormat == '24h') {
+  //   //     startTimeForFrontEnd =
+  //   //         DateFormat.Hm().format(widget.startTime ?? DateTime.now());
+  //   //   } else {
+  //   //     startTimeForFrontEnd =
+  //   //         DateFormat.jm().format(widget.startTime ?? DateTime.now());
+  //   //   }
+  //   //   if (preferenceManager.getTimeFormat == '24h') {
+  //   //     endTimeForFrontEnd =
+  //   //         DateFormat.Hm().format(widget.endTime ?? DateTime.now());
+  //   //   } else {
+  //   //     endTimeForFrontEnd =
+  //   //         DateFormat.jm().format(widget.endTime ?? DateTime.now());
+  //   //   }
+  //   //   workPlanDateForFrontEnd =
+  //   //       DateFormat(preferenceManager.getDateFormat).format(
+  //   //     widget.startTime ?? DateTime.now(),
+  //   //   );
+  //   //   workPlanDateForBackend = widget.startTime ?? DateTime.now();
+  //   //   startTimeForBackEnd = widget.startTime ?? DateTime.now();
+  //   //   endTimeForBackEnd = widget.endTime ?? DateTime.now();
+
+  //   //   /// set select time for showTimePicker
+  //   //   startInitialTime = TimeOfDay.fromDateTime(startTimeForBackEnd);
+  //   //   endInitialTime = TimeOfDay.fromDateTime(endTimeForBackEnd);
+  //   // }
+  //   if (widget.isEditMode == true) {
+  //     // nameController.text = widget.workPlanName ?? '';
+  //     // if (preferenceManager.getTimeFormat == '24h') {
+  //     //   startTimeForFrontEnd =
+  //     //       DateFormat.Hm().format(widget.startTime ?? DateTime.now());
+  //     // } else {
+  //     //   startTimeForFrontEnd =
+  //     //       DateFormat.jm().format(widget.startTime ?? DateTime.now());
+  //     // }
+  //     // if (preferenceManager.getTimeFormat == '24h') {
+  //     //   endTimeForFrontEnd =
+  //     //       DateFormat.Hm().format(widget.endTime ?? DateTime.now());
+  //     // } else {
+  //     //   endTimeForFrontEnd =
+  //     //       DateFormat.jm().format(widget.endTime ?? DateTime.now());
+  //     // }
+  //     // workPlanDateForFrontEnd =
+  //     //     DateFormat(preferenceManager.getDateFormat).format(
+  //     //   widget.startTime ?? DateTime.now(),
+  //     // );
+  //     // workPlanDateForBackend = widget.startTime ?? DateTime.now();
+  //     // startTimeForBackEnd = widget.startTime ?? DateTime.now();
+  //     // endTimeForBackEnd = widget.endTime ?? DateTime.now();
+
+  //     // /// set select time for showTimePicker
+  //     // startInitialTime = TimeOfDay.fromDateTime(startTimeForBackEnd);
+  //     // endInitialTime = TimeOfDay.fromDateTime(endTimeForBackEnd);
+  //   }
+  //   super.initState();
+  // }
 
   // TimeOfDay selectedTime = TimeOfDay.now();
 
