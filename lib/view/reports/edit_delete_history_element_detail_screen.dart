@@ -66,6 +66,18 @@ class _EditDeleteHistoryElementState extends State<EditDeleteHistoryElement> {
             'Edit & Delete',
             style: CustomTextStyle.kHeading2,
           ),
+          leading: GestureDetector(
+            onTap: () {
+              Navigator.of(context).pushReplacementNamed(
+                bottomNavBarScreenRoute,
+                arguments: 1,
+              );
+            },
+            child: Icon(
+              Icons.arrow_back_rounded,
+              color: blackColor,
+            ),
+          ),
           centerTitle: true,
         ),
         body: ListView.builder(

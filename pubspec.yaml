@@ -49,11 +49,12 @@ dependencies:
   pdf: ^3.10.4
   path_provider: ^2.0.15
   open_document: ^1.0.6+1
-  url_launcher: ^6.1.12
+  # url_launcher: ^6.1.12
   firebase_core: ^2.15.0
   cloud_firestore: ^4.8.4
   firebase_auth: ^4.7.2
   email_validator: ^2.1.17
+  share_plus: ^6.3.1
 
 dev_dependencies:
   hive_generator: ^2.0.0
