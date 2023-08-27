@@ -47,6 +47,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
   List<HistoryElement> currentHistoryElementJobList = [];
 
+  DateTime? previousDateTime;
+  String dateKey = '';
+
   String formatJobData({required DateTime? jobTime, required String? jobType}) {
     if (preferenceManager.getTimeFormat == '12h') {
       return "${DateFormat(preferenceManager.getDateFormat).format(jobTime ?? DateTime.now())} - "
@@ -65,7 +68,7 @@ class _HomeScreenState extends State<HomeScreen> {
         return redColor;
       case "Paid break":
         return lightGreenColor;
-        case "paid break":
+      case "paid break":
         return lightGreenColor;
       default:
         return orangeColor;
@@ -231,10 +234,18 @@ class _HomeScreenState extends State<HomeScreen> {
             RefreshTimeWidget(
               onTab: () {
                 setState(() {
-                  startJobTime = DateTime.now();
-                  endJob = DateTime.now();
-                  paidBreak = DateTime.now();
-                  unPaidBreak = DateTime.now();
+                  startJobTime = previousDateTime != null
+                      ? previousDateTime!
+                      : DateTime.now();
+                  endJob = previousDateTime != null
+                      ? previousDateTime!
+                      : DateTime.now();
+                  paidBreak = previousDateTime != null
+                      ? previousDateTime!
+                      : DateTime.now();
+                  unPaidBreak = previousDateTime != null
+                      ? previousDateTime!
+                      : DateTime.now();
                 });
               },
             ),
@@ -246,6 +257,9 @@ class _HomeScreenState extends State<HomeScreen> {
               plusMinuteTap: currentIndex == 0
                   ? null
                   : () {
+                      if (previousDateTime != null) {
+                        startJobTime = previousDateTime!;
+                      }
                       setState(() {
                         startJobTime =
                             startJobTime.add(const Duration(minutes: 1));
@@ -255,6 +269,9 @@ class _HomeScreenState extends State<HomeScreen> {
               minusMinuteTap: currentIndex == 0
                   ? null
                   : () {
+                      if (previousDateTime != null) {
+                        startJobTime = previousDateTime!;
+                      }
                       setState(() {
                         startJobTime =
                             startJobTime.subtract(const Duration(minutes: 1));
@@ -277,6 +294,10 @@ class _HomeScreenState extends State<HomeScreen> {
                           );
                         }, //context of current state
                       );
+
+                      if (previousDateTime != null) {
+                        startJobTime = previousDateTime!;
+                      }
 
                       if (pickedTime != null) {
                         setState(() {
@@ -301,7 +322,11 @@ class _HomeScreenState extends State<HomeScreen> {
                         if (isStartJobSelectCustomTime) {
                           startJobTime = startJobTime;
                         } else {
-                          startJobTime = DateTime.now();
+                          if (previousDateTime != null) {
+                            startJobTime = previousDateTime!;
+                          } else {
+                            startJobTime = DateTime.now();
+                          }
                         }
                       });
                       HistoryElement historyElement = HistoryElement(
@@ -321,6 +346,9 @@ class _HomeScreenState extends State<HomeScreen> {
               plusMinuteTap: currentIndex == 1
                   ? null
                   : () {
+                      if (previousDateTime != null) {
+                        endJob = previousDateTime!;
+                      }
                       setState(() {
                         endJob = endJob.add(const Duration(minutes: 1));
                         isEndJobSelectCustomTime = true;
@@ -329,6 +357,9 @@ class _HomeScreenState extends State<HomeScreen> {
               minusMinuteTap: currentIndex == 1
                   ? null
                   : () {
+                      if (previousDateTime != null) {
+                        endJob = previousDateTime!;
+                      }
                       setState(() {
                         endJob = endJob.subtract(const Duration(minutes: 1));
                         isEndJobSelectCustomTime = true;
@@ -350,6 +381,10 @@ class _HomeScreenState extends State<HomeScreen> {
                           );
                         }, //context of current state
                       );
+
+                      if (previousDateTime != null) {
+                        endJob = previousDateTime!;
+                      }
 
                       if (pickedTime != null) {
                         setState(() {
@@ -389,7 +424,11 @@ class _HomeScreenState extends State<HomeScreen> {
                             if (isEndJobSelectCustomTime) {
                               endJob = endJob;
                             } else {
-                              endJob = DateTime.now();
+                              if (previousDateTime != null) {
+                                endJob = previousDateTime!;
+                              } else {
+                                endJob = DateTime.now();
+                              }
                             }
                           });
                           HistoryElement historyElement = HistoryElement(
@@ -407,17 +446,22 @@ class _HomeScreenState extends State<HomeScreen> {
 
                           await currentWorkHistoryElement.clear();
 
-                          String dateKey = DateFormat('EEEE, d, M, y')
-                              .format(DateTime.now());
+                          dateKey = DateFormat('EEEE, d, M, y').format(
+                              previousDateTime != null
+                                  ? previousDateTime!
+                                  : DateTime.now());
                           final Box box = Hive.box('jobHistoryBox');
                           JobHistoryModel jobHistoryModel = JobHistoryModel(
-                            id: DateFormat('EEEE, d, M, y')
-                                .format(DateTime.now()),
-                            // historyElement: jobHistory,
-                            historyElement: currentHistoryElementJobList,
-                            timestamp: DateTime.now(),
-                            uuid: const Uuid().v4()
-                          );
+                              id: DateFormat('EEEE, d, M, y').format(
+                                  previousDateTime != null
+                                      ? previousDateTime!
+                                      : DateTime.now()),
+                              // historyElement: jobHistory,
+                              historyElement: currentHistoryElementJobList,
+                              timestamp: previousDateTime != null
+                                  ? previousDateTime!
+                                  : DateTime.now(),
+                              uuid: const Uuid().v4());
 
                           List<JobHistoryModel> jobHistoryList = [];
                           if (box.isNotEmpty) {
@@ -449,6 +493,9 @@ class _HomeScreenState extends State<HomeScreen> {
                     plusMinuteTap: currentIndex == 2
                         ? null
                         : () {
+                            if (previousDateTime != null) {
+                              paidBreak = previousDateTime!;
+                            }
                             setState(() {
                               paidBreak =
                                   paidBreak.add(const Duration(minutes: 1));
@@ -458,6 +505,9 @@ class _HomeScreenState extends State<HomeScreen> {
                     minusMinuteTap: currentIndex == 2
                         ? null
                         : () {
+                            if (previousDateTime != null) {
+                              paidBreak = previousDateTime!;
+                            }
                             setState(() {
                               paidBreak = paidBreak
                                   .subtract(const Duration(minutes: 1));
@@ -481,6 +531,10 @@ class _HomeScreenState extends State<HomeScreen> {
                                 );
                               }, //context of current state
                             );
+
+                            if (previousDateTime != null) {
+                              paidBreak = previousDateTime!;
+                            }
 
                             if (pickedTime != null) {
                               setState(() {
@@ -518,7 +572,11 @@ class _HomeScreenState extends State<HomeScreen> {
                                   if (isPaidBreakSelectCustomTime) {
                                     paidBreak = paidBreak;
                                   } else {
-                                    paidBreak = DateTime.now();
+                                    if (previousDateTime != null) {
+                                      paidBreak = previousDateTime!;
+                                    } else {
+                                      paidBreak = DateTime.now();
+                                    }
                                   }
                                 });
                                 HistoryElement historyElement = HistoryElement(
@@ -546,6 +604,9 @@ class _HomeScreenState extends State<HomeScreen> {
                         ? null
                         : () {
                             setState(() {
+                              if (previousDateTime != null) {
+                                unPaidBreak = previousDateTime!;
+                              }
                               unPaidBreak =
                                   unPaidBreak.add(const Duration(minutes: 1));
                               isUnpaidBreakSelectCustomTime = true;
@@ -554,6 +615,9 @@ class _HomeScreenState extends State<HomeScreen> {
                     minusMinuteTap: currentIndex == 3
                         ? null
                         : () {
+                            if (previousDateTime != null) {
+                              unPaidBreak = previousDateTime!;
+                            }
                             setState(() {
                               unPaidBreak = unPaidBreak
                                   .subtract(const Duration(minutes: 1));
@@ -577,6 +641,10 @@ class _HomeScreenState extends State<HomeScreen> {
                                 );
                               }, //context of current state
                             );
+
+                            if (previousDateTime != null) {
+                              unPaidBreak = previousDateTime!;
+                            }
 
                             if (pickedTime != null) {
                               setState(() {
@@ -613,7 +681,11 @@ class _HomeScreenState extends State<HomeScreen> {
                                   if (isUnpaidBreakSelectCustomTime) {
                                     unPaidBreak = unPaidBreak;
                                   } else {
-                                    unPaidBreak = DateTime.now();
+                                    if (previousDateTime != null) {
+                                      unPaidBreak = previousDateTime!;
+                                    } else {
+                                      unPaidBreak = DateTime.now();
+                                    }
                                   }
                                 });
                                 HistoryElement historyElement = HistoryElement(
@@ -780,6 +852,25 @@ class _HomeScreenState extends State<HomeScreen> {
             SizedBox(height: 20.h),
           ],
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () async {
+          DateTime? dateTime = await showDatePicker(
+            context: context,
+            initialDate: DateTime.now(),
+            firstDate: DateTime(2000, 12, 31),
+            lastDate: DateTime(2030, 12, 31),
+          );
+          if (dateTime != null) {
+            previousDateTime = dateTime;
+            startJobTime = previousDateTime!;
+            endJob = previousDateTime!;
+            paidBreak = previousDateTime!;
+            unPaidBreak = previousDateTime!;
+            setState(() {});
+          }
+        },
+        child: const Icon(Icons.add),
       ),
     );
   }
