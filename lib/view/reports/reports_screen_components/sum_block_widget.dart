@@ -38,45 +38,60 @@ Widget sumBlock({
           padding: EdgeInsets.only(left: 3.w),
           child: Text('Sum', style: CustomTextStyle.kBodyText2),
         ),
-        GestureDetector(
-          onTap: () async {
-            await Navigator.of(context).pushReplacement(MaterialPageRoute(
-              builder: (context) {
-                return AddNewHistoryElementOfJob(
-                  listId: listId,
-                  historyElement: historyElement,
-                  iIndex: iIndex,
-                  jIndex: jIndex,
-                );
-              },
-            ));
-          },
-          child: Container(
-            width: 50.w,
-            alignment: Alignment.center,
-            decoration: BoxDecoration(
-              color: whiteColor,
-              border: Border.all(
-                color: Colors.grey,
-              ),
+        // GestureDetector(
+        //   onTap: () async {
+        //     await Navigator.of(context).pushReplacement(MaterialPageRoute(
+        //       builder: (context) {
+        //         return AddNewHistoryElementOfJob(
+        //           listId: listId,
+        //           historyElement: historyElement,
+        //           iIndex: iIndex,
+        //           jIndex: jIndex,
+        //         );
+        //       },
+        //     ));
+        //   },
+        //   child: Container(
+        //     width: 50.w,
+        //     alignment: Alignment.center,
+        //     decoration: BoxDecoration(
+        //       color: whiteColor,
+        //       border: Border.all(
+        //         color: Colors.grey,
+        //       ),
+        //     ),
+        //     padding: EdgeInsets.symmetric(horizontal: 5.h),
+        //     child: Row(
+        //       crossAxisAlignment: CrossAxisAlignment.end,
+        //       children: [
+        //         Icon(
+        //           Icons.edit,
+        //           size: 12.h,
+        //         ),
+        //         SizedBox(width: 1.w),
+        //         Text(
+        //           'Add',
+        //           style: CustomTextStyle.kBodyText2.copyWith(
+        //             fontWeight: FontWeight.bold,
+        //           ),
+        //         ),
+        //       ],
+        //     ),
+        //   ),
+        // ),
+        Container(
+          width: 50.w,
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+            color: whiteColor,
+            border: Border.all(
+              color: Colors.grey,
             ),
-            padding: EdgeInsets.symmetric(horizontal: 5.h),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                Icon(
-                  Icons.edit,
-                  size: 12.h,
-                ),
-                SizedBox(width: 1.w),
-                Text(
-                  'Add',
-                  style: CustomTextStyle.kBodyText2.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ],
-            ),
+          ),
+          padding: EdgeInsets.symmetric(horizontal: 5.h),
+          child: Text(
+            '',
+            style: CustomTextStyle.kBodyText2,
           ),
         ),
         Container(
