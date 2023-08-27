@@ -16,7 +16,7 @@ import 'package:one_click_time_sheet/view/reports/reports_screen_components/cust
 import 'package:one_click_time_sheet/view/reports/reports_screen_components/header_date_of_table.dart';
 import 'package:one_click_time_sheet/view/reports/reports_screen_components/sum_block_widget.dart';
 import 'package:one_click_time_sheet/view/reports/reports_screen_components/table_meta_data_widget.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:share_plus/share_plus.dart';
 
 class ReportScreen extends StatefulWidget {
   const ReportScreen({Key? key}) : super(key: key);
@@ -547,12 +547,13 @@ class _ReportScreenState extends State<ReportScreen> {
                                     ?.reportsScreenSendEmail ??
                                 '',
                             onTab: () async {
-                              final Uri url = Uri.parse(
-                                  'https://mail.google.com'); // URL for Gmail
-                              if (await launchUrl(url)) {
-                              } else {
-                                throw Exception('Could not launch $url');
-                              }
+                              Share.share('from your download share reports');
+                              // final Uri url = Uri.parse(
+                              //     'https://mail.google.com'); // URL for Gmail
+                              // if (await launchUrl(url)) {
+                              // } else {
+                              //   throw Exception('Could not launch $url');
+                              // }
                             },
                             buttonColor: greenColor,
                           ),
@@ -567,12 +568,12 @@ class _ReportScreenState extends State<ReportScreen> {
     );
   }
 
-  Future<bool> launchUrl(Uri uri) async {
-    if (await canLaunch(uri.toString())) {
-      await launch(uri.toString());
-      return true;
-    } else {
-      return false;
-    }
-  }
+  // Future<bool> launchUrl(Uri uri) async {
+  //   if (await canLaunch(uri.toString())) {
+  //     await launch(uri.toString());
+  //     return true;
+  //   } else {
+  //     return false;
+  //   }
+  // }
 }

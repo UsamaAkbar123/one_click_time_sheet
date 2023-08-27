@@ -225,8 +225,8 @@ class _AddNewHistoryElementOfJobState extends State<AddNewHistoryElementOfJob> {
     //   selectTimeForJob = DateFormat.jm().format(jobDate);
     // }
 
-    print(DateFormat.Hm().format(startTime));
-    print(DateFormat.Hm().format(endTime));
+    debugPrint(DateFormat.Hm().format(startTime));
+    debugPrint(DateFormat.Hm().format(endTime));
     super.initState();
   }
 
