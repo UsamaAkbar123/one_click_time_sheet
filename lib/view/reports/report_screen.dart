@@ -522,58 +522,54 @@ class _ReportScreenState extends State<ReportScreen> {
                 SizedBox(height: 45.h),
               ],
             ),
-            !isJobListEmpty
-                ? Padding(
-                    padding: EdgeInsets.only(bottom: 20.0.h),
-                    child: Align(
-                      alignment: Alignment.bottomRight,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          CustomSavePdfSendEmailButton(
-                            buttonText: AppLocalizations.of(context)
-                                    ?.reportsScreenSaveToPdf ??
-                                '',
-                            onTab: () async {
-                              // print(listOfFinalReportForPdf.length);
-                              for (int i = 0;
-                                  i < listOfFinalReportForPdf.length;
-                                  i++) {
-                                // print(listOfFinalReportForPdf[i].reportModelList);
-                              }
-                              final data =
-                                  await PdfServices().createMonthlyReport(
-                                monthYearReportName:
-                                    "$selectedMonthAndYear Report",
-                                reportList: listOfFinalReportForPdf,
-                                sumList: reportSumList,
-                              );
-                              PdfServices().savePdfFile(
-                                  "$selectedMonthAndYear report", data);
-                            },
-                            buttonColor: blueColor,
-                          ),
-                          SizedBox(width: 12.w),
-                          CustomSavePdfSendEmailButton(
-                            buttonText: AppLocalizations.of(context)
-                                    ?.reportsScreenSendEmail ??
-                                '',
-                            onTab: () async {
-                              Share.share('from your download share reports');
-                              // final Uri url = Uri.parse(
-                              //     'https://mail.google.com'); // URL for Gmail
-                              // if (await launchUrl(url)) {
-                              // } else {
-                              //   throw Exception('Could not launch $url');
-                              // }
-                            },
-                            buttonColor: greenColor,
-                          ),
-                        ],
-                      ),
+            Padding(
+              padding: EdgeInsets.only(bottom: 20.0.h),
+              child: Align(
+                alignment: Alignment.bottomRight,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    CustomSavePdfSendEmailButton(
+                      buttonText: AppLocalizations.of(context)
+                              ?.reportsScreenSaveToPdf ??
+                          '',
+                      onTab: () async {
+                        // print(listOfFinalReportForPdf.length);
+                        for (int i = 0;
+                            i < listOfFinalReportForPdf.length;
+                            i++) {
+                          // print(listOfFinalReportForPdf[i].reportModelList);
+                        }
+                        final data = await PdfServices().createMonthlyReport(
+                          monthYearReportName: "$selectedMonthAndYear Report",
+                          reportList: listOfFinalReportForPdf,
+                          sumList: reportSumList,
+                        );
+                        PdfServices()
+                            .savePdfFile("$selectedMonthAndYear report", data);
+                      },
+                      buttonColor: blueColor,
                     ),
-                  )
-                : const SizedBox(),
+                    SizedBox(width: 12.w),
+                    CustomSavePdfSendEmailButton(
+                      buttonText: AppLocalizations.of(context)
+                              ?.reportsScreenSendEmail ??
+                          '',
+                      onTab: () async {
+                        Share.share('from your download share reports');
+                        // final Uri url = Uri.parse(
+                        //     'https://mail.google.com'); // URL for Gmail
+                        // if (await launchUrl(url)) {
+                        // } else {
+                        //   throw Exception('Could not launch $url');
+                        // }
+                      },
+                      buttonColor: greenColor,
+                    ),
+                  ],
+                ),
+              ),
+            )
           ],
         ),
       ),
