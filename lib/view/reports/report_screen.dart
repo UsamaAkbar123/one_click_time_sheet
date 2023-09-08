@@ -147,6 +147,7 @@ class _ReportScreenState extends State<ReportScreen> {
                     ? ValueListenableBuilder(
                         valueListenable: box.listenable(),
                         builder: (context, Box box, widget) {
+                          // print('box length: ${box.length}');
                           return ListView.builder(
                             itemCount: box.length,
                             physics: const NeverScrollableScrollPhysics(),
@@ -164,27 +165,24 @@ class _ReportScreenState extends State<ReportScreen> {
                                   .format(dateTime);
 
                               jobList = jobList.where((job) {
-                                return job.timestamp.month == currentMonth;
+                                return job.timestamp.month == currentMonth &&
+                                    job.timestamp.year == currentDate.year;
                               }).toList();
 
                               jobList.sort(
                                 (a, b) => b.timestamp.compareTo(a.timestamp),
                               );
-                              Future.delayed(const Duration(), () {
-                                if (jobList.isEmpty) {
-                                  isJobListEmpty = false;
-                                } else {
-                                  isJobListEmpty = true;
-                                }
-                                // setState(() {});
-                              });
+
+                              // print(jobList.length);
 
                               return jobList.isEmpty
-                                  ? Center(
-                                      child: i == 0
-                                          ? const Text(
-                                              'No Data Found for this month')
-                                          : const SizedBox(),
+                                  ? const Center(
+                                      child:
+                                          // i == 0
+                                          //     ? const Text(
+                                          //         'No Data Found for this month')
+                                          //     :
+                                          SizedBox(),
                                     )
                                   : Column(
                                       crossAxisAlignment:
