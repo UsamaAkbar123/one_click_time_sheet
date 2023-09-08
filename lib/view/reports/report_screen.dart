@@ -89,6 +89,13 @@ class _ReportScreenState extends State<ReportScreen> {
                               selectedMonth = selectMonth(currentMonth);
                               selectedMonthAndYear =
                                   '$selectedMonth ${currentDate.year}';
+                            } else if (currentMonth == 1) {
+                              currentMonth = 12;
+                              selectedMonth = selectMonth(currentMonth);
+                              currentDate =
+                                  DateTime(currentDate.year - 1, currentMonth);
+                              selectedMonthAndYear =
+                                  '$selectedMonth ${currentDate.year}';
                             }
                           });
                         },
@@ -114,6 +121,13 @@ class _ReportScreenState extends State<ReportScreen> {
                             if (currentMonth != 12) {
                               currentMonth++;
                               selectedMonth = selectMonth(currentMonth);
+                              selectedMonthAndYear =
+                                  '$selectedMonth ${currentDate.year}';
+                            } else if (currentMonth == 12) {
+                              currentMonth = 1;
+                              selectedMonth = selectMonth(currentMonth);
+                              currentDate =
+                                  DateTime(currentDate.year + 1, currentMonth);
                               selectedMonthAndYear =
                                   '$selectedMonth ${currentDate.year}';
                             }
