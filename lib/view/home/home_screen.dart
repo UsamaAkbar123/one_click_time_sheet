@@ -811,28 +811,49 @@ class _HomeScreenState extends State<HomeScreen> {
                 ? ValueListenableBuilder(
                     valueListenable: jobHistoryBox.listenable(),
                     builder: (context, Box box, widget) {
+                      final keys = box.keys.toList();
+                      // for (int i = 0; i < keys.length; i++) {
+                      //   print('Before keys: ${keys[i]}');
+                      // }
+                      keys.sort(
+                          // (a, b) =>
+                          //     DateTime.parse(b).compareTo(DateTime.parse(a)),
+                          (a, b) {
+                        return DateFormat('EEEE, dd, M, yyyy')
+                            .parse(b)
+                            .compareTo(
+                                DateFormat('EEEE, dd, M, yyyy').parse(a));
+                      });
+
+                      // for (int i = 0; i < keys.length; i++) {
+                      //   print('After keys: ${keys[i]}');
+                      // }
                       return ListView.builder(
                           itemCount: box.length,
                           physics: const NeverScrollableScrollPhysics(),
                           padding: EdgeInsets.zero,
                           shrinkWrap: true,
                           itemBuilder: (context, i) {
+                            final key = keys[i]; // Get the sorted key
                             List<JobHistoryModel> jobList =
-                                box.getAt(i).cast<JobHistoryModel>();
+                                box.get(key).cast<JobHistoryModel>();
+
+                            // List<JobHistoryModel> jobList =
+                            //     box.getAt(i).cast<JobHistoryModel>();
 
                             jobList.sort(
                                 (a, b) => b.timestamp.compareTo(a.timestamp));
-                            String dataKey = box.keyAt(i);
-                            DateTime dateTime =
-                                DateFormat('EEEE, dd, M, yyyy').parse(dataKey);
-                            dataKey =
-                                DateFormat(preferenceManager.getDateFormat)
-                                    .format(dateTime);
+                            // String dataKey = box.keyAt(i);
+                            // DateTime dateTime =
+                            //     DateFormat('EEEE, dd, M, yyyy').parse(dataKey);
+                            // dataKey =
+                            //     DateFormat(preferenceManager.getDateFormat)
+                            //         .format(dateTime);
                             return Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  dataKey,
+                                  key,
                                   style: CustomTextStyle.kBodyText1.copyWith(
                                       color: blueColor,
                                       fontWeight: FontWeight.w600),
