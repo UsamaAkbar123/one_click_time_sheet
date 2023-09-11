@@ -1,5 +1,7 @@
 // ignore_for_file: deprecated_member_use
 
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -16,6 +18,7 @@ import 'package:one_click_time_sheet/view/reports/reports_screen_components/cust
 import 'package:one_click_time_sheet/view/reports/reports_screen_components/header_date_of_table.dart';
 import 'package:one_click_time_sheet/view/reports/reports_screen_components/sum_block_widget.dart';
 import 'package:one_click_time_sheet/view/reports/reports_screen_components/table_meta_data_widget.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 
 class ReportScreen extends StatefulWidget {
@@ -535,11 +538,11 @@ class _ReportScreenState extends State<ReportScreen> {
                           '',
                       onTab: () async {
                         // print(listOfFinalReportForPdf.length);
-                        for (int i = 0;
-                            i < listOfFinalReportForPdf.length;
-                            i++) {
-                          // print(listOfFinalReportForPdf[i].reportModelList);
-                        }
+                        // for (int i = 0;
+                        //     i < listOfFinalReportForPdf.length;
+                        //     i++) {
+                        //   // print(listOfFinalReportForPdf[i].reportModelList);
+                        // }
                         final data = await PdfServices().createMonthlyReport(
                           monthYearReportName: "$selectedMonthAndYear Report",
                           reportList: listOfFinalReportForPdf,
@@ -556,7 +559,21 @@ class _ReportScreenState extends State<ReportScreen> {
                               ?.reportsScreenSendEmail ??
                           '',
                       onTab: () async {
-                        Share.share('from your download share reports');
+                        // Share.share('from your download share reports');
+                        final data = await PdfServices().createMonthlyReport(
+                          monthYearReportName: "$selectedMonthAndYear Report",
+                          reportList: listOfFinalReportForPdf,
+                          sumList: reportSumList,
+                        );
+
+                        final output = await getExternalStorageDirectory();
+                        var filePath =
+                            "${output?.path}/$selectedMonthAndYear report.pdf";
+                        final file = File(filePath);
+                        await file.writeAsBytes(data);
+                        // Share the PDF file using share_plus
+                        Share.shareFiles([file.path],
+                            text: 'Check out this PDF file!');
                         // final Uri url = Uri.parse(
                         //     'https://mail.google.com'); // URL for Gmail
                         // if (await launchUrl(url)) {
