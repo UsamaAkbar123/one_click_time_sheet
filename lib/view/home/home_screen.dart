@@ -47,8 +47,14 @@ class _HomeScreenState extends State<HomeScreen> {
 
   List<HistoryElement> currentHistoryElementJobList = [];
 
-  DateTime? previousDateTime;
+  DateTime? previousStartJobTime;
+  DateTime? previousEndJobTime;
+  DateTime? previousPaidBreakTime;
+  DateTime? previousUnPaidBreakTime;
   String dateKey = '';
+
+  /// previous data plus minus time check
+  bool isPreviousJobAdded = false;
 
   String formatJobData({required DateTime? jobTime, required String? jobType}) {
     if (preferenceManager.getTimeFormat == '12h') {
@@ -234,18 +240,15 @@ class _HomeScreenState extends State<HomeScreen> {
             RefreshTimeWidget(
               onTab: () {
                 setState(() {
-                  startJobTime = previousDateTime != null
-                      ? previousDateTime!
-                      : DateTime.now();
-                  endJob = previousDateTime != null
-                      ? previousDateTime!
-                      : DateTime.now();
-                  paidBreak = previousDateTime != null
-                      ? previousDateTime!
-                      : DateTime.now();
-                  unPaidBreak = previousDateTime != null
-                      ? previousDateTime!
-                      : DateTime.now();
+                  startJobTime = DateTime.now();
+                  endJob = DateTime.now();
+                  paidBreak = DateTime.now();
+                  unPaidBreak = DateTime.now();
+                  previousStartJobTime = null;
+                  previousEndJobTime = null;
+                  previousPaidBreakTime = null;
+                  previousUnPaidBreakTime = null;
+                  isPreviousJobAdded = false;
                 });
               },
             ),
@@ -257,25 +260,34 @@ class _HomeScreenState extends State<HomeScreen> {
               plusMinuteTap: currentIndex == 0
                   ? null
                   : () {
-                      if (previousDateTime != null) {
-                        startJobTime = previousDateTime!;
+                      if (previousStartJobTime != null) {
+                        startJobTime = previousStartJobTime!;
                       }
+                      //print(startJobTime);
                       setState(() {
                         startJobTime =
                             startJobTime.add(const Duration(minutes: 1));
+
                         isStartJobSelectCustomTime = true;
+                        if (isPreviousJobAdded == true) {
+                          previousStartJobTime = startJobTime;
+                        }
                       });
                     },
               minusMinuteTap: currentIndex == 0
                   ? null
                   : () {
-                      if (previousDateTime != null) {
-                        startJobTime = previousDateTime!;
+                      if (previousStartJobTime != null) {
+                        startJobTime = previousStartJobTime!;
                       }
                       setState(() {
                         startJobTime =
                             startJobTime.subtract(const Duration(minutes: 1));
+
                         isStartJobSelectCustomTime = true;
+                        if (isPreviousJobAdded == true) {
+                          previousStartJobTime = startJobTime;
+                        }
                       });
                     },
               manualTimeTap: currentIndex == 0
@@ -295,8 +307,8 @@ class _HomeScreenState extends State<HomeScreen> {
                         }, //context of current state
                       );
 
-                      if (previousDateTime != null) {
-                        startJobTime = previousDateTime!;
+                      if (previousStartJobTime != null) {
+                        startJobTime = previousStartJobTime!;
                       }
 
                       if (pickedTime != null) {
@@ -310,6 +322,9 @@ class _HomeScreenState extends State<HomeScreen> {
                             pickedTime.minute,
                           );
                         });
+                        if (isPreviousJobAdded == true) {
+                          previousStartJobTime = startJobTime;
+                        }
                       } else {
                         debugPrint("Time is not selected");
                       }
@@ -322,8 +337,8 @@ class _HomeScreenState extends State<HomeScreen> {
                         if (isStartJobSelectCustomTime) {
                           startJobTime = startJobTime;
                         } else {
-                          if (previousDateTime != null) {
-                            startJobTime = previousDateTime!;
+                          if (previousStartJobTime != null) {
+                            startJobTime = previousStartJobTime!;
                           } else {
                             startJobTime = DateTime.now();
                           }
@@ -346,23 +361,29 @@ class _HomeScreenState extends State<HomeScreen> {
               plusMinuteTap: currentIndex == 1
                   ? null
                   : () {
-                      if (previousDateTime != null) {
-                        endJob = previousDateTime!;
+                      if (previousEndJobTime != null) {
+                        endJob = previousEndJobTime!;
                       }
                       setState(() {
                         endJob = endJob.add(const Duration(minutes: 1));
                         isEndJobSelectCustomTime = true;
+                        if (isPreviousJobAdded == true) {
+                          previousEndJobTime = endJob;
+                        }
                       });
                     },
               minusMinuteTap: currentIndex == 1
                   ? null
                   : () {
-                      if (previousDateTime != null) {
-                        endJob = previousDateTime!;
+                      if (previousEndJobTime != null) {
+                        endJob = previousEndJobTime!;
                       }
                       setState(() {
                         endJob = endJob.subtract(const Duration(minutes: 1));
                         isEndJobSelectCustomTime = true;
+                        if (isPreviousJobAdded == true) {
+                          previousEndJobTime = endJob;
+                        }
                       });
                     },
               manualTimeTap: currentIndex == 1
@@ -382,8 +403,8 @@ class _HomeScreenState extends State<HomeScreen> {
                         }, //context of current state
                       );
 
-                      if (previousDateTime != null) {
-                        endJob = previousDateTime!;
+                      if (previousEndJobTime != null) {
+                        endJob = previousEndJobTime!;
                       }
 
                       if (pickedTime != null) {
@@ -396,6 +417,9 @@ class _HomeScreenState extends State<HomeScreen> {
                             pickedTime.hour,
                             pickedTime.minute,
                           );
+                          if (isPreviousJobAdded == true) {
+                            previousEndJobTime = endJob;
+                          }
                         });
                       } else {
                         debugPrint("Time is not selected");
@@ -424,8 +448,8 @@ class _HomeScreenState extends State<HomeScreen> {
                             if (isEndJobSelectCustomTime) {
                               endJob = endJob;
                             } else {
-                              if (previousDateTime != null) {
-                                endJob = previousDateTime!;
+                              if (previousEndJobTime != null) {
+                                endJob = previousEndJobTime!;
                               } else {
                                 endJob = DateTime.now();
                               }
@@ -447,19 +471,19 @@ class _HomeScreenState extends State<HomeScreen> {
                           await currentWorkHistoryElement.clear();
 
                           dateKey = DateFormat('EEEE, d, M, y').format(
-                              previousDateTime != null
-                                  ? previousDateTime!
+                              previousEndJobTime != null
+                                  ? previousEndJobTime!
                                   : DateTime.now());
                           final Box box = Hive.box('jobHistoryBox');
                           JobHistoryModel jobHistoryModel = JobHistoryModel(
                               id: DateFormat('EEEE, d, M, y').format(
-                                  previousDateTime != null
-                                      ? previousDateTime!
+                                  previousEndJobTime != null
+                                      ? previousEndJobTime!
                                       : DateTime.now()),
                               // historyElement: jobHistory,
                               historyElement: currentHistoryElementJobList,
-                              timestamp: previousDateTime != null
-                                  ? previousDateTime!
+                              timestamp: previousEndJobTime != null
+                                  ? previousEndJobTime!
                                   : DateTime.now(),
                               uuid: const Uuid().v4());
 
@@ -493,25 +517,31 @@ class _HomeScreenState extends State<HomeScreen> {
                     plusMinuteTap: currentIndex == 2
                         ? null
                         : () {
-                            if (previousDateTime != null) {
-                              paidBreak = previousDateTime!;
+                            if (previousPaidBreakTime != null) {
+                              paidBreak = previousPaidBreakTime!;
                             }
                             setState(() {
                               paidBreak =
                                   paidBreak.add(const Duration(minutes: 1));
                               isPaidBreakSelectCustomTime = true;
+                              if (isPreviousJobAdded == true) {
+                                previousPaidBreakTime = paidBreak;
+                              }
                             });
                           },
                     minusMinuteTap: currentIndex == 2
                         ? null
                         : () {
-                            if (previousDateTime != null) {
-                              paidBreak = previousDateTime!;
+                            if (previousPaidBreakTime != null) {
+                              paidBreak = previousPaidBreakTime!;
                             }
                             setState(() {
                               paidBreak = paidBreak
                                   .subtract(const Duration(minutes: 1));
                               isPaidBreakSelectCustomTime = true;
+                              if (isPreviousJobAdded == true) {
+                                previousPaidBreakTime = paidBreak;
+                              }
                             });
                           },
                     manualTimeTap: currentIndex == 2
@@ -532,8 +562,8 @@ class _HomeScreenState extends State<HomeScreen> {
                               }, //context of current state
                             );
 
-                            if (previousDateTime != null) {
-                              paidBreak = previousDateTime!;
+                            if (previousPaidBreakTime != null) {
+                              paidBreak = previousPaidBreakTime!;
                             }
 
                             if (pickedTime != null) {
@@ -546,6 +576,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                   pickedTime.hour,
                                   pickedTime.minute,
                                 );
+                                if (isPreviousJobAdded == true) {
+                                  previousPaidBreakTime = paidBreak;
+                                }
                               });
                             } else {
                               debugPrint("Time is not selected");
@@ -572,8 +605,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                   if (isPaidBreakSelectCustomTime) {
                                     paidBreak = paidBreak;
                                   } else {
-                                    if (previousDateTime != null) {
-                                      paidBreak = previousDateTime!;
+                                    if (previousPaidBreakTime != null) {
+                                      paidBreak = previousPaidBreakTime!;
                                     } else {
                                       paidBreak = DateTime.now();
                                     }
@@ -604,24 +637,30 @@ class _HomeScreenState extends State<HomeScreen> {
                         ? null
                         : () {
                             setState(() {
-                              if (previousDateTime != null) {
-                                unPaidBreak = previousDateTime!;
+                              if (previousUnPaidBreakTime != null) {
+                                unPaidBreak = previousUnPaidBreakTime!;
                               }
                               unPaidBreak =
                                   unPaidBreak.add(const Duration(minutes: 1));
                               isUnpaidBreakSelectCustomTime = true;
+                              if (isPreviousJobAdded == true) {
+                                previousUnPaidBreakTime = unPaidBreak;
+                              }
                             });
                           },
                     minusMinuteTap: currentIndex == 3
                         ? null
                         : () {
-                            if (previousDateTime != null) {
-                              unPaidBreak = previousDateTime!;
+                            if (previousUnPaidBreakTime != null) {
+                              unPaidBreak = previousUnPaidBreakTime!;
                             }
                             setState(() {
                               unPaidBreak = unPaidBreak
                                   .subtract(const Duration(minutes: 1));
                               isUnpaidBreakSelectCustomTime = true;
+                              if (isPreviousJobAdded == true) {
+                                previousUnPaidBreakTime = unPaidBreak;
+                              }
                             });
                           },
                     manualTimeTap: currentIndex == 3
@@ -642,8 +681,8 @@ class _HomeScreenState extends State<HomeScreen> {
                               }, //context of current state
                             );
 
-                            if (previousDateTime != null) {
-                              unPaidBreak = previousDateTime!;
+                            if (previousUnPaidBreakTime != null) {
+                              unPaidBreak = previousUnPaidBreakTime!;
                             }
 
                             if (pickedTime != null) {
@@ -656,6 +695,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                   pickedTime.hour,
                                   pickedTime.minute,
                                 );
+                                if (isPreviousJobAdded == true) {
+                                  previousUnPaidBreakTime = unPaidBreak;
+                                }
                               });
                             } else {
                               debugPrint("Time is not selected");
@@ -681,8 +723,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                   if (isUnpaidBreakSelectCustomTime) {
                                     unPaidBreak = unPaidBreak;
                                   } else {
-                                    if (previousDateTime != null) {
-                                      unPaidBreak = previousDateTime!;
+                                    if (previousUnPaidBreakTime != null) {
+                                      unPaidBreak = previousUnPaidBreakTime!;
                                     } else {
                                       unPaidBreak = DateTime.now();
                                     }
@@ -769,28 +811,49 @@ class _HomeScreenState extends State<HomeScreen> {
                 ? ValueListenableBuilder(
                     valueListenable: jobHistoryBox.listenable(),
                     builder: (context, Box box, widget) {
+                      final keys = box.keys.toList();
+                      // for (int i = 0; i < keys.length; i++) {
+                      //   print('Before keys: ${keys[i]}');
+                      // }
+                      keys.sort(
+                          // (a, b) =>
+                          //     DateTime.parse(b).compareTo(DateTime.parse(a)),
+                          (a, b) {
+                        return DateFormat('EEEE, dd, M, yyyy')
+                            .parse(b)
+                            .compareTo(
+                                DateFormat('EEEE, dd, M, yyyy').parse(a));
+                      });
+
+                      // for (int i = 0; i < keys.length; i++) {
+                      //   print('After keys: ${keys[i]}');
+                      // }
                       return ListView.builder(
                           itemCount: box.length,
                           physics: const NeverScrollableScrollPhysics(),
                           padding: EdgeInsets.zero,
                           shrinkWrap: true,
                           itemBuilder: (context, i) {
+                            final key = keys[i]; // Get the sorted key
                             List<JobHistoryModel> jobList =
-                                box.getAt(i).cast<JobHistoryModel>();
+                                box.get(key).cast<JobHistoryModel>();
+
+                            // List<JobHistoryModel> jobList =
+                            //     box.getAt(i).cast<JobHistoryModel>();
 
                             jobList.sort(
                                 (a, b) => b.timestamp.compareTo(a.timestamp));
-                            String dataKey = box.keyAt(i);
-                            DateTime dateTime =
-                                DateFormat('EEEE, dd, M, yyyy').parse(dataKey);
-                            dataKey =
-                                DateFormat(preferenceManager.getDateFormat)
-                                    .format(dateTime);
+                            // String dataKey = box.keyAt(i);
+                            // DateTime dateTime =
+                            //     DateFormat('EEEE, dd, M, yyyy').parse(dataKey);
+                            // dataKey =
+                            //     DateFormat(preferenceManager.getDateFormat)
+                            //         .format(dateTime);
                             return Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  dataKey,
+                                  key,
                                   style: CustomTextStyle.kBodyText1.copyWith(
                                       color: blueColor,
                                       fontWeight: FontWeight.w600),
@@ -862,11 +925,15 @@ class _HomeScreenState extends State<HomeScreen> {
             lastDate: DateTime(2030, 12, 31),
           );
           if (dateTime != null) {
-            previousDateTime = dateTime;
-            startJobTime = previousDateTime!;
-            endJob = previousDateTime!;
-            paidBreak = previousDateTime!;
-            unPaidBreak = previousDateTime!;
+            previousStartJobTime = dateTime;
+            previousEndJobTime = dateTime;
+            previousPaidBreakTime = dateTime;
+            previousUnPaidBreakTime = dateTime;
+            startJobTime = previousStartJobTime!;
+            endJob = previousEndJobTime!;
+            paidBreak = previousPaidBreakTime!;
+            unPaidBreak = previousUnPaidBreakTime!;
+            isPreviousJobAdded = true;
             setState(() {});
           }
         },

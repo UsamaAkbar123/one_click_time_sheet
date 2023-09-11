@@ -1,5 +1,7 @@
 // ignore_for_file: deprecated_member_use
 
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -16,6 +18,7 @@ import 'package:one_click_time_sheet/view/reports/reports_screen_components/cust
 import 'package:one_click_time_sheet/view/reports/reports_screen_components/header_date_of_table.dart';
 import 'package:one_click_time_sheet/view/reports/reports_screen_components/sum_block_widget.dart';
 import 'package:one_click_time_sheet/view/reports/reports_screen_components/table_meta_data_widget.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 
 class ReportScreen extends StatefulWidget {
@@ -89,6 +92,13 @@ class _ReportScreenState extends State<ReportScreen> {
                               selectedMonth = selectMonth(currentMonth);
                               selectedMonthAndYear =
                                   '$selectedMonth ${currentDate.year}';
+                            } else if (currentMonth == 1) {
+                              currentMonth = 12;
+                              selectedMonth = selectMonth(currentMonth);
+                              currentDate =
+                                  DateTime(currentDate.year - 1, currentMonth);
+                              selectedMonthAndYear =
+                                  '$selectedMonth ${currentDate.year}';
                             }
                           });
                         },
@@ -116,6 +126,13 @@ class _ReportScreenState extends State<ReportScreen> {
                               selectedMonth = selectMonth(currentMonth);
                               selectedMonthAndYear =
                                   '$selectedMonth ${currentDate.year}';
+                            } else if (currentMonth == 12) {
+                              currentMonth = 1;
+                              selectedMonth = selectMonth(currentMonth);
+                              currentDate =
+                                  DateTime(currentDate.year + 1, currentMonth);
+                              selectedMonthAndYear =
+                                  '$selectedMonth ${currentDate.year}';
                             }
                           });
                         },
@@ -133,6 +150,7 @@ class _ReportScreenState extends State<ReportScreen> {
                     ? ValueListenableBuilder(
                         valueListenable: box.listenable(),
                         builder: (context, Box box, widget) {
+                          // print('box length: ${box.length}');
                           return ListView.builder(
                             itemCount: box.length,
                             physics: const NeverScrollableScrollPhysics(),
@@ -150,27 +168,24 @@ class _ReportScreenState extends State<ReportScreen> {
                                   .format(dateTime);
 
                               jobList = jobList.where((job) {
-                                return job.timestamp.month == currentMonth;
+                                return job.timestamp.month == currentMonth &&
+                                    job.timestamp.year == currentDate.year;
                               }).toList();
 
                               jobList.sort(
                                 (a, b) => b.timestamp.compareTo(a.timestamp),
                               );
-                              Future.delayed(const Duration(), () {
-                                if (jobList.isEmpty) {
-                                  isJobListEmpty = false;
-                                } else {
-                                  isJobListEmpty = true;
-                                }
-                                // setState(() {});
-                              });
+
+                              // print(jobList.length);
 
                               return jobList.isEmpty
-                                  ? Center(
-                                      child: i == 0
-                                          ? const Text(
-                                              'No Data Found for this month')
-                                          : const SizedBox(),
+                                  ? const Center(
+                                      child:
+                                          // i == 0
+                                          //     ? const Text(
+                                          //         'No Data Found for this month')
+                                          //     :
+                                          SizedBox(),
                                     )
                                   : Column(
                                       crossAxisAlignment:
@@ -510,58 +525,68 @@ class _ReportScreenState extends State<ReportScreen> {
                 SizedBox(height: 45.h),
               ],
             ),
-            !isJobListEmpty
-                ? Padding(
-                    padding: EdgeInsets.only(bottom: 20.0.h),
-                    child: Align(
-                      alignment: Alignment.bottomRight,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          CustomSavePdfSendEmailButton(
-                            buttonText: AppLocalizations.of(context)
-                                    ?.reportsScreenSaveToPdf ??
-                                '',
-                            onTab: () async {
-                              // print(listOfFinalReportForPdf.length);
-                              for (int i = 0;
-                                  i < listOfFinalReportForPdf.length;
-                                  i++) {
-                                // print(listOfFinalReportForPdf[i].reportModelList);
-                              }
-                              final data =
-                                  await PdfServices().createMonthlyReport(
-                                monthYearReportName:
-                                    "$selectedMonthAndYear Report",
-                                reportList: listOfFinalReportForPdf,
-                                sumList: reportSumList,
-                              );
-                              PdfServices().savePdfFile(
-                                  "$selectedMonthAndYear report", data);
-                            },
-                            buttonColor: blueColor,
-                          ),
-                          SizedBox(width: 12.w),
-                          CustomSavePdfSendEmailButton(
-                            buttonText: AppLocalizations.of(context)
-                                    ?.reportsScreenSendEmail ??
-                                '',
-                            onTab: () async {
-                              Share.share('from your download share reports');
-                              // final Uri url = Uri.parse(
-                              //     'https://mail.google.com'); // URL for Gmail
-                              // if (await launchUrl(url)) {
-                              // } else {
-                              //   throw Exception('Could not launch $url');
-                              // }
-                            },
-                            buttonColor: greenColor,
-                          ),
-                        ],
-                      ),
+            Padding(
+              padding: EdgeInsets.only(bottom: 20.0.h),
+              child: Align(
+                alignment: Alignment.bottomRight,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    CustomSavePdfSendEmailButton(
+                      buttonText: AppLocalizations.of(context)
+                              ?.reportsScreenSaveToPdf ??
+                          '',
+                      onTab: () async {
+                        // print(listOfFinalReportForPdf.length);
+                        // for (int i = 0;
+                        //     i < listOfFinalReportForPdf.length;
+                        //     i++) {
+                        //   // print(listOfFinalReportForPdf[i].reportModelList);
+                        // }
+                        final data = await PdfServices().createMonthlyReport(
+                          monthYearReportName: "$selectedMonthAndYear Report",
+                          reportList: listOfFinalReportForPdf,
+                          sumList: reportSumList,
+                        );
+                        PdfServices()
+                            .savePdfFile("$selectedMonthAndYear report", data);
+                      },
+                      buttonColor: blueColor,
                     ),
-                  )
-                : const SizedBox(),
+                    SizedBox(width: 12.w),
+                    CustomSavePdfSendEmailButton(
+                      buttonText: AppLocalizations.of(context)
+                              ?.reportsScreenSendEmail ??
+                          '',
+                      onTab: () async {
+                        // Share.share('from your download share reports');
+                        final data = await PdfServices().createMonthlyReport(
+                          monthYearReportName: "$selectedMonthAndYear Report",
+                          reportList: listOfFinalReportForPdf,
+                          sumList: reportSumList,
+                        );
+
+                        final output = await getExternalStorageDirectory();
+                        var filePath =
+                            "${output?.path}/$selectedMonthAndYear report.pdf";
+                        final file = File(filePath);
+                        await file.writeAsBytes(data);
+                        // Share the PDF file using share_plus
+                        Share.shareFiles([file.path],
+                            text: 'Check out this PDF file!');
+                        // final Uri url = Uri.parse(
+                        //     'https://mail.google.com'); // URL for Gmail
+                        // if (await launchUrl(url)) {
+                        // } else {
+                        //   throw Exception('Could not launch $url');
+                        // }
+                      },
+                      buttonColor: greenColor,
+                    ),
+                  ],
+                ),
+              ),
+            )
           ],
         ),
       ),
