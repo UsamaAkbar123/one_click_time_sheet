@@ -455,6 +455,9 @@ class _HomeScreenState extends State<HomeScreen> {
                               }
                             }
                           });
+                          if (endJob.isBefore(startJobTime)) {
+                            endJob = endJob.add(const Duration(hours: 24));
+                          }
                           HistoryElement historyElement = HistoryElement(
                             time: endJob,
                             type: "End job",
