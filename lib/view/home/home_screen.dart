@@ -829,7 +829,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       //   print('After keys: ${keys[i]}');
                       // }
                       return ListView.builder(
-                          itemCount: box.length,
+                          // itemCount: box.length,
+                          itemCount: keys.length,
                           physics: const NeverScrollableScrollPhysics(),
                           padding: EdgeInsets.zero,
                           shrinkWrap: true,
@@ -843,17 +844,18 @@ class _HomeScreenState extends State<HomeScreen> {
 
                             jobList.sort(
                                 (a, b) => b.timestamp.compareTo(a.timestamp));
-                            // String dataKey = box.keyAt(i);
-                            // DateTime dateTime =
-                            //     DateFormat('EEEE, dd, M, yyyy').parse(dataKey);
-                            // dataKey =
-                            //     DateFormat(preferenceManager.getDateFormat)
-                            //         .format(dateTime);
+                            // String dataKey = box.keyAt(key);
+                            String dataKey = '';
+                            DateTime dateTime =
+                                DateFormat('EEEE, dd, M, yyyy').parse(key);
+                            dataKey =
+                                DateFormat(preferenceManager.getDateFormat)
+                                    .format(dateTime);
                             return Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  key,
+                                  dataKey,
                                   style: CustomTextStyle.kBodyText1.copyWith(
                                       color: blueColor,
                                       fontWeight: FontWeight.w600),
