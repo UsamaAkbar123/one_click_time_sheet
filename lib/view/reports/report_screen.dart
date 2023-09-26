@@ -316,7 +316,7 @@ class _ReportScreenState extends State<ReportScreen> {
                                                         if (historyElementList[
                                                                         k]
                                                                     .type ==
-                                                                'Unpaid break' ||
+                                                                'Unpaid Break' ||
                                                             historyElementList[
                                                                         k]
                                                                     .type ==
@@ -374,7 +374,7 @@ class _ReportScreenState extends State<ReportScreen> {
                                                     if (k == 0) {
                                                       reportModelListForPdf.add(
                                                         ReportModel(
-                                                          jobTitle: 'work',
+                                                          jobTitle: 'Work',
                                                           startTime: startTime,
                                                           endTime: endTime,
                                                           difference:
@@ -388,7 +388,7 @@ class _ReportScreenState extends State<ReportScreen> {
                                                     } else {
                                                       if (historyElementList[k]
                                                               .type !=
-                                                          'Start job') {
+                                                          'Start Job') {
                                                         reportModelListForPdf
                                                             .add(
                                                           ReportModel(
@@ -405,11 +405,11 @@ class _ReportScreenState extends State<ReportScreen> {
                                                             considered: historyElementList[
                                                                             k]
                                                                         .type ==
-                                                                    'Unpaid break'
+                                                                    'Unpaid Break'
                                                                 ? '-$hours:${minutes.toString().padLeft(2, '0')}'
                                                                 : historyElementList[k]
                                                                             .type ==
-                                                                        'Paid break'
+                                                                        'Paid Break'
                                                                     ? '0:00'
                                                                     : '$hours:${minutes.toString().padLeft(2, '0')}',
                                                           ),
@@ -442,7 +442,7 @@ class _ReportScreenState extends State<ReportScreen> {
                                                       children: [
                                                         if (k == 0)
                                                           TableMetaDataWidget(
-                                                            jobType: 'work',
+                                                            jobType: 'Work',
                                                             startTime:
                                                                 startTime,
                                                             endTime: endTime,
@@ -458,7 +458,7 @@ class _ReportScreenState extends State<ReportScreen> {
                                                           ),
                                                         historyElementList[k]
                                                                     .type ==
-                                                                'Start job'
+                                                                'Start Job'
                                                             ? const SizedBox()
                                                             : TableMetaDataWidget(
                                                                 jobType: historyElementList[
@@ -473,10 +473,10 @@ class _ReportScreenState extends State<ReportScreen> {
                                                                     '$hours:${minutes.toString().padLeft(2, '0')}',
                                                                 consider: historyElementList[k]
                                                                             .type ==
-                                                                        'Unpaid break'
+                                                                        'Unpaid Break'
                                                                     ? '-$hours:${minutes.toString().padLeft(2, '0')}'
                                                                     : historyElementList[k].type ==
-                                                                            'Paid break'
+                                                                            'Paid Break'
                                                                         ? '0:00'
                                                                         : '$hours:${minutes.toString().padLeft(2, '0')}',
                                                                 editDeleteHistoryElement:

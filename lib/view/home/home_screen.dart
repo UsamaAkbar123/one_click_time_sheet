@@ -71,13 +71,11 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Color getTextColor(String type) {
     switch (type) {
-      case "Start job":
+      case "Start Job":
         return greenColor;
-      case "End job":
+      case "End Job":
         return redColor;
-      case "Paid break":
-        return lightGreenColor;
-      case "paid break":
+      case "Paid Break":
         return lightGreenColor;
       default:
         return orangeColor;
@@ -86,13 +84,13 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void setCurrentIndexAccordingToJobType(String jobType) {
     switch (jobType) {
-      case 'Start job':
+      case 'Start Job':
         currentIndex = 0;
         break;
-      case 'Paid break':
+      case 'Paid Break':
         currentIndex = 2;
         break;
-      case 'Unpaid break':
+      case 'Unpaid Break':
         currentIndex = 3;
         break;
       default:
@@ -360,7 +358,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       });
                       HistoryElement historyElement = HistoryElement(
                         time: startJobTime,
-                        type: "Start job",
+                        type: "Start Job",
                         elementId: const Uuid().v4(),
                       );
 
@@ -474,7 +472,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           }
                           HistoryElement historyElement = HistoryElement(
                             time: endJob,
-                            type: "End job",
+                            type: "End Job",
                             elementId: const Uuid().v4(),
                           );
 
@@ -487,7 +485,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
                           await currentWorkHistoryElement.clear();
 
-                          print('job date:$jobDate');
+                          // print('job date:$jobDate');
 
                           // dateKey = DateFormat('EEEE, d, M, y').format(
                           //     previousEndJobTime != null
@@ -636,7 +634,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 });
                                 HistoryElement historyElement = HistoryElement(
                                   time: paidBreak,
-                                  type: "Paid break",
+                                  type: "Paid Break",
                                   elementId: const Uuid().v4(),
                                 );
 
@@ -754,7 +752,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 });
                                 HistoryElement historyElement = HistoryElement(
                                   time: unPaidBreak,
-                                  type: "Unpaid break",
+                                  type: "Unpaid Break",
                                   elementId: const Uuid().v4(),
                                 );
 
