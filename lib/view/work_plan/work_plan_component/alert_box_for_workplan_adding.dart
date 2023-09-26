@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
@@ -7,7 +8,6 @@ import 'package:one_click_time_sheet/model/work_plan_model.dart';
 import 'package:one_click_time_sheet/utills/constants/colors.dart';
 import 'package:one_click_time_sheet/utills/constants/text_styles.dart';
 import 'package:uuid/uuid.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class AddWorkPlanBox extends StatefulWidget {
   final bool? isEditMode;
@@ -427,6 +427,11 @@ class _AddWorkPlanBoxState extends State<AddWorkPlanBox> {
                 );
               } else {
                 if (widget.isEditMode == true) {
+                  if (endTimeForBackEnd.isBefore(startTimeForBackEnd)) {
+                    endTimeForBackEnd = endTimeForBackEnd.add(
+                      const Duration(hours: 24),
+                    );
+                  }
                   WorkPlanModel workPlanModel = WorkPlanModel(
                     id: widget.id ?? '',
                     workPlanName: nameController.text,
@@ -455,6 +460,11 @@ class _AddWorkPlanBoxState extends State<AddWorkPlanBox> {
                     });
                   }
                 } else if (widget.isEmptySpaceClick == true) {
+                  if (endTimeForBackEnd.isBefore(startTimeForBackEnd)) {
+                    endTimeForBackEnd = endTimeForBackEnd.add(
+                      const Duration(hours: 24),
+                    );
+                  }
                   const uuid = Uuid();
                   String id = uuid.v4();
                   WorkPlanModel workPlanModel = WorkPlanModel(
@@ -477,6 +487,11 @@ class _AddWorkPlanBoxState extends State<AddWorkPlanBox> {
                     Navigator.of(context).pop();
                   });
                 } else {
+                  if (endTimeForBackEnd.isBefore(startTimeForBackEnd)) {
+                    endTimeForBackEnd = endTimeForBackEnd.add(
+                      const Duration(hours: 24),
+                    );
+                  }
                   const uuid = Uuid();
                   String id = uuid.v4();
                   WorkPlanModel workPlanModel = WorkPlanModel(
