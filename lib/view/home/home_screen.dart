@@ -43,6 +43,9 @@ class _HomeScreenState extends State<HomeScreen> {
   bool isPaidBreakSelectCustomTime = false;
   bool isUnpaidBreakSelectCustomTime = false;
 
+  /// job date
+  DateTime? jobDate;
+
   int currentIndex = -1;
 
   List<HistoryElement> currentHistoryElementJobList = [];
@@ -343,6 +346,17 @@ class _HomeScreenState extends State<HomeScreen> {
                             startJobTime = DateTime.now();
                           }
                         }
+                        if (jobDate == null) {
+                          if (isStartJobSelectCustomTime) {
+                            jobDate = startJobTime;
+                          } else {
+                            if (previousStartJobTime != null) {
+                              jobDate = previousStartJobTime!;
+                            } else {
+                              jobDate = DateTime.now();
+                            }
+                          }
+                        }
                       });
                       HistoryElement historyElement = HistoryElement(
                         time: startJobTime,
@@ -473,10 +487,14 @@ class _HomeScreenState extends State<HomeScreen> {
 
                           await currentWorkHistoryElement.clear();
 
-                          dateKey = DateFormat('EEEE, d, M, y').format(
-                              previousEndJobTime != null
-                                  ? previousEndJobTime!
-                                  : DateTime.now());
+                          print('job date:$jobDate');
+
+                          // dateKey = DateFormat('EEEE, d, M, y').format(
+                          //     previousEndJobTime != null
+                          //         ? previousEndJobTime!
+                          //         : DateTime.now());
+                          dateKey = DateFormat('EEEE, d, M, y')
+                              .format(jobDate ?? DateTime.now());
                           final Box box = Hive.box('jobHistoryBox');
                           JobHistoryModel jobHistoryModel = JobHistoryModel(
                               id: DateFormat('EEEE, d, M, y').format(
@@ -510,6 +528,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           box.put(dateKey, jobHistoryList).then((value) {});
 
                           currentHistoryElementJobList = [];
+                          jobDate = null;
                         },
             ),
             SizedBox(height: 8.h),
