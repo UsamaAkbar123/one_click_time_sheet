@@ -36,7 +36,9 @@ List<Appointment> getAppointments({
         startTime: startTime,
         endTime: endTime,
         subject: workPlanList[i].workPlanName,
-        color: greenColor,
+        color: workPlanList[i].workPlanDate.isBefore(DateTime.now())
+            ? greenColor
+            : blueColor,
       ),
     );
   }
