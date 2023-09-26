@@ -37,7 +37,7 @@ class TableMetaDataWidget extends StatelessWidget {
           /// Job type
           Container(
             width: 50.w,
-            alignment: Alignment.center,
+            alignment: Alignment.centerLeft,
             decoration: BoxDecoration(
               color: whiteColor,
               border: Border.all(
@@ -48,6 +48,7 @@ class TableMetaDataWidget extends StatelessWidget {
             child: Text(
               jobType,
               style: CustomTextStyle.kBodyText2,
+              textAlign: TextAlign.start,
             ),
           ),
 

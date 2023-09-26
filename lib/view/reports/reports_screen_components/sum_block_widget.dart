@@ -28,7 +28,7 @@ Widget sumBlock({
       children: [
         Container(
           width: 50.w,
-          alignment: Alignment.center,
+          alignment: Alignment.centerLeft,
           decoration: BoxDecoration(
             color: whiteColor,
             border: Border.all(
