@@ -1,12 +1,15 @@
 import 'package:email_validator/email_validator.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:one_click_time_sheet/firebase_service/data_backup.dart';
 import 'package:one_click_time_sheet/firebase_service/user_manager.dart';
 import 'package:one_click_time_sheet/utills/constants/colors.dart';
 import 'package:one_click_time_sheet/utills/constants/text_styles.dart';
 class AlertBoxForAskingEmail extends StatefulWidget {
   final bool isSignupFunction;
-  const AlertBoxForAskingEmail({Key? key, required this.isSignupFunction}) : super(key: key);
+  final bool isBackup;
+  const AlertBoxForAskingEmail({Key? key, required this.isSignupFunction, required this.isBackup}) : super(key: key);
 
   @override
   State<AlertBoxForAskingEmail> createState() => _AlertBoxForAskingEmailState();
@@ -77,12 +80,39 @@ class _AlertBoxForAskingEmailState extends State<AlertBoxForAskingEmail> {
         TextButton(
           onPressed: () async {
             if (formKey.currentState!.validate()) {
-              if(widget.isSignupFunction){
-                UserManager().registerWithEmail(emailController.text, context);
-              }
-              else{
-                UserManager().loginWithEmail(emailController.text, context);
-              }
+              //if(widget.isSignupFunction){
+                await UserManager().registerWithEmail(emailController.text, context);
+                User? user = FirebaseAuth.instance.currentUser;
+
+                if(user?.uid != null){
+                  if(widget.isBackup) {
+                     await DataBackup().backupDataWorkPlan(context).then((value) {
+                      DataBackup().backupDataToFirebase(context);
+                    });
+                  }
+                  else{
+                    await DataBackup().dataRestoreFromFirebase(context).then((value) {
+                      DataBackup().restoreDataWorkPlan(context);
+                    });
+                  }
+                }
+              //}
+              // else{
+              //   await UserManager().loginWithEmail(emailController.text, context);
+              //   User? user = FirebaseAuth.instance.currentUser;
+              //   if(user?.uid == null){
+              //     if(widget.isBackup) {
+              //       await DataBackup().backupDataWorkPlan(context).then((value) {
+              //         DataBackup().backupDataToFirebase(context);
+              //       });
+              //     }
+              //     else{
+              //       await DataBackup().dataRestoreFromFirebase(context).then((value) {
+              //         DataBackup().restoreDataWorkPlan(context);
+              //       });
+              //     }
+              //   }
+              // }
             }
           },
           child: const Text("save"),

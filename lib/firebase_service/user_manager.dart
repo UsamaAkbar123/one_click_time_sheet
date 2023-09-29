@@ -17,18 +17,19 @@ class UserManager {
     )
         .then((value) async {
       Navigator.pop(context);
-      await DataBackup().backupDataWorkPlan(context).then((value) {
-        DataBackup().backupDataToFirebase(context);
-      });
+      // await DataBackup().backupDataWorkPlan(context).then((value) {
+      //   DataBackup().backupDataToFirebase(context);
+      // });
     }).catchError((e) async {
       if (e is FirebaseAuthException && e.code == 'email-already-in-use') {
         Navigator.pop(context);
         debugPrint("Email already in use, logging in instead");
-        await loginWithEmail(email, context).then((value) async {
-          await DataBackup().backupDataWorkPlan(context).then((value) {
-            DataBackup().backupDataToFirebase(context);
-          });
-        });
+        await loginWithEmail(email, context);
+        // await loginWithEmail(email, context).then((value) async {
+        //   await DataBackup().backupDataWorkPlan(context).then((value) {
+        //     DataBackup().backupDataToFirebase(context);
+        //   });
+        // });
       } else {
         Navigator.pop(context);
         ScaffoldMessenger.of(context).showSnackBar(
@@ -53,9 +54,9 @@ class UserManager {
     )
         .then((value) async {
       Navigator.pop(context);
-      await DataBackup().dataRestoreFromFirebase(context).then((value) {
-        DataBackup().restoreDataWorkPlan(context);
-      });
+      // await DataBackup().dataRestoreFromFirebase(context).then((value) {
+      //   DataBackup().restoreDataWorkPlan(context);
+      // });
     }).catchError((e) {
       Navigator.pop(context);
       ScaffoldMessenger.of(context).showSnackBar(

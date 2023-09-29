@@ -27,7 +27,7 @@ class DataBackup {
           Navigator.pop(context);
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: const Text("No backup data found in Firebase."),
+              content: const Text("No job data data is available to restore"),
               // Replace with the appropriate colors for your application
               backgroundColor: redColor,
               showCloseIcon: true,
@@ -117,7 +117,7 @@ class DataBackup {
             debugPrint(existingData.toString());
           });
         }
-
+        bool isDataExistForBackup = false;
         // Compare the Hive data with the existing data in Firebase
         for (int i = 0; i < jobHistoryBox.length; i++) {
           String dataKey = jobHistoryBox.keyAt(i);
@@ -126,18 +126,32 @@ class DataBackup {
 
           // Get the existing list for this key, or an empty list if none exists
           List<JobHistoryModel> existingList = existingData[dataKey] ?? [];
-
+          List<JobHistoryModel> tempList = existingList;
           // Add only the new entries to the existing list
           for (var job in jobList) {
             if (!existingList
                 .any((existingJob) => existingJob.uuid == job.uuid)) {
+              isDataExistForBackup = true;
               existingList.add(job);
             }
           }
-
           // Update the existing data with the new combined list
           existingData[dataKey] = existingList;
         }
+
+        if(!isDataExistForBackup){
+          Navigator.of(context).pop();
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: const Text('No job data is available for backup'),
+              backgroundColor: redColor,
+              showCloseIcon: true,
+              closeIconColor: whiteColor,
+            ),
+          );
+          return ;
+        }
+
 
         // Convert the existing data into the format for Firestore
         Map<String, dynamic> allData = {};
@@ -172,7 +186,7 @@ class DataBackup {
         Navigator.pop(context);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: const Text('No data is available for backup'),
+            content: const Text('No new job data is available for backup'),
             backgroundColor: redColor,
             showCloseIcon: true,
             closeIconColor: whiteColor,
@@ -201,22 +215,25 @@ class DataBackup {
           FirebaseFirestore.instance.collection('workPlanBackup');
       final DocumentReference document = workPlanCollection.doc(user?.uid);
       final DocumentSnapshot snapshot = await document.get();
+
+
+
       if (!snapshot.exists) {
         // ignore: use_build_context_synchronously
         Navigator.of(context).pop();
         // ignore: use_build_context_synchronously
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: const Text("No data to restore"),
-            backgroundColor: greenColor,
+            content: const Text("No work plan data is available to restore"),
+            backgroundColor: redColor,
             showCloseIcon: true,
             closeIconColor: whiteColor,
           ),
         );
         return;
       }
-
-      Map<String, dynamic> dataMap = snapshot.data() as Map<String, dynamic>;
+      final Map<String, dynamic> dataMap =
+      snapshot.data() as Map<String, dynamic>;
       dataMap.forEach((key, value) {
         WorkPlanModel workPlanFromFirebase =
             WorkPlanModel.fromFirebaseJson(value as Map<String, dynamic>);
@@ -261,12 +278,27 @@ class DataBackup {
       final DocumentSnapshot snapshot = await document.get();
       Map<String, dynamic> existingData =
           snapshot.exists ? snapshot.data() as Map<String, dynamic> : {};
+      bool isDataExistForBackup = false;
       for (int i = 0; i < workPlanBox.length; i++) {
         String dataKey = workPlanBox.keyAt(i);
         WorkPlanModel workPlans = workPlanBox.getAt(i);
         if (!existingData.containsKey(dataKey)) {
           existingData[dataKey] = workPlans.toJson();
+          isDataExistForBackup = true;
         }
+      }
+
+      if(!isDataExistForBackup){
+        Navigator.of(context).pop();
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: const Text('No new work plan data is available for backup'),
+            backgroundColor: redColor,
+            showCloseIcon: true,
+            closeIconColor: whiteColor,
+          ),
+        );
+        return ;
       }
       await document.set(existingData).then((value) {
         Navigator.of(context).pop();

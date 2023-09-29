@@ -171,7 +171,7 @@ class _SettingScreenState extends State<SettingScreen> {
                       User? user = FirebaseAuth.instance.currentUser;
                       if(user?.uid == null){
                         showDialog(context: context, builder: (context){
-                          return  const AlertBoxForAskingEmail(isSignupFunction: false);
+                          return   const AlertBoxForAskingEmail(isSignupFunction: false, isBackup: false, );
                         });
                       }
                       else{
@@ -195,7 +195,7 @@ class _SettingScreenState extends State<SettingScreen> {
                       User? user = FirebaseAuth.instance.currentUser;
                       if(user?.uid == null){
                         showDialog(context: context, builder: (context){
-                          return  const AlertBoxForAskingEmail(isSignupFunction: true);
+                          return  const AlertBoxForAskingEmail(isSignupFunction: true,isBackup: true, );
                         });
                       }
                       else{
@@ -212,14 +212,9 @@ class _SettingScreenState extends State<SettingScreen> {
               ],
             ),
             SizedBox(height: 10.h),
-            Text(
-              'custom text for testing',
-              style: CustomTextStyle.kBodyText1.copyWith(
-                color: blackColor,
-                fontSize: 14.sp,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
+          // IconButton(onPressed: (){
+          //   FirebaseAuth.instance.signOut();
+          // }, icon: Icon(Icons.logout)),
           ],
         ),
       ),
