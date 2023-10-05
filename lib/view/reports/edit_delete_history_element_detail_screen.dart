@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hive/hive.dart';
@@ -362,6 +364,38 @@ class _EditDeleteHistoryElementState extends State<EditDeleteHistoryElement> {
                                                     });
                                                   }
                                                 } else {
+                                                  User? user = FirebaseAuth
+                                                      .instance.currentUser;
+
+                                                  // if (user != null) {
+                                                  //   try {
+                                                  //     final DocumentReference
+                                                  //         document =
+                                                  //         FirebaseFirestore
+                                                  //             .instance
+                                                  //             .collection(
+                                                  //                 'backup')
+                                                  //             .doc(user.uid);
+                                                  //     final DocumentSnapshot
+                                                  //         snapshot =
+                                                  //         await document.get();
+                                                  //     if (snapshot.exists) {
+                                                  //       final Map<String,
+                                                  //               dynamic>
+                                                  //           dataMap =
+                                                  //           snapshot.data()
+                                                  //               as Map<String,
+                                                  //                   dynamic>;
+                                                  //     } else {
+                                                  //       debugPrint(
+                                                  //           'Not found documents');
+                                                  //     }
+                                                  //   } catch (e) {
+                                                  //     debugPrint(
+                                                  //         'Error with updates : $e');
+                                                  //   }
+                                                  // }
+
                                                   jobHistoryBox
                                                       .put(widget.listKey,
                                                           jobList)
