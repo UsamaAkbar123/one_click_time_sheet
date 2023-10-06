@@ -207,6 +207,7 @@ class _ReportScreenState extends State<ReportScreen> {
                                           padding: EdgeInsets.zero,
                                           shrinkWrap: true,
                                           itemBuilder: (context, j) {
+                                            String uuid = jobList[j].uuid;
                                             int totalHoursForFinalSumResult = 0;
                                             int totalMinutesForFinalSumResult =
                                                 0;
@@ -455,6 +456,7 @@ class _ReportScreenState extends State<ReportScreen> {
                                                             indexKey:
                                                                 originalId,
                                                             iIndex: i,
+                                                            uuid: uuid,
                                                           ),
                                                         historyElementList[k]
                                                                     .type ==
@@ -484,6 +486,7 @@ class _ReportScreenState extends State<ReportScreen> {
                                                                 indexKey:
                                                                     originalId,
                                                                 iIndex: i,
+                                                          uuid: uuid,
                                                               ),
                                                         k + 1 ==
                                                                 jobList[j]

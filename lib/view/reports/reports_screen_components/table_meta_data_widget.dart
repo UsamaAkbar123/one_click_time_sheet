@@ -14,6 +14,7 @@ class TableMetaDataWidget extends StatelessWidget {
   final List<HistoryElement>? editDeleteHistoryElement;
   final String indexKey;
   final int iIndex;
+  final String uuid;
 
   const TableMetaDataWidget({
     Key? key,
@@ -25,6 +26,7 @@ class TableMetaDataWidget extends StatelessWidget {
     required this.editDeleteHistoryElement,
     required this.indexKey,
     required this.iIndex,
+    required this.uuid,
   }) : super(key: key);
 
   @override
@@ -142,6 +144,7 @@ class TableMetaDataWidget extends StatelessWidget {
                           historyElement: editDeleteHistoryElement,
                           listKey: indexKey,
                           iIndex: iIndex,
+                          uuid: uuid,
                         );
                       },
                     ));
@@ -161,6 +164,7 @@ class TableMetaDataWidget extends StatelessWidget {
                           historyElement: editDeleteHistoryElement,
                           listKey: indexKey,
                           iIndex: iIndex,
+                          uuid: uuid,
                         );
                       },
                     ));

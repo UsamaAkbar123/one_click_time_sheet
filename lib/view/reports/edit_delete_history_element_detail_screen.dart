@@ -14,11 +14,13 @@ class EditDeleteHistoryElement extends StatefulWidget {
   final List<HistoryElement>? historyElement;
   final String listKey;
   final int iIndex;
+  final String uuid;
 
   const EditDeleteHistoryElement({
     required this.historyElement,
     required this.listKey,
     required this.iIndex,
+    required this.uuid,
     super.key,
   });
 
@@ -36,11 +38,14 @@ class _EditDeleteHistoryElementState extends State<EditDeleteHistoryElement> {
   DateTime? jobTime;
   DateTime? jobDate;
   int selectedIndex = -1;
+  User? user = FirebaseAuth.instance.currentUser;
 
   @override
   void initState() {
     super.initState();
     final dynamicList = jobHistoryBox.get(widget.listKey);
+
+    print('uuid: ${widget.uuid}');
 
     if (dynamicList.isNotEmpty) {
       for (int i = 0; i < dynamicList.length; i++) {
@@ -298,6 +303,7 @@ class _EditDeleteHistoryElementState extends State<EditDeleteHistoryElement> {
                             String elementId =
                                 widget.historyElement?[index].elementId ?? '';
                             for (int i = 0; i < jobList.length; i++) {
+
                               List<HistoryElement> historyElement =
                                   jobList[i].historyElement ?? [];
                               if (historyElement.length ==
@@ -323,6 +329,7 @@ class _EditDeleteHistoryElementState extends State<EditDeleteHistoryElement> {
                                             ),
                                             TextButton(
                                               onPressed: () async {
+                                                String uuid = jobList[i].uuid;
                                                 jobList[i]
                                                     .historyElement
                                                     ?.removeAt(j);
@@ -341,6 +348,63 @@ class _EditDeleteHistoryElementState extends State<EditDeleteHistoryElement> {
                                                           .pop();
                                                     }
                                                   } else {
+                                                    // print(
+                                                    //     'user id: ${user?.uid}');
+
+                                                    if (user != null) {
+                                                      try {
+                                                        final DocumentReference
+                                                            document =
+                                                            FirebaseFirestore
+                                                                .instance
+                                                                .collection(
+                                                                    'backup')
+                                                                .doc(user?.uid);
+                                                        final DocumentSnapshot
+                                                            snapshot =
+                                                            await document
+                                                                .get();
+                                                        if (snapshot.exists) {
+                                                          final Map<String,
+                                                                  dynamic>
+                                                              dataMap =
+                                                              snapshot.data()
+                                                                  as Map<String,
+                                                                      dynamic>;
+
+                                                          // print('uuid: ${widget.uuid}');
+                                                          // print(
+                                                          //     'data map: $dataMap');
+                                                          List<dynamic> history = dataMap[widget.listKey];
+                                                          // print('before history list: $history');
+                                                          history.removeWhere((element) {
+                                                            if (element is Map<
+                                                                String,
+                                                                dynamic>) {
+                                                              return element[
+                                                              'uuid'] ==
+                                                                  widget.uuid;
+                                                            }
+                                                            return false;
+                                                          });
+                                                          // print('after history list: $history');
+                                                          dataMap[widget.listKey] = history;
+                                                          print('after history list: $dataMap');
+
+                                                          document.update({
+                                                          widget.listKey: dataMap,
+
+                                                          });
+
+                                                        } else {
+                                                          debugPrint(
+                                                              'Not found documents');
+                                                        }
+                                                      } catch (e) {
+                                                        debugPrint(
+                                                            'Error with updates : $e');
+                                                      }
+                                                    }
                                                     jobHistoryBox
                                                         .put(widget.listKey,
                                                             jobList)
@@ -364,8 +428,8 @@ class _EditDeleteHistoryElementState extends State<EditDeleteHistoryElement> {
                                                     });
                                                   }
                                                 } else {
-                                                  User? user = FirebaseAuth
-                                                      .instance.currentUser;
+                                                  // print(
+                                                  //     'user id: ${user?.uid}');
 
                                                   // if (user != null) {
                                                   //   try {
@@ -375,7 +439,7 @@ class _EditDeleteHistoryElementState extends State<EditDeleteHistoryElement> {
                                                   //             .instance
                                                   //             .collection(
                                                   //                 'backup')
-                                                  //             .doc(user.uid);
+                                                  //             .doc(user?.uid);
                                                   //     final DocumentSnapshot
                                                   //         snapshot =
                                                   //         await document.get();
@@ -386,6 +450,56 @@ class _EditDeleteHistoryElementState extends State<EditDeleteHistoryElement> {
                                                   //           snapshot.data()
                                                   //               as Map<String,
                                                   //                   dynamic>;
+                                                  //       if (dataMap.containsKey(
+                                                  //           widget.listKey)) {
+                                                  //         List<dynamic>
+                                                  //             history =
+                                                  //             dataMap[widget
+                                                  //                     .listKey]
+                                                  //                 as List<
+                                                  //                     dynamic>;
+                                                  //
+                                                  //         // print('element id: $elementId');
+                                                  //         // print('before date map: ${dataMap[widget.listKey]}');
+                                                  //
+                                                  //
+                                                  //
+                                                  //         // Remove the historyElement with the matching elementId
+                                                  //         // history.forEach((element) {
+                                                  //         //   List<dynamic> historyElementList = element['historyElement'];
+                                                  //         //   // print(
+                                                  //         //   //     'before history: $history');
+                                                  //         //   historyElementList.removeWhere((element) {
+                                                  //         removeWhere//
+                                                  //         if (element is Map<
+                                                  //                 String,
+                                                  //                 dynamic>) {
+                                                  //               return element[
+                                                  //               'elementId'] ==
+                                                  //                   elementId;
+                                                  //             }
+                                                  //         //     return false;
+                                                  //         //   });
+                                                  //         //   // print(
+                                                  //         //   //     'after history: $history');
+                                                  //         //   element['historyElement'] = historyElementList;
+                                                  //         //   dataMap[widget.listKey] = history;
+                                                  //         // });
+                                                  //         //
+                                                  //         // print('after date map: ${dataMap[widget.listKey]}');
+                                                  //
+                                                  //
+                                                  //
+                                                  //
+                                                  //
+                                                  //
+                                                  //         // Update the document with the modified historyElement array
+                                                  //         await document.update({
+                                                  //         widget.listKey: history,
+                                                  //         });
+                                                  //       }
+                                                  //
+                                                  //
                                                   //     } else {
                                                   //       debugPrint(
                                                   //           'Not found documents');
