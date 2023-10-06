@@ -45,7 +45,7 @@ class _EditDeleteHistoryElementState extends State<EditDeleteHistoryElement> {
     super.initState();
     final dynamicList = jobHistoryBox.get(widget.listKey);
 
-    print('uuid: ${widget.uuid}');
+    // print('uuid: ${widget.uuid}');
 
     if (dynamicList.isNotEmpty) {
       for (int i = 0; i < dynamicList.length; i++) {
@@ -303,7 +303,6 @@ class _EditDeleteHistoryElementState extends State<EditDeleteHistoryElement> {
                             String elementId =
                                 widget.historyElement?[index].elementId ?? '';
                             for (int i = 0; i < jobList.length; i++) {
-
                               List<HistoryElement> historyElement =
                                   jobList[i].historyElement ?? [];
                               if (historyElement.length ==
@@ -329,7 +328,6 @@ class _EditDeleteHistoryElementState extends State<EditDeleteHistoryElement> {
                                             ),
                                             TextButton(
                                               onPressed: () async {
-                                                String uuid = jobList[i].uuid;
                                                 jobList[i]
                                                     .historyElement
                                                     ?.removeAt(j);
@@ -339,6 +337,63 @@ class _EditDeleteHistoryElementState extends State<EditDeleteHistoryElement> {
                                                     .isEmpty) {
                                                   jobList.removeAt(i);
                                                   if (jobList.isEmpty) {
+                                                    if (user != null) {
+                                                      try {
+                                                        final DocumentReference
+                                                            document =
+                                                            FirebaseFirestore
+                                                                .instance
+                                                                .collection(
+                                                                    'backup')
+                                                                .doc(user?.uid);
+                                                        final DocumentSnapshot
+                                                            snapshot =
+                                                            await document
+                                                                .get();
+                                                        if (snapshot.exists) {
+                                                          Map<String, dynamic>
+                                                              dataMap =
+                                                              snapshot.data()
+                                                                  as Map<String,
+                                                                      dynamic>;
+
+                                                          // print('uuid: ${widget.uuid}');
+                                                          // print(
+                                                          //     'data map: $dataMap');
+                                                          List<dynamic>
+                                                              history = dataMap[
+                                                                  widget
+                                                                      .listKey];
+                                                          // print('before history list: $history');
+                                                          history.removeWhere(
+                                                              (element) {
+                                                            if (element is Map<
+                                                                String,
+                                                                dynamic>) {
+                                                              return element[
+                                                                      'uuid'] ==
+                                                                  widget.uuid;
+                                                            }
+                                                            return false;
+                                                          });
+                                                          // print('after history list: $history');
+                                                          dataMap[widget
+                                                                  .listKey] =
+                                                              history;
+                                                          // print(
+                                                          //     'after history list: $dataMap');
+
+                                                          document
+                                                              .update(dataMap);
+                                                        } else {
+                                                          debugPrint(
+                                                              'Not found documents');
+                                                        }
+                                                      } catch (e) {
+                                                        debugPrint(
+                                                            'Error with updates : $e');
+                                                      }
+                                                    }
                                                     await jobHistoryBox
                                                         .deleteAt(
                                                       widget.iIndex,
@@ -365,8 +420,7 @@ class _EditDeleteHistoryElementState extends State<EditDeleteHistoryElement> {
                                                             await document
                                                                 .get();
                                                         if (snapshot.exists) {
-                                                          final Map<String,
-                                                                  dynamic>
+                                                          Map<String, dynamic>
                                                               dataMap =
                                                               snapshot.data()
                                                                   as Map<String,
@@ -375,27 +429,31 @@ class _EditDeleteHistoryElementState extends State<EditDeleteHistoryElement> {
                                                           // print('uuid: ${widget.uuid}');
                                                           // print(
                                                           //     'data map: $dataMap');
-                                                          List<dynamic> history = dataMap[widget.listKey];
+                                                          List<dynamic>
+                                                              history = dataMap[
+                                                                  widget
+                                                                      .listKey];
                                                           // print('before history list: $history');
-                                                          history.removeWhere((element) {
+                                                          history.removeWhere(
+                                                              (element) {
                                                             if (element is Map<
                                                                 String,
                                                                 dynamic>) {
                                                               return element[
-                                                              'uuid'] ==
+                                                                      'uuid'] ==
                                                                   widget.uuid;
                                                             }
                                                             return false;
                                                           });
                                                           // print('after history list: $history');
-                                                          dataMap[widget.listKey] = history;
-                                                          print('after history list: $dataMap');
+                                                          dataMap[widget
+                                                                  .listKey] =
+                                                              history;
+                                                          // print(
+                                                          //     'after history list: $dataMap');
 
-                                                          document.update({
-                                                          widget.listKey: dataMap,
-
-                                                          });
-
+                                                          document
+                                                              .update(dataMap);
                                                         } else {
                                                           debugPrint(
                                                               'Not found documents');

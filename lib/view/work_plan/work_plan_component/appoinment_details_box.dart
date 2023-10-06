@@ -60,7 +60,7 @@ class _AppointmentDetailsBoxState extends State<AppointmentDetailsBox> {
                       Navigator.of(context).pop();
                     });
                     if (user != null) {
-                      print('user id: ${user.uid}');
+                      // print('user id: ${user.uid}');
                       try {
                         final DocumentReference documentRef = FirebaseFirestore
                             .instance

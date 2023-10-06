@@ -2,7 +2,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:one_click_time_sheet/utills/constants/colors.dart';
 import 'package:one_click_time_sheet/view/component/loading_widget.dart';
-import 'data_backup.dart';
 
 class UserManager {
   final FirebaseAuth _auth = FirebaseAuth.instance;
