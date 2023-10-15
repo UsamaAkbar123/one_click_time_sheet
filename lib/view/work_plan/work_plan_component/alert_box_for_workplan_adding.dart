@@ -235,6 +235,76 @@ class _AddWorkPlanBoxState extends State<AddWorkPlanBox> {
 
   // TimeOfDay selectedTime = TimeOfDay.now();
 
+  bool isWorkPlanExist(
+    List<WorkPlanModel> existingWorkPlanList,
+    WorkPlanModel workPlanModel,
+    bool isEditMood,
+  ) {
+    /// filter work plan based on date
+    List<WorkPlanModel> filterWorkPlanOnDate = [];
+
+    for (WorkPlanModel meeting in existingWorkPlanList) {
+      if (meeting.workPlanDate == workPlanModel.workPlanDate) {
+        filterWorkPlanOnDate.add(meeting);
+      }
+    }
+
+    // print('length: ${filterWorkPlanOnDate.length}');
+
+    if (filterWorkPlanOnDate.isEmpty) {
+      return false;
+    }
+
+    for (WorkPlanModel meeting in filterWorkPlanOnDate) {
+      /// case 1 if start time hour and end time hour is equal to new meeting start time end time hour
+      if (isEditMood == false) {
+        if (workPlanModel.startWorkPlanTime.hour ==
+                meeting.startWorkPlanTime.hour ||
+            workPlanModel.endWorkPlanTime.hour ==
+                meeting.endWorkPlanTime.hour) {
+          // print('case 1');
+          // isAlreadyWorkPlanExist = true;
+          return true;
+          // print(isAlreadyWorkPlanExist);
+          // break;
+        }
+      }
+
+      /// case 2/3 if new meeting start end time is between old meeting start end time
+      /// case 3 if start time of new meeting is between old meeting start end time
+      if (workPlanModel.startWorkPlanTime.isAfter(meeting.startWorkPlanTime) &&
+          workPlanModel.startWorkPlanTime.isBefore(meeting.endWorkPlanTime)) {
+        // print('case 2/3');
+        // isAlreadyWorkPlanExist = true;
+        // print(isAlreadyWorkPlanExist);
+        // break;
+        return true;
+      }
+
+      /// case 3 if start time of new meeting is between old meeting start end time
+      if (workPlanModel.endWorkPlanTime.isAfter(meeting.startWorkPlanTime) &&
+          workPlanModel.endWorkPlanTime.isBefore(meeting.endWorkPlanTime)) {
+        // print('case 4');
+        // isAlreadyWorkPlanExist = true;
+        // print(isAlreadyWorkPlanExist);
+        // break;
+        return true;
+      }
+
+      /// case 5 if end time of new meeting is before and after old meeting start end time
+      if (workPlanModel.startWorkPlanTime.isBefore(meeting.startWorkPlanTime) &&
+          workPlanModel.endWorkPlanTime.isAfter(meeting.endWorkPlanTime)) {
+        // print('case 5');
+        // isAlreadyWorkPlanExist = true;
+        // print(isAlreadyWorkPlanExist);
+        // break;
+        return true;
+      }
+    }
+
+    return false;
+  }
+
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
@@ -444,20 +514,48 @@ class _AddWorkPlanBoxState extends State<AddWorkPlanBox> {
                     ),
                   );
 
-                  if (box.containsKey(workPlanModel.id)) {
-                    box.put(widget.id, workPlanModel).then((value) {
-                      nameController.clear();
-                      startTimeForFrontEnd = AppLocalizations.of(context)
-                              ?.addWorkPlanDialogWorkPlanSelectEndTime ??
-                          '';
-                      endTimeForFrontEnd = AppLocalizations.of(context)
-                              ?.addWorkPlanDialogWorkPlanSelectEndTime ??
-                          '';
-                      workPlanDateForFrontEnd = AppLocalizations.of(context)
-                              ?.addWorkPlanDialogWorkPlanSelectDate ??
-                          '';
-                      Navigator.of(context).pop();
-                    });
+                  /// check that on added time, can work plan added or not
+                  List<WorkPlanModel> existingWorkPlanList =
+                      box.values.cast<WorkPlanModel>().toList();
+
+                  /// variable for check work plan already on given start end time
+                  bool isAlreadyWorkPlanExist = false;
+
+                  if (existingWorkPlanList.isNotEmpty) {
+                    isAlreadyWorkPlanExist = isWorkPlanExist(
+                      existingWorkPlanList,
+                      workPlanModel,
+                      true,
+                    );
+                  }
+
+                  // print(isAlreadyWorkPlanExist);
+
+                  if (isAlreadyWorkPlanExist) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: const Text(
+                          'WorkPlan Already added on this time slot',
+                        ),
+                        backgroundColor: redColor,
+                      ),
+                    );
+                  } else {
+                    if (box.containsKey(workPlanModel.id)) {
+                      box.put(widget.id, workPlanModel).then((value) {
+                        nameController.clear();
+                        startTimeForFrontEnd = AppLocalizations.of(context)
+                                ?.addWorkPlanDialogWorkPlanSelectEndTime ??
+                            '';
+                        endTimeForFrontEnd = AppLocalizations.of(context)
+                                ?.addWorkPlanDialogWorkPlanSelectEndTime ??
+                            '';
+                        workPlanDateForFrontEnd = AppLocalizations.of(context)
+                                ?.addWorkPlanDialogWorkPlanSelectDate ??
+                            '';
+                        Navigator.of(context).pop();
+                      });
+                    }
                   }
                 } else if (widget.isEmptySpaceClick == true) {
                   if (endTimeForBackEnd.isBefore(startTimeForBackEnd)) {
@@ -479,13 +577,39 @@ class _AddWorkPlanBoxState extends State<AddWorkPlanBox> {
                     ),
                   );
 
-                  await box.put(id, workPlanModel).then((value) {
-                    nameController.clear();
-                    startTimeForFrontEnd = 'select start time';
-                    endTimeForFrontEnd = 'select end time';
-                    workPlanDateForFrontEnd = 'select date';
-                    Navigator.of(context).pop();
-                  });
+                  /// check that on added time, can work plan added or not
+                  List<WorkPlanModel> existingWorkPlanList =
+                      box.values.cast<WorkPlanModel>().toList();
+
+                  /// variable for check work plan already on given start end time
+                  bool isAlreadyWorkPlanExist = false;
+
+                  if (existingWorkPlanList.isNotEmpty) {
+                    isAlreadyWorkPlanExist = isWorkPlanExist(
+                      existingWorkPlanList,
+                      workPlanModel,
+                      false,
+                    );
+                  }
+
+                  if (isAlreadyWorkPlanExist) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: const Text(
+                          'WorkPlan Already added on this time slot',
+                        ),
+                        backgroundColor: redColor,
+                      ),
+                    );
+                  } else {
+                    await box.put(id, workPlanModel).then((value) {
+                      nameController.clear();
+                      startTimeForFrontEnd = 'select start time';
+                      endTimeForFrontEnd = 'select end time';
+                      workPlanDateForFrontEnd = 'select date';
+                      Navigator.of(context).pop();
+                    });
+                  }
                 } else {
                   if (endTimeForBackEnd.isBefore(startTimeForBackEnd)) {
                     endTimeForBackEnd = endTimeForBackEnd.add(
@@ -510,65 +634,15 @@ class _AddWorkPlanBoxState extends State<AddWorkPlanBox> {
                   List<WorkPlanModel> existingWorkPlanList =
                       box.values.cast<WorkPlanModel>().toList();
 
-                  /// filter work plan based on date
-                  List<WorkPlanModel> filterWorkPlanOnDate = [];
-
-                  for (WorkPlanModel meeting in existingWorkPlanList) {
-                    if (meeting.workPlanDate == workPlanModel.workPlanDate) {
-                      filterWorkPlanOnDate.add(meeting);
-                    }
-                  }
-
-                  // print('length: ${filterWorkPlanOnDate.length}');
-
                   /// variable for check work plan already on given start end time
                   bool isAlreadyWorkPlanExist = false;
 
-                  for (WorkPlanModel meeting in filterWorkPlanOnDate) {
-                    /// case 1 if start time hour and end time hour is equal to new meeting start time end time hour
-                    if (workPlanModel.startWorkPlanTime.hour ==
-                            meeting.startWorkPlanTime.hour ||
-                        workPlanModel.endWorkPlanTime.hour ==
-                            meeting.endWorkPlanTime.hour) {
-                      // print('case 1');
-                      isAlreadyWorkPlanExist = true;
-                      // print(isAlreadyWorkPlanExist);
-                      break;
-                    }
-
-                    /// case 2/3 if new meeting start end time is between old meeting start end time
-                    /// case 3 if start time of new meeting is between old meeting start end time
-                    if (workPlanModel.startWorkPlanTime
-                            .isAfter(meeting.startWorkPlanTime) &&
-                        workPlanModel.startWorkPlanTime
-                            .isBefore(meeting.endWorkPlanTime)) {
-                      // print('case 2/3');
-                      isAlreadyWorkPlanExist = true;
-                      // print(isAlreadyWorkPlanExist);
-                      break;
-                    }
-
-                    /// case 3 if start time of new meeting is between old meeting start end time
-                    if (workPlanModel.endWorkPlanTime
-                            .isAfter(meeting.startWorkPlanTime) &&
-                        workPlanModel.endWorkPlanTime
-                            .isBefore(meeting.endWorkPlanTime)) {
-                      // print('case 4');
-                      isAlreadyWorkPlanExist = true;
-                      // print(isAlreadyWorkPlanExist);
-                      break;
-                    }
-
-                    /// case 5 if end time of new meeting is before and after old meeting start end time
-                    if (workPlanModel.startWorkPlanTime
-                            .isBefore(meeting.startWorkPlanTime) &&
-                        workPlanModel.endWorkPlanTime
-                            .isAfter(meeting.endWorkPlanTime)) {
-                      // print('case 5');
-                      isAlreadyWorkPlanExist = true;
-                      // print(isAlreadyWorkPlanExist);
-                      break;
-                    }
+                  if (existingWorkPlanList.isNotEmpty) {
+                    isAlreadyWorkPlanExist = isWorkPlanExist(
+                      existingWorkPlanList,
+                      workPlanModel,
+                      false,
+                    );
                   }
 
                   if (isAlreadyWorkPlanExist) {

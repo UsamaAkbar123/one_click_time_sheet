@@ -1,5 +1,5 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+// import 'package:cloud_firestore/cloud_firestore.dart';
+// import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hive/hive.dart';
@@ -55,39 +55,39 @@ class _AppointmentDetailsBoxState extends State<AppointmentDetailsBox> {
               children: [
                 GestureDetector(
                   onTap: () async {
-                    User? user = FirebaseAuth.instance.currentUser;
+                    // User? user = FirebaseAuth.instance.currentUser;
                     box.delete(tappedMeeting.id).then((value) {
                       Navigator.of(context).pop();
                     });
-                    if (user != null) {
-                      // print('user id: ${user.uid}');
-                      try {
-                        final DocumentReference documentRef = FirebaseFirestore
-                            .instance
-                            .collection('workPlanBackup')
-                            .doc(user.uid);
+                    // if (user != null) {
+                    //   // print('user id: ${user.uid}');
+                    //   try {
+                    //     final DocumentReference documentRef = FirebaseFirestore
+                    //         .instance
+                    //         .collection('workPlanBackup')
+                    //         .doc(user.uid);
 
-                        // Get the current data from the document
-                        DocumentSnapshot snapshot = await documentRef.get();
-                        if (snapshot.exists) {
-                          // Retrieve the list of maps from the document
-                          Map<String, dynamic> dataMap =
-                              snapshot.data() as Map<String, dynamic>;
+                    //     // Get the current data from the document
+                    //     DocumentSnapshot snapshot = await documentRef.get();
+                    //     if (snapshot.exists) {
+                    //       // Retrieve the list of maps from the document
+                    //       Map<String, dynamic> dataMap =
+                    //           snapshot.data() as Map<String, dynamic>;
 
-                          dataMap.remove(tappedMeeting.id);
+                    //       dataMap.remove(tappedMeeting.id);
 
-                          debugPrint('map data: $dataMap');
+                    //       debugPrint('map data: $dataMap');
 
-                          // Update the document with the modified list
-                          await documentRef.set(dataMap);
-                          debugPrint('Item deleted successfully');
-                        } else {
-                          debugPrint('Document not found');
-                        }
-                      } catch (e) {
-                        debugPrint('Error deleting item: $e');
-                      }
-                    }
+                    //       // Update the document with the modified list
+                    //       await documentRef.set(dataMap);
+                    //       debugPrint('Item deleted successfully');
+                    //     } else {
+                    //       debugPrint('Document not found');
+                    //     }
+                    //   } catch (e) {
+                    //     debugPrint('Error deleting item: $e');
+                    //   }
+                    // }
                   },
                   child: Icon(
                     Icons.delete,
