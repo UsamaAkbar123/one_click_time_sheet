@@ -151,19 +151,29 @@ class _ReportScreenState extends State<ReportScreen> {
                         valueListenable: box.listenable(),
                         builder: (context, Box box, widget) {
                           // print('box length: ${box.length}');
+                          final keys = box.keys.toList();
+                          keys.sort((a, b) {
+                            return DateFormat('EEEE, dd, M, yyyy')
+                                .parse(b)
+                                .compareTo(
+                                    DateFormat('EEEE, dd, M, yyyy').parse(a));
+                          });
                           return ListView.builder(
-                            itemCount: box.length,
+                            // itemCount: box.length,
+                            itemCount: keys.length,
                             physics: const NeverScrollableScrollPhysics(),
                             padding: EdgeInsets.zero,
                             shrinkWrap: true,
                             itemBuilder: (context, i) {
+                              final key = keys[i];
                               List<JobHistoryModel> jobList =
-                                  box.getAt(i).cast<JobHistoryModel>();
-                              String id = box.keyAt(i);
-                              String originalId = id;
+                                  box.get(key).cast<JobHistoryModel>();
+                              // String id = box.keyAt(i);
+                              String id = '';
+                              String originalId = key;
 
                               DateTime dateTime =
-                                  DateFormat('EEEE, dd, M, yyyy').parse(id);
+                                  DateFormat('EEEE, dd, M, yyyy').parse(key);
                               id = DateFormat(preferenceManager.getDateFormat)
                                   .format(dateTime);
 
@@ -486,7 +496,7 @@ class _ReportScreenState extends State<ReportScreen> {
                                                                 indexKey:
                                                                     originalId,
                                                                 iIndex: i,
-                                                          uuid: uuid,
+                                                                uuid: uuid,
                                                               ),
                                                         k + 1 ==
                                                                 jobList[j]

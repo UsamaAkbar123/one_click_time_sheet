@@ -832,22 +832,14 @@ class _HomeScreenState extends State<HomeScreen> {
                     valueListenable: jobHistoryBox.listenable(),
                     builder: (context, Box box, widget) {
                       final keys = box.keys.toList();
-                      // for (int i = 0; i < keys.length; i++) {
-                      //   print('Before keys: ${keys[i]}');
-                      // }
-                      keys.sort(
-                          // (a, b) =>
-                          //     DateTime.parse(b).compareTo(DateTime.parse(a)),
-                          (a, b) {
+
+                      keys.sort((a, b) {
                         return DateFormat('EEEE, dd, M, yyyy')
                             .parse(b)
                             .compareTo(
                                 DateFormat('EEEE, dd, M, yyyy').parse(a));
                       });
 
-                      // for (int i = 0; i < keys.length; i++) {
-                      //   print('After keys: ${keys[i]}');
-                      // }
                       return ListView.builder(
                           // itemCount: box.length,
                           itemCount: keys.length,
