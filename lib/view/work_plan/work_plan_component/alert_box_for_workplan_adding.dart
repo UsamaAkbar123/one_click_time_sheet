@@ -5,6 +5,7 @@ import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
 import 'package:one_click_time_sheet/managers/preference_manager.dart';
 import 'package:one_click_time_sheet/model/work_plan_model.dart';
+import 'package:one_click_time_sheet/services/notification_service/notification_service.dart';
 import 'package:one_click_time_sheet/utills/constants/colors.dart';
 import 'package:one_click_time_sheet/utills/constants/text_styles.dart';
 import 'package:uuid/uuid.dart';
@@ -575,6 +576,14 @@ class _AddWorkPlanBoxState extends State<AddWorkPlanBox> {
                       startTimeForBackEnd.month,
                       startTimeForBackEnd.day,
                     ),
+                  );
+
+                  NotificationService().scheduleStartJobNotification(
+                    notificationId: 1,
+                    startJobTime: startTimeForBackEnd,
+                    beforeNotificationSetter: 3
+
+                      , body: nameController.text,
                   );
 
                   /// check that on added time, can work plan added or not

@@ -4,8 +4,8 @@ import 'package:email_validator/email_validator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:one_click_time_sheet/firebase_service/data_backup.dart';
-import 'package:one_click_time_sheet/firebase_service/user_manager.dart';
+import 'package:one_click_time_sheet/services/firebase_service/data_backup.dart';
+import 'package:one_click_time_sheet/services/firebase_service/user_manager.dart';
 import 'package:one_click_time_sheet/utills/constants/colors.dart';
 import 'package:one_click_time_sheet/utills/constants/text_styles.dart';
 
