@@ -98,6 +98,16 @@ class DataBackup {
   Future<void> backupDataToFirebase(context) async {
     try {
       loadingDialogue(context: context);
+      WriteBatch batch = FirebaseFirestore.instance.batch();
+
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection('backup').get();
+
+      for (var document in querySnapshot.docs) {
+        batch.delete(document.reference);
+      }
+
+      await batch.commit();
+
       if (jobHistoryBox.isNotEmpty) {
         final CollectionReference collection =
             FirebaseFirestore.instance.collection('backup');
@@ -268,6 +278,17 @@ class DataBackup {
   Future<void> backupDataWorkPlan(context) async {
     loadingDialogue(context: context);
     try {
+
+      WriteBatch batch = FirebaseFirestore.instance.batch();
+
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection('workPlanBackup').get();
+
+      for (var document in querySnapshot.docs) {
+        batch.delete(document.reference);
+      }
+
+      await batch.commit();
+
       final workPlanBox = await Hive.openBox('workPlan');
       final CollectionReference workPlanCollection =
           FirebaseFirestore.instance.collection('workPlanBackup');
