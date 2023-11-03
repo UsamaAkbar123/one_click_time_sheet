@@ -31,12 +31,7 @@ class _AppointmentDetailsBoxState extends State<AppointmentDetailsBox> {
   void initState() {
     tappedMeeting =
         widget.calendarTapDetail?.appointments?.first as Appointment;
-    // final todayDate = DateTime(
-    //   DateTime.now().year,
-    //   DateTime.now().month,
-    //   DateTime.now().day,
-    // );
-    if (tappedMeeting.startTime.isBefore(DateTime.now())) {
+    if (tappedMeeting.endTime.isBefore(DateTime.now())) {
       meetingStatus = 'old';
     } else {
       meetingStatus = 'new';
