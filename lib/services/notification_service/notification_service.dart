@@ -1,4 +1,5 @@
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:intl/intl.dart';
 import 'package:one_click_time_sheet/managers/preference_manager.dart';
 import 'package:one_click_time_sheet/model/work_plan_model.dart';
 import 'package:timezone/timezone.dart' as tz;
@@ -6,6 +7,8 @@ import 'package:timezone/timezone.dart' as tz;
 class NotificationService {
   static final NotificationService _notificationService =
       NotificationService._internal();
+
+  PreferenceManager preferenceManager = PreferenceManager();
 
   factory NotificationService() {
     return _notificationService;
@@ -36,12 +39,25 @@ class NotificationService {
     required WorkPlanModel workPlanModel,
     required DateTime scheduledNotificationDateTime,
   }) async {
+    String startTime = '';
+    String endTime = '';
+    if (preferenceManager.getTimeFormat == '24h') {
+      startTime =
+          DateFormat.Hm().format(workPlanModel.startWorkPlanTime);
+      endTime =
+          DateFormat.Hm().format(workPlanModel.endWorkPlanTime);
+    } else {
+      startTime =
+          DateFormat.jm().format(workPlanModel.startWorkPlanTime);
+      endTime =
+          DateFormat.jm().format(workPlanModel.endWorkPlanTime);
+    }
     return flutterLocalNotificationsPlugin.zonedSchedule(
       workPlanModel.notificationId ?? 0,
       'Start Job Remainder',
-      "${workPlanModel.workPlanName} from ${workPlanModel.startWorkPlanTime} to ${workPlanModel.endWorkPlanTime}",
+      "${workPlanModel.workPlanName} from $startTime to $endTime",
       tz.TZDateTime.from(
-        scheduledNotificationDateTime,
+        workPlanModel.startWorkPlanTime,
         tz.local,
       ),
       const NotificationDetails(
@@ -63,14 +79,12 @@ class NotificationService {
     required WorkPlanModel workPlanModel,
     required DateTime scheduledNotificationDateTime,
   }) async {
-    // Generate a unique id based on the current timestamp
-    int id = DateTime.now().millisecondsSinceEpoch % 2147483647;
     return flutterLocalNotificationsPlugin.zonedSchedule(
       workPlanModel.notificationId ?? 0,
       'End Job Remainder',
       "Job end in ${PreferenceManager().getEndJobNotificationLimit} minutes",
       tz.TZDateTime.from(
-        scheduledNotificationDateTime,
+        workPlanModel.endWorkPlanTime,
         tz.local,
       ),
       const NotificationDetails(
