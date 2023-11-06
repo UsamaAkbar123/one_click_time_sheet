@@ -17,7 +17,7 @@ import 'model/hive_job_history_model.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await PreferenceManager().init();
-  await NotificationService().init();
+  await NotificationService().initNotification();
   final localizationProvider = LocalizationProvider();
   await localizationProvider.setLocalBasedOnLanguagePreferenceValue();
   await Firebase.initializeApp();

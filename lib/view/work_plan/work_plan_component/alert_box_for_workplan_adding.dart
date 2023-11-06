@@ -578,13 +578,12 @@ class _AddWorkPlanBoxState extends State<AddWorkPlanBox> {
                     ),
                   );
 
-                  NotificationService().scheduleStartJobNotification(
-                    notificationId: 1,
-                    startJobTime: startTimeForBackEnd,
-                    beforeNotificationSetter: 3
-
-                      , body: nameController.text,
-                  );
+                  // NotificationService().scheduleStartJobNotification(
+                  //   notificationId: 1,
+                  //   startJobTime: startTimeForBackEnd,
+                  //   beforeNotificationSetter: 1
+                  //     , body: nameController.text,
+                  // );
 
                   /// check that on added time, can work plan added or not
                   List<WorkPlanModel> existingWorkPlanList =
@@ -612,6 +611,14 @@ class _AddWorkPlanBoxState extends State<AddWorkPlanBox> {
                     );
                   } else {
                     await box.put(id, workPlanModel).then((value) {
+                      NotificationService().scheduleNotification(
+                        title: 'Remainder',
+                        body: nameController.text,
+                        scheduledNotificationDateTime:
+                            startTimeForBackEnd.subtract(
+                          const Duration(minutes: 1),
+                        ),
+                      );
                       nameController.clear();
                       startTimeForFrontEnd = 'select start time';
                       endTimeForFrontEnd = 'select end time';
