@@ -605,10 +605,13 @@ class _AddWorkPlanBoxState extends State<AddWorkPlanBox> {
                   } else {
                     await box.put(id, workPlanModel).then(
                       (value) {
+                        int startJobId =
+                            DateTime.now().millisecondsSinceEpoch % 2147483647;
+                        workPlanModel.notificationId = startJobId;
+
                         /// call start job notification function
                         NotificationService().scheduleStartJobNotification(
-                            title: 'Start Job Remainder',
-                            body: "${nameController.text} from $startTimeForFrontEnd to $endTimeForFrontEnd",
+                            workPlanModel: workPlanModel,
                             scheduledNotificationDateTime:
                                 startTimeForBackEnd.subtract(
                               Duration(
@@ -617,12 +620,15 @@ class _AddWorkPlanBoxState extends State<AddWorkPlanBox> {
                               ),
                             ));
 
+                        int endJobId =
+                            DateTime.now().millisecondsSinceEpoch % 2147483647;
+                        workPlanModel.notificationId = endJobId;
+
                         /// call end job notification function
                         NotificationService().scheduleEndJobNotification(
-                            title: 'End Job Remainder',
-                            body: 'Job end in ${preferenceManager.getEndJobNotificationLimit} minutes',
+                            workPlanModel: workPlanModel,
                             scheduledNotificationDateTime:
-                            startTimeForBackEnd.subtract(
+                                startTimeForBackEnd.subtract(
                               Duration(
                                 minutes: preferenceManager
                                     .getEndJobNotificationLimit,
@@ -681,36 +687,44 @@ class _AddWorkPlanBoxState extends State<AddWorkPlanBox> {
                       ),
                     );
                   } else {
-                    await box.put(id, workPlanModel).then((value) {
-                      /// call start job notification function
-                      NotificationService().scheduleStartJobNotification(
-                          title: 'Start Job Remainder',
-                          body: "${nameController.text} from $startTimeForFrontEnd to $endTimeForFrontEnd",
-                          scheduledNotificationDateTime:
-                          startTimeForBackEnd.subtract(
-                            Duration(
-                              minutes: preferenceManager
-                                  .getStartJobNotificationLimit,
-                            ),
-                          ));
+                    await box.put(id, workPlanModel).then(
+                      (value) {
+                        int startJobId =
+                            DateTime.now().millisecondsSinceEpoch % 2147483647;
+                        workPlanModel.notificationId = startJobId;
 
-                      /// call end job notification function
-                      NotificationService().scheduleEndJobNotification(
-                          title: 'End Job Remainder',
-                          body: 'Job end in ${preferenceManager.getEndJobNotificationLimit} minutes',
-                          scheduledNotificationDateTime:
-                          startTimeForBackEnd.subtract(
-                            Duration(
-                              minutes: preferenceManager
-                                  .getEndJobNotificationLimit,
-                            ),
-                          ));
-                      nameController.clear();
-                      startTimeForFrontEnd = 'select start time';
-                      endTimeForFrontEnd = 'select end time';
-                      workPlanDateForFrontEnd = 'select date';
-                      Navigator.of(context).pop();
-                    });
+                        /// call start job notification function
+                        NotificationService().scheduleStartJobNotification(
+                            workPlanModel: workPlanModel,
+                            scheduledNotificationDateTime:
+                                startTimeForBackEnd.subtract(
+                              Duration(
+                                minutes: preferenceManager
+                                    .getStartJobNotificationLimit,
+                              ),
+                            ));
+
+                        int endJobId =
+                            DateTime.now().millisecondsSinceEpoch % 2147483647;
+                        workPlanModel.notificationId = endJobId;
+
+                        /// call end job notification function
+                        NotificationService().scheduleEndJobNotification(
+                            workPlanModel: workPlanModel,
+                            scheduledNotificationDateTime:
+                                startTimeForBackEnd.subtract(
+                              Duration(
+                                minutes: preferenceManager
+                                    .getEndJobNotificationLimit,
+                              ),
+                            ));
+                        nameController.clear();
+                        startTimeForFrontEnd = 'select start time';
+                        endTimeForFrontEnd = 'select end time';
+                        workPlanDateForFrontEnd = 'select date';
+                        Navigator.of(context).pop();
+                      },
+                    );
                   }
                 }
               }

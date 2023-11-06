@@ -85,12 +85,12 @@ class PreferenceManager {
       _prefs?.setString(_Keys.endJobNotification, value) ?? '';
 
   int get getEndJobNotificationLimit =>
-      _prefs?.getInt(_Keys.endJobNotificationLimit) ?? 1;
+      _prefs?.getInt(_Keys.endJobNotificationLimit) ?? 5;
   set setEndJobNotificationLimit(int value) =>
       _prefs?.setInt(_Keys.endJobNotification, value) ?? 30;
 
   int get getStartJobNotificationLimit =>
-      _prefs?.getInt(_Keys.startJobNotificationLimit) ?? 2;
+      _prefs?.getInt(_Keys.startJobNotificationLimit) ?? 5;
   set setStartJobNotificationLimit(int value) =>
       _prefs?.setInt(_Keys.startJobNotificationLimit, value) ?? 30;
 }

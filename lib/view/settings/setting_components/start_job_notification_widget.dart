@@ -21,18 +21,18 @@ class StartJobNotificationWidget extends StatefulWidget {
 class _StartJobNotificationWidgetState
     extends State<StartJobNotificationWidget> {
   List startJobNotificationList = [
+    '5 min',
+    '10 min',
     '30 min',
     '60 min',
-    '10 min',
-    '5 min',
   ];
   String selectedStartJobNotification = '';
 
   PreferenceManager preferenceManager = PreferenceManager();
 
   /// set start job notification limit
-  updateStartNotificationLimit(String value){
-    switch(value){
+  updateStartNotificationLimit(String value) {
+    switch (value) {
       case '30 min':
         preferenceManager.setStartJobNotificationLimit = 30;
         break;
@@ -50,9 +50,9 @@ class _StartJobNotificationWidgetState
 
   @override
   void initState() {
-    if(preferenceManager.getStartJobNotification == ''){
+    if (preferenceManager.getStartJobNotification == '') {
       selectedStartJobNotification = startJobNotificationList[0];
-    }else{
+    } else {
       selectedStartJobNotification = preferenceManager.getStartJobNotification;
     }
 
@@ -111,9 +111,12 @@ class _StartJobNotificationWidgetState
               onChanged: (val) {
                 setState(() {
                   selectedStartJobNotification = val.toString();
-                  preferenceManager.setStartJobNotification = selectedStartJobNotification;
-                  updateStartNotificationLimit(preferenceManager.getStartJobNotification);
-                  widget.onStartJobNotificationSelected(selectedStartJobNotification);
+                  preferenceManager.setStartJobNotification =
+                      selectedStartJobNotification;
+                  updateStartNotificationLimit(
+                      preferenceManager.getStartJobNotification);
+                  widget.onStartJobNotificationSelected(
+                      selectedStartJobNotification);
                 });
               },
             ),

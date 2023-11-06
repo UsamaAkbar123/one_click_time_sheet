@@ -20,10 +20,10 @@ class EndJobNotificationWidget extends StatefulWidget {
 
 class _EndJobNotificationWidgetState extends State<EndJobNotificationWidget> {
   List endJobNotificationList = [
+    '5 min',
+    '10 min',
     '30 min',
     '60 min',
-    '10 min',
-    '5 min',
   ];
   String selectedEndJobNotification = '';
 
