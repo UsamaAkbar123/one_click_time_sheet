@@ -9,6 +9,8 @@ class _Keys {
   static const firstDayOfWeek = "first_day_of_week";
   static const startJobNotification = "start_job_notification";
   static const endJobNotification = "end_job_notification";
+  static const endJobNotificationLimit = "end_job_notification_limit";
+  static const startJobNotificationLimit = "start_job_notification_limit";
 }
 
 class PreferenceManager {
@@ -81,4 +83,14 @@ class PreferenceManager {
       _prefs?.getString(_Keys.endJobNotification) ?? '';
   set setEndJobNotification(String value) =>
       _prefs?.setString(_Keys.endJobNotification, value) ?? '';
+
+  int get getEndJobNotificationLimit =>
+      _prefs?.getInt(_Keys.endJobNotificationLimit) ?? 1;
+  set setEndJobNotificationLimit(int value) =>
+      _prefs?.setInt(_Keys.endJobNotification, value) ?? 30;
+
+  int get getStartJobNotificationLimit =>
+      _prefs?.getInt(_Keys.startJobNotificationLimit) ?? 2;
+  set setStartJobNotificationLimit(int value) =>
+      _prefs?.setInt(_Keys.startJobNotificationLimit, value) ?? 30;
 }

@@ -21,13 +21,31 @@ class EndJobNotificationWidget extends StatefulWidget {
 class _EndJobNotificationWidgetState extends State<EndJobNotificationWidget> {
   List endJobNotificationList = [
     '30 min',
-    '1 hr',
+    '60 min',
     '10 min',
-    '2 hr',
+    '5 min',
   ];
   String selectedEndJobNotification = '';
 
   PreferenceManager preferenceManager = PreferenceManager();
+
+  /// set start job notification limit
+  updateStartNotificationLimit(String value){
+    switch(value){
+      case '30 min':
+        preferenceManager.setEndJobNotificationLimit = 30;
+        break;
+      case '60 min':
+        preferenceManager.setEndJobNotificationLimit = 60;
+        break;
+      case '10 min':
+        preferenceManager.setEndJobNotificationLimit = 10;
+        break;
+      case '5 min':
+        preferenceManager.setEndJobNotificationLimit = 5;
+        break;
+    }
+  }
 
   @override
   void initState() {
@@ -93,6 +111,7 @@ class _EndJobNotificationWidgetState extends State<EndJobNotificationWidget> {
                 setState(() {
                   selectedEndJobNotification = val.toString();
                   preferenceManager.setEndJobNotification = selectedEndJobNotification;
+                  updateStartNotificationLimit(preferenceManager.getEndJobNotification);
                   widget.onEndJobNotificationSelected(selectedEndJobNotification);
                 });
               },

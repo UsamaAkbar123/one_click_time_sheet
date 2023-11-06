@@ -138,15 +138,12 @@ class _WorkPlanScreenState extends State<WorkPlanScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          DateTime scheduledTime = DateTime.now().add(Duration(minutes: 1));
-          await NotificationService().scheduleNotification(title: 'Remainder',body: 'body',scheduledNotificationDateTime: scheduledTime);
-          // NotificationService().showNotification(1, 'Remainder', 'body');
-          // showDialog(
-          //   context: context,
-          //   builder: (context) {
-          //     return const AddWorkPlanBox();
-          //   },
-          // );
+          showDialog(
+            context: context,
+            builder: (context) {
+              return const AddWorkPlanBox();
+            },
+          );
         },
         child: const Icon(
           Icons.add,

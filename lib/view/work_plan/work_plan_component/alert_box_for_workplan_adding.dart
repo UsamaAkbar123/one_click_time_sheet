@@ -578,13 +578,6 @@ class _AddWorkPlanBoxState extends State<AddWorkPlanBox> {
                     ),
                   );
 
-                  // NotificationService().scheduleStartJobNotification(
-                  //   notificationId: 1,
-                  //   startJobTime: startTimeForBackEnd,
-                  //   beforeNotificationSetter: 1
-                  //     , body: nameController.text,
-                  // );
-
                   /// check that on added time, can work plan added or not
                   List<WorkPlanModel> existingWorkPlanList =
                       box.values.cast<WorkPlanModel>().toList();
@@ -610,21 +603,38 @@ class _AddWorkPlanBoxState extends State<AddWorkPlanBox> {
                       ),
                     );
                   } else {
-                    await box.put(id, workPlanModel).then((value) {
-                      NotificationService().scheduleNotification(
-                        title: 'Remainder',
-                        body: nameController.text,
-                        scheduledNotificationDateTime:
+                    await box.put(id, workPlanModel).then(
+                      (value) {
+                        /// call start job notification function
+                        NotificationService().scheduleStartJobNotification(
+                            title: 'Start Job Remainder',
+                            body: "${nameController.text} from $startTimeForFrontEnd to $endTimeForFrontEnd",
+                            scheduledNotificationDateTime:
+                                startTimeForBackEnd.subtract(
+                              Duration(
+                                minutes: preferenceManager
+                                    .getStartJobNotificationLimit,
+                              ),
+                            ));
+
+                        /// call end job notification function
+                        NotificationService().scheduleEndJobNotification(
+                            title: 'End Job Remainder',
+                            body: 'Job end in ${preferenceManager.getEndJobNotificationLimit} minutes',
+                            scheduledNotificationDateTime:
                             startTimeForBackEnd.subtract(
-                          const Duration(minutes: 1),
-                        ),
-                      );
-                      nameController.clear();
-                      startTimeForFrontEnd = 'select start time';
-                      endTimeForFrontEnd = 'select end time';
-                      workPlanDateForFrontEnd = 'select date';
-                      Navigator.of(context).pop();
-                    });
+                              Duration(
+                                minutes: preferenceManager
+                                    .getEndJobNotificationLimit,
+                              ),
+                            ));
+                        nameController.clear();
+                        startTimeForFrontEnd = 'select start time';
+                        endTimeForFrontEnd = 'select end time';
+                        workPlanDateForFrontEnd = 'select date';
+                        Navigator.of(context).pop();
+                      },
+                    );
                   }
                 } else {
                   if (endTimeForBackEnd.isBefore(startTimeForBackEnd)) {
@@ -672,6 +682,29 @@ class _AddWorkPlanBoxState extends State<AddWorkPlanBox> {
                     );
                   } else {
                     await box.put(id, workPlanModel).then((value) {
+                      /// call start job notification function
+                      NotificationService().scheduleStartJobNotification(
+                          title: 'Start Job Remainder',
+                          body: "${nameController.text} from $startTimeForFrontEnd to $endTimeForFrontEnd",
+                          scheduledNotificationDateTime:
+                          startTimeForBackEnd.subtract(
+                            Duration(
+                              minutes: preferenceManager
+                                  .getStartJobNotificationLimit,
+                            ),
+                          ));
+
+                      /// call end job notification function
+                      NotificationService().scheduleEndJobNotification(
+                          title: 'End Job Remainder',
+                          body: 'Job end in ${preferenceManager.getEndJobNotificationLimit} minutes',
+                          scheduledNotificationDateTime:
+                          startTimeForBackEnd.subtract(
+                            Duration(
+                              minutes: preferenceManager
+                                  .getEndJobNotificationLimit,
+                            ),
+                          ));
                       nameController.clear();
                       startTimeForFrontEnd = 'select start time';
                       endTimeForFrontEnd = 'select end time';
