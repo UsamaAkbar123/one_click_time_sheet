@@ -482,6 +482,10 @@ class _AddWorkPlanBoxState extends State<AddWorkPlanBox> {
                   } else {
                     if (box.containsKey(workPlanModel.id)) {
                       box.put(widget.id, workPlanModel).then((value) {
+
+                        NotificationService().updateStartJobNotifications(workPlanModel);
+                        NotificationService().updateEndJobNotifications(workPlanModel);
+
                         nameController.clear();
                         startTimeForFrontEnd = AppLocalizations.of(context)
                                 ?.addWorkPlanDialogWorkPlanSelectEndTime ??
