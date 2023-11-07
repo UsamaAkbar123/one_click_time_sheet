@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:hive/hive.dart';
 import 'package:one_click_time_sheet/managers/preference_manager.dart';
+import 'package:one_click_time_sheet/model/work_plan_model.dart';
+import 'package:one_click_time_sheet/services/notification_service/notification_service.dart';
 import 'package:one_click_time_sheet/utills/constants/colors.dart';
 import 'package:one_click_time_sheet/utills/constants/text_styles.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -20,6 +23,7 @@ class StartJobNotificationWidget extends StatefulWidget {
 
 class _StartJobNotificationWidgetState
     extends State<StartJobNotificationWidget> {
+  final Box box = Hive.box('workPlan');
   List startJobNotificationList = [
     '5 min',
     '10 min',
@@ -113,8 +117,20 @@ class _StartJobNotificationWidgetState
                   selectedStartJobNotification = val.toString();
                   preferenceManager.setStartJobNotification =
                       selectedStartJobNotification;
+
                   updateStartNotificationLimit(
                       preferenceManager.getStartJobNotification);
+
+                  /// get all the work plan from hive database
+                  List<dynamic> dynamicWorkPlanList = box.values.toList();
+
+                  if (dynamicWorkPlanList.isNotEmpty) {
+                   List<WorkPlanModel> workPlanList = dynamicWorkPlanList.cast<WorkPlanModel>();
+                   for(WorkPlanModel workPlanModel in workPlanList){
+                     NotificationService().updateStartJobNotifications(workPlanModel);
+                   }
+                  }
+
                   widget.onStartJobNotificationSelected(
                       selectedStartJobNotification);
                 });

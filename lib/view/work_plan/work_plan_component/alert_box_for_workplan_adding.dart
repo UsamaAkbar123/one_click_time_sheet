@@ -549,29 +549,26 @@ class _AddWorkPlanBoxState extends State<AddWorkPlanBox> {
 
                         /// call start job notification function
                         NotificationService().scheduleStartJobNotification(
-                            workPlanModel: workPlanModel,
-                            scheduledNotificationDateTime:
-                                startTimeForBackEnd.subtract(
-                              Duration(
-                                minutes: preferenceManager
-                                    .getStartJobNotificationLimit,
-                              ),
-                            ));
+                          workPlanModel: workPlanModel,
+                        );
+
+                        // print('start job id: ${workPlanModel.notificationId}');
+                        // print('name: ${workPlanModel.workPlanName}');
+                        // print('start job time: ${workPlanModel.startWorkPlanTime}');
 
                         int endJobId =
-                            DateTime.now().millisecondsSinceEpoch % 2147483647;
+                            (DateTime.now().millisecondsSinceEpoch + 1) %
+                                2147483647;
                         workPlanModel.notificationId = endJobId;
 
                         /// call end job notification function
                         NotificationService().scheduleEndJobNotification(
-                            workPlanModel: workPlanModel,
-                            scheduledNotificationDateTime:
-                                startTimeForBackEnd.subtract(
-                              Duration(
-                                minutes: preferenceManager
-                                    .getEndJobNotificationLimit,
-                              ),
-                            ));
+                          workPlanModel: workPlanModel,
+                        );
+
+                        // print('end job id: ${workPlanModel.notificationId}');
+                        // print('name: ${workPlanModel.workPlanName}');
+                        // print('start job time: ${workPlanModel.endWorkPlanTime}');
                         nameController.clear();
                         startTimeForFrontEnd = 'select start time';
                         endTimeForFrontEnd = 'select end time';
@@ -633,14 +630,8 @@ class _AddWorkPlanBoxState extends State<AddWorkPlanBox> {
 
                         /// call start job notification function
                         NotificationService().scheduleStartJobNotification(
-                            workPlanModel: workPlanModel,
-                            scheduledNotificationDateTime:
-                                startTimeForBackEnd.subtract(
-                              Duration(
-                                minutes: preferenceManager
-                                    .getStartJobNotificationLimit,
-                              ),
-                            ));
+                          workPlanModel: workPlanModel,
+                        );
 
                         int endJobId =
                             DateTime.now().millisecondsSinceEpoch % 2147483647;
@@ -648,14 +639,8 @@ class _AddWorkPlanBoxState extends State<AddWorkPlanBox> {
 
                         /// call end job notification function
                         NotificationService().scheduleEndJobNotification(
-                            workPlanModel: workPlanModel,
-                            scheduledNotificationDateTime:
-                                startTimeForBackEnd.subtract(
-                              Duration(
-                                minutes: preferenceManager
-                                    .getEndJobNotificationLimit,
-                              ),
-                            ));
+                          workPlanModel: workPlanModel,
+                        );
                         nameController.clear();
                         startTimeForFrontEnd = 'select start time';
                         endTimeForFrontEnd = 'select end time';
