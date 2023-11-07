@@ -5,6 +5,7 @@ import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
 import 'package:one_click_time_sheet/managers/preference_manager.dart';
 import 'package:one_click_time_sheet/model/work_plan_model.dart';
+import 'package:one_click_time_sheet/services/notification_service/notification_service.dart';
 import 'package:one_click_time_sheet/utills/constants/colors.dart';
 import 'package:one_click_time_sheet/utills/constants/text_styles.dart';
 import 'package:uuid/uuid.dart';
@@ -172,68 +173,6 @@ class _AddWorkPlanBoxState extends State<AddWorkPlanBox> {
 
     super.didChangeDependencies();
   }
-
-  // @override
-  // void initState() {
-  //   // if (widget.isEmptySpaceClick == true) {
-  //   //   if (preferenceManager.getTimeFormat == '24h') {
-  //   //     startTimeForFrontEnd =
-  //   //         DateFormat.Hm().format(widget.startTime ?? DateTime.now());
-  //   //   } else {
-  //   //     startTimeForFrontEnd =
-  //   //         DateFormat.jm().format(widget.startTime ?? DateTime.now());
-  //   //   }
-  //   //   if (preferenceManager.getTimeFormat == '24h') {
-  //   //     endTimeForFrontEnd =
-  //   //         DateFormat.Hm().format(widget.endTime ?? DateTime.now());
-  //   //   } else {
-  //   //     endTimeForFrontEnd =
-  //   //         DateFormat.jm().format(widget.endTime ?? DateTime.now());
-  //   //   }
-  //   //   workPlanDateForFrontEnd =
-  //   //       DateFormat(preferenceManager.getDateFormat).format(
-  //   //     widget.startTime ?? DateTime.now(),
-  //   //   );
-  //   //   workPlanDateForBackend = widget.startTime ?? DateTime.now();
-  //   //   startTimeForBackEnd = widget.startTime ?? DateTime.now();
-  //   //   endTimeForBackEnd = widget.endTime ?? DateTime.now();
-
-  //   //   /// set select time for showTimePicker
-  //   //   startInitialTime = TimeOfDay.fromDateTime(startTimeForBackEnd);
-  //   //   endInitialTime = TimeOfDay.fromDateTime(endTimeForBackEnd);
-  //   // }
-  //   if (widget.isEditMode == true) {
-  //     // nameController.text = widget.workPlanName ?? '';
-  //     // if (preferenceManager.getTimeFormat == '24h') {
-  //     //   startTimeForFrontEnd =
-  //     //       DateFormat.Hm().format(widget.startTime ?? DateTime.now());
-  //     // } else {
-  //     //   startTimeForFrontEnd =
-  //     //       DateFormat.jm().format(widget.startTime ?? DateTime.now());
-  //     // }
-  //     // if (preferenceManager.getTimeFormat == '24h') {
-  //     //   endTimeForFrontEnd =
-  //     //       DateFormat.Hm().format(widget.endTime ?? DateTime.now());
-  //     // } else {
-  //     //   endTimeForFrontEnd =
-  //     //       DateFormat.jm().format(widget.endTime ?? DateTime.now());
-  //     // }
-  //     // workPlanDateForFrontEnd =
-  //     //     DateFormat(preferenceManager.getDateFormat).format(
-  //     //   widget.startTime ?? DateTime.now(),
-  //     // );
-  //     // workPlanDateForBackend = widget.startTime ?? DateTime.now();
-  //     // startTimeForBackEnd = widget.startTime ?? DateTime.now();
-  //     // endTimeForBackEnd = widget.endTime ?? DateTime.now();
-
-  //     // /// set select time for showTimePicker
-  //     // startInitialTime = TimeOfDay.fromDateTime(startTimeForBackEnd);
-  //     // endInitialTime = TimeOfDay.fromDateTime(endTimeForBackEnd);
-  //   }
-  //   super.initState();
-  // }
-
-  // TimeOfDay selectedTime = TimeOfDay.now();
 
   bool isWorkPlanExist(
     List<WorkPlanModel> existingWorkPlanList,
@@ -543,6 +482,10 @@ class _AddWorkPlanBoxState extends State<AddWorkPlanBox> {
                   } else {
                     if (box.containsKey(workPlanModel.id)) {
                       box.put(widget.id, workPlanModel).then((value) {
+
+                        NotificationService().updateStartJobNotifications(workPlanModel);
+                        NotificationService().updateEndJobNotifications(workPlanModel);
+
                         nameController.clear();
                         startTimeForFrontEnd = AppLocalizations.of(context)
                                 ?.addWorkPlanDialogWorkPlanSelectEndTime ??
@@ -602,13 +545,41 @@ class _AddWorkPlanBoxState extends State<AddWorkPlanBox> {
                       ),
                     );
                   } else {
-                    await box.put(id, workPlanModel).then((value) {
-                      nameController.clear();
-                      startTimeForFrontEnd = 'select start time';
-                      endTimeForFrontEnd = 'select end time';
-                      workPlanDateForFrontEnd = 'select date';
-                      Navigator.of(context).pop();
-                    });
+                    await box.put(id, workPlanModel).then(
+                      (value) {
+                        int startJobId =
+                            DateTime.now().millisecondsSinceEpoch % 2147483647;
+                        workPlanModel.notificationIdForStartJob = startJobId;
+
+                        /// call start job notification function
+                        NotificationService().scheduleStartJobNotification(
+                          workPlanModel: workPlanModel,
+                        );
+
+                        // print('start job id: ${workPlanModel.notificationId}');
+                        // print('name: ${workPlanModel.workPlanName}');
+                        // print('start job time: ${workPlanModel.startWorkPlanTime}');
+
+                        int endJobId =
+                            (DateTime.now().millisecondsSinceEpoch + 1) %
+                                2147483647;
+                        workPlanModel.notificationIdForEndJob = endJobId;
+
+                        /// call end job notification function
+                        NotificationService().scheduleEndJobNotification(
+                          workPlanModel: workPlanModel,
+                        );
+
+                        // print('end job id: ${workPlanModel.notificationId}');
+                        // print('name: ${workPlanModel.workPlanName}');
+                        // print('start job time: ${workPlanModel.endWorkPlanTime}');
+                        nameController.clear();
+                        startTimeForFrontEnd = 'select start time';
+                        endTimeForFrontEnd = 'select end time';
+                        workPlanDateForFrontEnd = 'select date';
+                        Navigator.of(context).pop();
+                      },
+                    );
                   }
                 } else {
                   if (endTimeForBackEnd.isBefore(startTimeForBackEnd)) {
@@ -655,13 +626,32 @@ class _AddWorkPlanBoxState extends State<AddWorkPlanBox> {
                       ),
                     );
                   } else {
-                    await box.put(id, workPlanModel).then((value) {
-                      nameController.clear();
-                      startTimeForFrontEnd = 'select start time';
-                      endTimeForFrontEnd = 'select end time';
-                      workPlanDateForFrontEnd = 'select date';
-                      Navigator.of(context).pop();
-                    });
+                    await box.put(id, workPlanModel).then(
+                      (value) {
+                        int startJobId =
+                            DateTime.now().millisecondsSinceEpoch % 2147483647;
+                        workPlanModel.notificationIdForStartJob = startJobId;
+
+                        /// call start job notification function
+                        NotificationService().scheduleStartJobNotification(
+                          workPlanModel: workPlanModel,
+                        );
+
+                        int endJobId =
+                            DateTime.now().millisecondsSinceEpoch % 2147483647;
+                        workPlanModel.notificationIdForEndJob = endJobId;
+
+                        /// call end job notification function
+                        NotificationService().scheduleEndJobNotification(
+                          workPlanModel: workPlanModel,
+                        );
+                        nameController.clear();
+                        startTimeForFrontEnd = 'select start time';
+                        endTimeForFrontEnd = 'select end time';
+                        workPlanDateForFrontEnd = 'select date';
+                        Navigator.of(context).pop();
+                      },
+                    );
                   }
                 }
               }

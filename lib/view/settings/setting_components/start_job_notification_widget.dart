@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:hive/hive.dart';
 import 'package:one_click_time_sheet/managers/preference_manager.dart';
+import 'package:one_click_time_sheet/model/work_plan_model.dart';
+import 'package:one_click_time_sheet/services/notification_service/notification_service.dart';
 import 'package:one_click_time_sheet/utills/constants/colors.dart';
 import 'package:one_click_time_sheet/utills/constants/text_styles.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -20,21 +23,40 @@ class StartJobNotificationWidget extends StatefulWidget {
 
 class _StartJobNotificationWidgetState
     extends State<StartJobNotificationWidget> {
+  final Box box = Hive.box('workPlan');
   List startJobNotificationList = [
+    '0 min',
+    '5 min',
     '30 min',
-    '1 hr',
-    '10 min',
-    '2 hr',
+    '60 min',
   ];
   String selectedStartJobNotification = '';
 
   PreferenceManager preferenceManager = PreferenceManager();
 
+  /// set start job notification limit
+  updateStartNotificationLimit(String value) {
+    switch (value) {
+      case '30 min':
+        preferenceManager.setStartJobNotificationLimit = 30;
+        break;
+      case '60 min':
+        preferenceManager.setStartJobNotificationLimit = 60;
+        break;
+      case '0 min':
+        preferenceManager.setStartJobNotificationLimit = 0;
+        break;
+      case '5 min':
+        preferenceManager.setStartJobNotificationLimit = 5;
+        break;
+    }
+  }
+
   @override
   void initState() {
-    if(preferenceManager.getStartJobNotification == ''){
+    if (preferenceManager.getStartJobNotification == '') {
       selectedStartJobNotification = startJobNotificationList[0];
-    }else{
+    } else {
       selectedStartJobNotification = preferenceManager.getStartJobNotification;
     }
 
@@ -93,8 +115,24 @@ class _StartJobNotificationWidgetState
               onChanged: (val) {
                 setState(() {
                   selectedStartJobNotification = val.toString();
-                  preferenceManager.setStartJobNotification = selectedStartJobNotification;
-                  widget.onStartJobNotificationSelected(selectedStartJobNotification);
+                  preferenceManager.setStartJobNotification =
+                      selectedStartJobNotification;
+
+                  updateStartNotificationLimit(
+                      preferenceManager.getStartJobNotification);
+
+                  /// get all the work plan from hive database
+                  List<dynamic> dynamicWorkPlanList = box.values.toList();
+
+                  if (dynamicWorkPlanList.isNotEmpty) {
+                   List<WorkPlanModel> workPlanList = dynamicWorkPlanList.cast<WorkPlanModel>();
+                   for(WorkPlanModel workPlanModel in workPlanList){
+                     NotificationService().updateStartJobNotifications(workPlanModel);
+                   }
+                  }
+
+                  widget.onStartJobNotificationSelected(
+                      selectedStartJobNotification);
                 });
               },
             ),

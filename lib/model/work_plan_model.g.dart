@@ -22,13 +22,15 @@ class WorkPlanModelAdapter extends TypeAdapter<WorkPlanModel> {
       startWorkPlanTime: fields[2] as DateTime,
       endWorkPlanTime: fields[3] as DateTime,
       workPlanDate: fields[4] as DateTime,
+      notificationIdForStartJob: fields[5] as int?,
+      notificationIdForEndJob: fields[6] as int?,
     );
   }
 
   @override
   void write(BinaryWriter writer, WorkPlanModel obj) {
     writer
-      ..writeByte(5)
+      ..writeByte(7)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -38,7 +40,11 @@ class WorkPlanModelAdapter extends TypeAdapter<WorkPlanModel> {
       ..writeByte(3)
       ..write(obj.endWorkPlanTime)
       ..writeByte(4)
-      ..write(obj.workPlanDate);
+      ..write(obj.workPlanDate)
+      ..writeByte(5)
+      ..write(obj.notificationIdForStartJob)
+      ..writeByte(6)
+      ..write(obj.notificationIdForEndJob);
   }
 
   @override

@@ -18,12 +18,20 @@ class WorkPlanModel {
   @HiveField(4)
   final DateTime workPlanDate;
 
+  @HiveField(5)
+  int ? notificationIdForStartJob;
+
+  @HiveField(6)
+  int ? notificationIdForEndJob;
+
   WorkPlanModel({
     required this.id,
     required this.workPlanName,
     required this.startWorkPlanTime,
     required this.endWorkPlanTime,
     required this.workPlanDate,
+    this.notificationIdForStartJob,
+    this.notificationIdForEndJob,
   });
   Map<String, dynamic> toJson() {
     return {
@@ -32,6 +40,8 @@ class WorkPlanModel {
       'startWorkPlanTime': startWorkPlanTime.toIso8601String(),
       'endWorkPlanTime': endWorkPlanTime.toIso8601String(),
       'workPlanDate': workPlanDate.toIso8601String(),
+      'notificationIdForStartJob': notificationIdForStartJob,
+      'notificationIdForEndJob': notificationIdForEndJob,
     };
   }
 
@@ -42,6 +52,8 @@ class WorkPlanModel {
       startWorkPlanTime: DateTime.parse(json['startWorkPlanTime']),
       endWorkPlanTime: DateTime.parse(json['endWorkPlanTime']),
       workPlanDate: DateTime.parse(json['workPlanDate']),
+      notificationIdForStartJob: json['notificationIdForStartJob'],
+      notificationIdForEndJob: json['notificationIdForEndJob'],
     );
   }
   // factory WorkPlanModel.fromJson(Map<String, dynamic> json) {
