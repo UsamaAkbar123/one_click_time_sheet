@@ -545,7 +545,7 @@ class _AddWorkPlanBoxState extends State<AddWorkPlanBox> {
                       (value) {
                         int startJobId =
                             DateTime.now().millisecondsSinceEpoch % 2147483647;
-                        workPlanModel.notificationId = startJobId;
+                        workPlanModel.notificationIdForStartJob = startJobId;
 
                         /// call start job notification function
                         NotificationService().scheduleStartJobNotification(
@@ -559,7 +559,7 @@ class _AddWorkPlanBoxState extends State<AddWorkPlanBox> {
                         int endJobId =
                             (DateTime.now().millisecondsSinceEpoch + 1) %
                                 2147483647;
-                        workPlanModel.notificationId = endJobId;
+                        workPlanModel.notificationIdForEndJob = endJobId;
 
                         /// call end job notification function
                         NotificationService().scheduleEndJobNotification(
@@ -626,7 +626,7 @@ class _AddWorkPlanBoxState extends State<AddWorkPlanBox> {
                       (value) {
                         int startJobId =
                             DateTime.now().millisecondsSinceEpoch % 2147483647;
-                        workPlanModel.notificationId = startJobId;
+                        workPlanModel.notificationIdForStartJob = startJobId;
 
                         /// call start job notification function
                         NotificationService().scheduleStartJobNotification(
@@ -635,7 +635,7 @@ class _AddWorkPlanBoxState extends State<AddWorkPlanBox> {
 
                         int endJobId =
                             DateTime.now().millisecondsSinceEpoch % 2147483647;
-                        workPlanModel.notificationId = endJobId;
+                        workPlanModel.notificationIdForEndJob = endJobId;
 
                         /// call end job notification function
                         NotificationService().scheduleEndJobNotification(

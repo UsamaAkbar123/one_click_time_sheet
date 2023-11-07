@@ -53,7 +53,7 @@ class NotificationService {
           DateFormat.jm().format(workPlanModel.endWorkPlanTime);
     }
     return flutterLocalNotificationsPlugin.zonedSchedule(
-      workPlanModel.notificationId ?? 0,
+      workPlanModel.notificationIdForStartJob ?? 0,
       'Start Job Remainder',
       "${workPlanModel.workPlanName} from $startTime to $endTime",
       tz.TZDateTime.from(
@@ -86,7 +86,7 @@ class NotificationService {
   }) async {
     // print('end job id: ${workPlanModel.notificationId}');
     return flutterLocalNotificationsPlugin.zonedSchedule(
-      workPlanModel.notificationId ?? 0,
+      workPlanModel.notificationIdForEndJob ?? 0,
       'End Job Remainder',
       "Job end in ${PreferenceManager().getEndJobNotificationLimit} minutes",
       tz.TZDateTime.from(
@@ -117,20 +117,20 @@ class NotificationService {
   /// end job has notification
   Future<bool> endJobHasNotification(WorkPlanModel workPlanModel) async{
     var pendingNotifications = await flutterLocalNotificationsPlugin.pendingNotificationRequests();
-    return pendingNotifications.any((notification) => notification.id == workPlanModel.notificationId);
+    return pendingNotifications.any((notification) => notification.id == workPlanModel.notificationIdForEndJob);
   }
 
   /// start job has notification
   Future<bool> startJobHasNotification(WorkPlanModel workPlanModel) async{
     var pendingNotifications = await flutterLocalNotificationsPlugin.pendingNotificationRequests();
-    return pendingNotifications.any((notification) => notification.id == workPlanModel.notificationId);
+    return pendingNotifications.any((notification) => notification.id == workPlanModel.notificationIdForStartJob);
   }
 
   /// update start job notification
   void updateStartJobNotifications(WorkPlanModel workPlanModel) async{
     var hasNotification = await startJobHasNotification(workPlanModel);
     if(hasNotification){
-      flutterLocalNotificationsPlugin.cancel(workPlanModel.notificationId ?? 0);
+      flutterLocalNotificationsPlugin.cancel(workPlanModel.notificationIdForStartJob ?? 0);
     }
 
     scheduleStartJobNotification(workPlanModel: workPlanModel);
@@ -140,9 +140,22 @@ class NotificationService {
   void updateEndJobNotifications(WorkPlanModel workPlanModel) async{
     var hasNotification = await endJobHasNotification(workPlanModel);
     if(hasNotification){
-      flutterLocalNotificationsPlugin.cancel(workPlanModel.notificationId ?? 0);
+      flutterLocalNotificationsPlugin.cancel(workPlanModel.notificationIdForStartJob ?? 0);
     }
     scheduleStartJobNotification(workPlanModel: workPlanModel);
+  }
+
+
+  /// cancel start job notification
+  void cancelStartJobNotification(int id){
+    flutterLocalNotificationsPlugin.cancel(id);
+    print('$id canceled');
+  }
+
+  /// cancel end job notification
+  Future<void> cancelEndJobNotification(int id) async{
+    await flutterLocalNotificationsPlugin.cancel(id);
+    print('$id canceled');
   }
 
 

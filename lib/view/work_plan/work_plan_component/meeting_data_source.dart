@@ -39,6 +39,7 @@ List<Appointment> getAppointments({
         color: workPlanList[i].workPlanDate.isBefore(DateTime.now())
             ? greenColor
             : blueColor,
+        //startJobNotification: workPlanList[i].notificationIdForStartJob,
       ),
     );
   }

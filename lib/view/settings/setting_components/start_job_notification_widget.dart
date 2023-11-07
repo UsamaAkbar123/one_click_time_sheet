@@ -25,8 +25,8 @@ class _StartJobNotificationWidgetState
     extends State<StartJobNotificationWidget> {
   final Box box = Hive.box('workPlan');
   List startJobNotificationList = [
+    '0 min',
     '5 min',
-    '10 min',
     '30 min',
     '60 min',
   ];
@@ -43,8 +43,8 @@ class _StartJobNotificationWidgetState
       case '60 min':
         preferenceManager.setStartJobNotificationLimit = 60;
         break;
-      case '10 min':
-        preferenceManager.setStartJobNotificationLimit = 10;
+      case '0 min':
+        preferenceManager.setStartJobNotificationLimit = 0;
         break;
       case '5 min':
         preferenceManager.setStartJobNotificationLimit = 5;

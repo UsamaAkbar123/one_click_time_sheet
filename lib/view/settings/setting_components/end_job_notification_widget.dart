@@ -24,8 +24,8 @@ class EndJobNotificationWidget extends StatefulWidget {
 class _EndJobNotificationWidgetState extends State<EndJobNotificationWidget> {
   final Box box = Hive.box('workPlan');
   List endJobNotificationList = [
+    '0 min',
     '5 min',
-    '10 min',
     '30 min',
     '60 min',
   ];
@@ -42,8 +42,8 @@ class _EndJobNotificationWidgetState extends State<EndJobNotificationWidget> {
       case '60 min':
         preferenceManager.setEndJobNotificationLimit = 60;
         break;
-      case '10 min':
-        preferenceManager.setEndJobNotificationLimit = 10;
+      case '0 min':
+        preferenceManager.setEndJobNotificationLimit = 0;
         break;
       case '5 min':
         preferenceManager.setEndJobNotificationLimit = 5;

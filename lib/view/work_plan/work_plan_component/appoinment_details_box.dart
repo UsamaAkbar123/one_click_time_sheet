@@ -5,6 +5,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
 import 'package:one_click_time_sheet/managers/preference_manager.dart';
+import 'package:one_click_time_sheet/model/work_plan_model.dart';
+import 'package:one_click_time_sheet/services/notification_service/notification_service.dart';
 import 'package:one_click_time_sheet/utills/constants/colors.dart';
 import 'package:one_click_time_sheet/view/work_plan/work_plan_component/alert_box_for_workplan_adding.dart';
 import 'package:one_click_time_sheet/view/work_plan/work_plan_component/appointment_text_widget.dart';
@@ -51,6 +53,9 @@ class _AppointmentDetailsBoxState extends State<AppointmentDetailsBox> {
                 GestureDetector(
                   onTap: () async {
                     // User? user = FirebaseAuth.instance.currentUser;
+                    WorkPlanModel wordPlanModel = await box.get(tappedMeeting.id);
+                    NotificationService().cancelStartJobNotification(wordPlanModel.notificationIdForStartJob ?? 0);
+                    NotificationService().cancelEndJobNotification(wordPlanModel.notificationIdForEndJob ?? 0);
                     box.delete(tappedMeeting.id).then((value) {
                       Navigator.of(context).pop();
                     });
