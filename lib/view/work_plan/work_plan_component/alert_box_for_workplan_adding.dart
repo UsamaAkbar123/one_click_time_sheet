@@ -196,24 +196,24 @@ class _AddWorkPlanBoxState extends State<AddWorkPlanBox> {
 
     for (WorkPlanModel meeting in filterWorkPlanOnDate) {
       /// case 1 if start time hour and end time hour is equal to new meeting start time end time hour
-      if (isEditMood == false) {
-        if (workPlanModel.startWorkPlanTime.hour ==
-                meeting.startWorkPlanTime.hour ||
-            workPlanModel.endWorkPlanTime.hour ==
-                meeting.endWorkPlanTime.hour) {
-          // print('case 1');
-          // isAlreadyWorkPlanExist = true;
-          return true;
-          // print(isAlreadyWorkPlanExist);
-          // break;
-        }
-      }
+      // if (isEditMood == false) {
+      //   if (workPlanModel.startWorkPlanTime.hour ==
+      //           meeting.startWorkPlanTime.hour ||
+      //       workPlanModel.endWorkPlanTime.hour ==
+      //           meeting.endWorkPlanTime.hour) {
+      //     print('case 1');
+      //     // isAlreadyWorkPlanExist = true;
+      //     return true;
+      //     // print(isAlreadyWorkPlanExist);
+      //     // break;
+      //   }
+      // }
 
       /// case 2/3 if new meeting start end time is between old meeting start end time
       /// case 3 if start time of new meeting is between old meeting start end time
       if (workPlanModel.startWorkPlanTime.isAfter(meeting.startWorkPlanTime) &&
           workPlanModel.startWorkPlanTime.isBefore(meeting.endWorkPlanTime)) {
-        // print('case 2/3');
+        print('case 2/3');
         // isAlreadyWorkPlanExist = true;
         // print(isAlreadyWorkPlanExist);
         // break;
@@ -223,7 +223,7 @@ class _AddWorkPlanBoxState extends State<AddWorkPlanBox> {
       /// case 3 if start time of new meeting is between old meeting start end time
       if (workPlanModel.endWorkPlanTime.isAfter(meeting.startWorkPlanTime) &&
           workPlanModel.endWorkPlanTime.isBefore(meeting.endWorkPlanTime)) {
-        // print('case 4');
+        print('case 4');
         // isAlreadyWorkPlanExist = true;
         // print(isAlreadyWorkPlanExist);
         // break;
@@ -233,7 +233,7 @@ class _AddWorkPlanBoxState extends State<AddWorkPlanBox> {
       /// case 5 if end time of new meeting is before and after old meeting start end time
       if (workPlanModel.startWorkPlanTime.isBefore(meeting.startWorkPlanTime) &&
           workPlanModel.endWorkPlanTime.isAfter(meeting.endWorkPlanTime)) {
-        // print('case 5');
+        print('case 5');
         // isAlreadyWorkPlanExist = true;
         // print(isAlreadyWorkPlanExist);
         // break;

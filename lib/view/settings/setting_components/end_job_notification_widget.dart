@@ -115,7 +115,7 @@ class _EndJobNotificationWidgetState extends State<EndJobNotificationWidget> {
                 setState(() {
                   selectedEndJobNotification = val.toString();
                   preferenceManager.setEndJobNotification = selectedEndJobNotification;
-                  updateStartNotificationLimit(preferenceManager.getEndJobNotification);
+                  updateStartNotificationLimit(selectedEndJobNotification);
                   /// get all the work plan from hive database
                   List<dynamic> dynamicWorkPlanList = box.values.toList();
 
